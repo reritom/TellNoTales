@@ -29,7 +29,10 @@ class Message(models.Model):
     subject = models.CharField(default=0, max_length=255)
     message = models.CharField(default=0, max_length=10000)
     last_notified = models.DateTimeField(default=timezone.now, null=True)
+    created = models.DateTimeField(default=timezone.now, null=True)
     lifespan = models.IntegerField(default=0)
+    expiration = models.IntegerField(default=0)
+    expired = models.BooleanField(default=False)
 
     # Properties for accessing the message
     viewable = models.BooleanField(default=False)
@@ -44,6 +47,10 @@ class Message(models.Model):
         new_recipients = json.dumps(current_recipients)
         self.recipients = new_recipients
         self.save()
+
+    def notify(self):
+        last_notified = models.DateTimeField(default=timezone.now, null=True)
+        self.save()       
 
 
 class Contact(models.Model):
