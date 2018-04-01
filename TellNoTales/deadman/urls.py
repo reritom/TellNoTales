@@ -11,5 +11,8 @@ urlpatterns = [
     #url(r'iaw/', views.cleanup, name='cleanup'),
     url(r'contact/(?P<contact_id>\w+)', api_views.contact, name='contact'),
     url(r'contact', api_views.contact, name='contact'),
+    url(r'login', views.login_user, name='login_user'),
+    url(r'signup', views.signup, name='signup'),
+    url(r'logout', views.logout_user, name='logout_user'),
     #url(r'create/message', views.cleanup, name='cleanup'),
 ]
