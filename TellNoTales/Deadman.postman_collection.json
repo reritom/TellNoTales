@@ -187,7 +187,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://127.0.0.1:8000/contact/6921e095-1145-44e3-8e6b-7d0548504b88",
+					"raw": "http://127.0.0.1:8000/contact/9904ab18-9aaa-48c0-9989-75478fbb830d",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -198,7 +198,7 @@
 					"port": "8000",
 					"path": [
 						"contact",
-						"6921e095-1145-44e3-8e6b-7d0548504b88"
+						"9904ab18-9aaa-48c0-9989-75478fbb830d"
 					]
 				}
 			},
@@ -248,14 +248,20 @@
 					"formdata": [
 						{
 							"key": "email_address",
-							"value": "a_new_address_again@gmail.com",
+							"value": "thero@gmail.com",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "mode",
+							"value": "REMOVE",
 							"description": "",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/contact/08595fe5-e690-4e41-a9d3-38c6ddd987b9",
+					"raw": "http://127.0.0.1:8000/contact/9904ab18-9aaa-48c0-9989-75478fbb830d",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -266,7 +272,7 @@
 					"port": "8000",
 					"path": [
 						"contact",
-						"08595fe5-e690-4e41-a9d3-38c6ddd987b9"
+						"9904ab18-9aaa-48c0-9989-75478fbb830d"
 					]
 				}
 			},
@@ -279,7 +285,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://127.0.0.1:8000/contact/08595fe5-e690-4e41-a9d3-38c6ddd987b9",
+					"raw": "http://127.0.0.1:8000/contact/9904ab18-9aaa-48c0-9989-75478fbb830d",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -290,7 +296,179 @@
 					"port": "8000",
 					"path": [
 						"contact",
-						"08595fe5-e690-4e41-a9d3-38c6ddd987b9"
+						"9904ab18-9aaa-48c0-9989-75478fbb830d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "subject",
+							"value": "To you",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "message",
+							"value": "Another test message",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "cutoff",
+							"value": "100",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "recipient",
+							"value": "05076184-a393-430b-8950-bb8588d07314",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "lifespan",
+							"value": "5",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "viewable",
+							"value": "True",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "deletable",
+							"value": "True",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/message",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"message"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Messages",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/message",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"message"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Contact To Message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "recipient",
+							"value": "a664cc1f-6b3e-4fd2-8b1b-1843f417c584",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "mode",
+							"value": "UPDATE",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/message/2152d20f-a426-402f-bebd-72d5d2798dd8",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"message",
+						"2152d20f-a426-402f-bebd-72d5d2798dd8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Contact To Message (Remove)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "recipient",
+							"value": "a664cc1f-6b3e-4fd2-8b1b-1843f417c584",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "mode",
+							"value": "REMOVE",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/message/2152d20f-a426-402f-bebd-72d5d2798dd8",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"message",
+						"2152d20f-a426-402f-bebd-72d5d2798dd8"
 					]
 				}
 			},

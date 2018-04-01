@@ -5,7 +5,14 @@ from django.views.decorators.csrf import csrf_exempt
 from deadman.models import Contact, Message, Profile
 
 from deadman.views.constructors import ResponseObject
-import json
+import json, uuid
+
+def create_uuid():
+    this_uuid = uuid.uuid4()
+    if Contact.objects.filter(contact_id=this_uuid).exists():
+        return create_uuid()
+    else:
+        return this_uuid
 
 @csrf_exempt
 @login_required
@@ -22,7 +29,8 @@ def contact(request, contact_id=None):
 
             contact = Contact.objects.create(profile=profile,
                                              name=request.POST['name'],
-                                             phone_number=request.POST['phone_number'])
+                                             phone_number=request.POST['phone_number'],
+                                             contact_id=create_uuid())
 
             contact.add_email_address(request.POST['email_address'])
 
@@ -97,32 +105,3 @@ def contact(request, contact_id=None):
         return JsonResponse(response.get_response())
 
     return JsonResponse({'Status':contact_id})
-
-@csrf_exempt
-@login_required
-def message(request, message_id=None):
-    '''
-        If POST and message_id == None:
-            Create new message using post data
-        If GET and message_id is None:
-            Return all messages for this profile
-        If GET and message_id is valid:
-            Return the message
-        If PUT and message_id is valid:
-            Update and append new data to the contact (if updateable message)
-        If DELETE and message_id is valid:
-            Delete message if deletable
-
-    '''
-    return JsonResponse({'Status':message_id})
-
-@login_required
-def notify(request, message_id=None):
-    '''
-        If GET and message_id is None:
-            Notify all the messages for this profile
-        If GET and message_id is valid:
-            Notify only for this message
-
-    '''
-    return JsonResponse({'Status':message_id})
