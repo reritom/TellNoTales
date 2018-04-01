@@ -22,9 +22,10 @@ class Message(models.Model):
     # The user is belongs it
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
-    default_recipients = json.dumps({'contacts':[]})
+    default_recipients = json.dumps({'contacts':[None]})
 
     # Message details
+    message_id = models.CharField(default=str(uuid.uuid4()), max_length=255)
     recipients = models.CharField(default=default_recipients, max_length=10000)
     subject = models.CharField(default=0, max_length=255)
     message = models.CharField(default=0, max_length=10000)
@@ -50,7 +51,7 @@ class Message(models.Model):
 
     def notify(self):
         last_notified = models.DateTimeField(default=timezone.now, null=True)
-        self.save()       
+        self.save()
 
 
 class Contact(models.Model):
@@ -59,17 +60,22 @@ class Contact(models.Model):
     '''
     # The user this contact belongs it
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    contact_id = str(uuid.uuid4())
+    contact_id = models.CharField(default=str(uuid.uuid4()), max_length=255)
 
     default_email_addresses = json.dumps({'email_addresses':[]})
 
     # Contact details
     name = models.CharField(default=0, max_length=255)
-    email_addresses = models.CharField(default=default_email_addresses, max_length=255)
+    email_addresses = models.TextField(default=default_email_addresses, max_length=255)
     phone_number = models.IntegerField(default=0)
 
     def add_email_address(self, email_address):
+        print('Self address: {0}'.format(self.email_addresses))
         current_email_addresses = json.loads(self.email_addresses)
+
+        if email_address in current_email_addresses['email_addresses']:
+            return
+
         current_email_addresses['email_addresses'].append(email_address)
         new_email_addresses = json.dumps(current_email_addresses)
         self.email_addresses = new_email_addresses
@@ -77,7 +83,28 @@ class Contact(models.Model):
 
     def remove_email_address(self, email_address):
         current_email_addresses = json.loads(self.email_addresses)
+
+        if email_address not in current_email_addresses['email_addresses']:
+            return
+            
         current_email_addresses['email_addresses'].remove(email_address)
         new_email_addresses = json.dumps(current_email_addresses)
         self.email_addresses = new_email_addresses
         self.save()
+
+    def rename(self, name):
+        self.name = name
+        self.save()
+
+    def update_number(self, number):
+        self.phone_number = number
+        self.save()
+
+    def get_contact_as_json(self):
+        addresses = json.loads(self.email_addresses)
+        address_list = [address for address in addresses['email_addresses']]
+
+        return {'name': self.name,
+                'email_addresses': address_list,
+                'phone_number': self.phone_number,
+                'contact_id': self.contact_id}

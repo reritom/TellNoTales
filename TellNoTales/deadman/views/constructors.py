@@ -30,4 +30,10 @@ ErrorMapper = {'0000': {'message': 'Unknown error',
                '0003': {'message': 'Unsuccessful login',
                         'suggestion': 'Please check your details and retry'},
                '0004': {'message': 'Unsupported request method',
-                        'suggestion': None}}
+                        'suggestion': None},
+               '0005': {'message': 'Missing parameter in request',
+                        'suggestion': 'Add the key "mode" with either the value "UPDATE" or "REMOVE"'},
+               '0006': {'message': 'Contact ID does not exist',
+                        'suggestion': 'Re-get the ID and try again. You might have deleted this contact'},
+               '0007': {'message': 'Missing parameters',
+                        'suggestion': 'Contact requires "email_address", "name", and "phone_number"'}}

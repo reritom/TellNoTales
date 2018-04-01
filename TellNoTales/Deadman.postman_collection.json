@@ -111,6 +111,190 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Create Contact",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Jack Black",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "phone_number",
+							"value": "097548930",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "email_address",
+							"value": "thero@gmail.com",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/contact",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"contact"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Contacts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/contact",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"contact"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Contact By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/contact/6921e095-1145-44e3-8e6b-7d0548504b88",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"contact",
+						"6921e095-1145-44e3-8e6b-7d0548504b88"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Existing Contact",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email_address",
+							"value": "a_new_address_again@gmail.com",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/contact/08595fe5-e690-4e41-a9d3-38c6ddd987b9",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"contact",
+						"08595fe5-e690-4e41-a9d3-38c6ddd987b9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Existing Contact (Remove)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email_address",
+							"value": "a_new_address_again@gmail.com",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/contact/08595fe5-e690-4e41-a9d3-38c6ddd987b9",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"contact",
+						"08595fe5-e690-4e41-a9d3-38c6ddd987b9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Contact",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/contact/08595fe5-e690-4e41-a9d3-38c6ddd987b9",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"contact",
+						"08595fe5-e690-4e41-a9d3-38c6ddd987b9"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
