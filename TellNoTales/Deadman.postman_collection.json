@@ -395,6 +395,30 @@
 			"response": []
 		},
 		{
+			"name": "Get Message",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/message/38d4786c-8fc7-4a93-9fae-45045318bea4",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"message",
+						"38d4786c-8fc7-4a93-9fae-45045318bea4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Add Contact To Message",
 			"request": {
 				"method": "POST",
@@ -468,6 +492,54 @@
 					"port": "8000",
 					"path": [
 						"message",
+						"2152d20f-a426-402f-bebd-72d5d2798dd8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Notify One Message",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/notify/2152d20f-a426-402f-bebd-72d5d2798dd8",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"notify",
+						"2152d20f-a426-402f-bebd-72d5d2798dd8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Notify All Messages",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/notify/2152d20f-a426-402f-bebd-72d5d2798dd8",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"notify",
 						"2152d20f-a426-402f-bebd-72d5d2798dd8"
 					]
 				}

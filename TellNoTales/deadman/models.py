@@ -68,7 +68,7 @@ class Message(models.Model):
         self.save()
 
     def notify(self):
-        last_notified = models.DateTimeField(default=timezone.now, null=True)
+        self.last_notified = timezone.now()
         self.number_of_notifies = self.number_of_notifies + 1
         self.save()
 
@@ -87,10 +87,8 @@ class Message(models.Model):
         recipients = json.loads(self.recipients)
         recipients_list = recipients['contacts']
 
-        print(type(timezone.now()))
-
-        cutoff_in = (self.created + timedelta(days=int(self.lifespan))) - timezone.now()
-        days_remaining = (self.last_notified + timedelta(days=int(self.cutoff))) - timezone.now()
+        cutoff_in = (self.created + timedelta(days=int(self.cutoff))) - timezone.now()
+        remaining = (self.last_notified + timedelta(days=int(self.lifespan))) - timezone.now()
 
         if not self.viewable:
             message = "This message can't be viewed"
@@ -99,9 +97,9 @@ class Message(models.Model):
 
         json_self = {'subject': self.subject,
                      'message': message,
-                     'notify_within': days_remaining.days,
+                     'notify_within': str(remaining),
                      'recipients': recipients,
-                     'cutoff_in': cutoff_in.days,
+                     'cutoff_in': str(cutoff_in),
                      'message_id': self.message_id}
 
         return json_self
