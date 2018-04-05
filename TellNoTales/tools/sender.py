@@ -1,17 +1,14 @@
 import smtplib
 from email.message import EmailMessage
+from email.mime.text import MIMEText
 
 class GmailSender():
     def __init__(self, gmail_sender, gmail_password):
-        gmail_sender = gmail_sender
-        gmail_password = gmail_password
-
         self.server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
         self.server.login(gmail_sender, gmail_password)
 
     def send(self, subject, message, destination, origin):
-        email_message = EmailMessage()
-        email_message.set_content(message)
+        email_message = MIMEText(message, 'html')
         email_message['Subject'] = subject
         email_message['From'] = origin
         email_message['To'] = destination
@@ -42,6 +39,6 @@ if __name__=='__main__':
 
     with GmailSender(gmail_sender, gmail_password) as sender:
         sender.send(subject='Test again',
-                    message='This is a message',
+                    message='<html><body><h1>This is a message</h1><h4>This is a subheading</h4></body</html>',
                     destination='reikudjinn@gmail.com',
                     origin='tellnotalesnotif@gmail.com')
