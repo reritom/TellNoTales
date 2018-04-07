@@ -20,7 +20,7 @@ class GmailSender():
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        print("Exiting manager")
+        print("Exiting GmailSender")
 
 
 if __name__=='__main__':

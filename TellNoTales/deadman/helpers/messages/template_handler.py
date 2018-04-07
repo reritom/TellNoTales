@@ -3,7 +3,8 @@ import os
 
 class TemplateHandler():
     def __init__(self):
-        self.template_dir = 'templates'
+        path_to_here = os.path.dirname(__file__)
+        self.template_dir = os.path.join(path_to_here, 'templates')
         self.env = Environment(loader=FileSystemLoader(self.template_dir))
         self.available_templates = self.get_html_template_names()
 
@@ -29,6 +30,6 @@ if __name__ == '__main__':
 
     names = handler.get_html_template_names()
     print(names)
-
+    
     rendered = handler.render_template("notify.html", {'var1':1, 'var2':2})
     print(rendered)

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Reminder: You have messages to notify</title>
+  </head>
+  <body>
+    <p>Hello {{ username }}, you need to notify us to prevent your messages from being sent.</p>
+
+    <p>You can notify individual messages with the links below, or you can notify all of them using this: {{ base_notify_url }}</p>
+
+    <ul>
+    {% for message in messages %}
+    <li>
+    <p>Subject: {{message.subject}}</p>
+    <p>Will be sent in: {{message.time_until_sending}} unless you notify us</p>
+    <p>Notify by clicking: {{message.notify_url}}</p>
+    </li>
+    {% endfor %}
+    </ul>
+  </body>
+</html>

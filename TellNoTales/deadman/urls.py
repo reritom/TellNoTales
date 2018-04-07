@@ -1,5 +1,5 @@
 from django.conf.urls import url, include
-from deadman.views.api import contact, message, notify
+from deadman.views.api import contact, message, notify, accounts, verify, daemon
 from deadman.views import views
 
 app_name = 'deadman'
@@ -12,7 +12,9 @@ urlpatterns = [
     url(r'message', message.message, name='message'),
     url(r'notify/(?P<message_id>[-\w]+)', notify.notify, name='notify'),
     url(r'notify', notify.notify, name='notify'),
-    url(r'login', views.login_user, name='login_user'),
-    url(r'signup', views.signup, name='signup'),
-    url(r'logout', views.logout_user, name='logout_user'),
+    url(r'verify/(?P<tracker_id>[-\w]+)', verify.verify, name='verify'),
+    url(r'daemon', daemon.daemon, name='daemon'),
+    url(r'login', accounts.login_user, name='login_user'),
+    url(r'signup', accounts.signup, name='signup'),
+    url(r'logout', accounts.logout_user, name='logout_user'),
 ]

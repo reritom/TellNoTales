@@ -6,5 +6,12 @@
   </head>
   <body>
     {{ var1 }}
+    Hello, you need to notify us, to prevent your message/s from being sent.
+
+    {% for message in messages %}
+    {{message.subject}}
+    {{message.time_until_sending}}
+    {{message.notify_url}}
+    {% endfor %}
   </body>
 </html>

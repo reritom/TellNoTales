@@ -32,6 +32,7 @@ class Message(models.Model):
     subject = models.CharField(default=0, max_length=255)
     message = models.CharField(default=0, max_length=10000)
     last_notified = models.DateTimeField(default=timezone.now, null=True)
+    last_reminder = models.DateTimeField(default=timezone.now, null=True)
     created = models.DateTimeField(default=timezone.now, null=True)
     lifespan = models.IntegerField(default=0)
     cutoff = models.IntegerField(default=0)
@@ -44,6 +45,9 @@ class Message(models.Model):
 
     # Metadata
     number_of_notifies = models.IntegerField(default=0)
+
+    def get_id(self):
+        return self.message_id
 
     def add_recipient(self, contact_id):
         current_recipients = json.loads(self.recipients)
@@ -83,6 +87,10 @@ class Message(models.Model):
     def is_locked(self):
         return self.locked
 
+    def expire(self):
+        self.expired = True
+        self.save()
+
     def as_json(self):
         recipients = json.loads(self.recipients)
         recipients_list = recipients['contacts']
@@ -104,6 +112,34 @@ class Message(models.Model):
 
         return json_self
 
+class Tracker(models.Model):
+    '''
+        Once a message has been distributed, this model keeps track of their verification statuses
+    '''
+    message = models.ForeignKey(Message, on_delete=models.CASCADE)
+    type = models.CharField(default=0, max_length=255)
+    status = models.CharField(default=0, max_length=255)
+    verified = models.BooleanField(default=False)
+
+    def set_status_ok(self):
+        self.status = "OK"
+        self.save()
+
+    def set_status_ko(self):
+        self.status = "KO"
+        self.save()
+
+    def set_verified(self):
+        self.verified = True
+        self.save()
+
+    def set_type_email(self):
+        self.type = "Email"
+        self.save()
+
+    def set_type_text(self):
+        self.type = "Text"
+        self.save()
 
 class Contact(models.Model):
     '''
@@ -158,3 +194,11 @@ class Contact(models.Model):
                 'email_addresses': address_list,
                 'phone_number': self.phone_number,
                 'contact_id': self.contact_id}
+
+class PhoneNumber(models.Model):
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
+    number = models.CharField(default=0, max_length=255)
+
+class EmailAddress(models.Model):
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
+    email = models.CharField(default=0, max_length=255)

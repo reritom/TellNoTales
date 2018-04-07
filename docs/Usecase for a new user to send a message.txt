@@ -1,0 +1,93 @@
+title Usecase: For a new user to send a message
+
+actor Client
+participant Deadman
+participant IawTrigger
+participant DeadmanDaemon
+participant GSMDaemon
+participant GSM
+actor Recipient
+
+
+note over Client, Deadman: The user creates an account
+Client->Deadman: POST /api/signup
+Client<--Deadman: signup status
+
+note over Client, Deadman: The user logs in
+
+Client->Deadman: POST /api/login
+Client<--Deadman: login status
+
+note over Client, Deadman: The user creates two contacts
+
+Client->Deadman: POST /api/contact
+Client<--Deadman: return contact
+
+Client->Deadman: POST /api/contact
+Client<--Deadman: return contact
+
+note over Client, Deadman: The user creates a message with a recipient
+
+Client->Deadman: POST /api/message
+Client<--Deadman: return message
+
+note over Client, Deadman: The user adds another recipient
+
+Client->Deadman: POST /api/message/<message_id>
+Client<--Deadman: return message
+
+loop Every 10 minutes
+note over IawTrigger: Trigger the iaw daemon
+
+IawTrigger->DeadmanDaemon: GET /api/daemon/iaw
+
+DeadmanDaemon->DeadmanDaemon: Check if any messages need notifying
+
+opt Yes
+
+DeadmanDaemon->Client: EMAIL: Reminder
+
+opt User sends a notification
+
+Client->Deadman: GET /api/notify/ or /api/notify/<message_id>
+
+end
+end
+
+DeadmanDaemon->DeadmanDaemon: Get any un-notified messages
+
+loop For each message
+DeadmanDaemon->DeadmanDaemon: Get message and recipients
+
+loop For each recipient of this message
+
+DeadmanDaemon->Recipient: EMAIL: Client message
+
+opt User verifies that they have received the email
+
+Deadman<-Recipient: GET /api/verify/id
+end
+end
+end
+
+DeadmanDaemon->DeadmanDaemon: Publish encrypted message
+
+
+note over GSMDaemon: Retrieve encrypted messages
+
+GSMDaemon->Deadman: GET /api/daemon/gsm
+Deadman-->GSMDaemon: Return encrypted messages
+loop For each message
+
+GSMDaemon->GSMDaemon: Decrypt the message
+GSM<-GSMDaemon: Send message over GSM
+GSM->Recipient: TEXT: Client message
+
+
+opt The User verifies that they have recieved the message by text
+Recipient->Deadman: /GET /api/verify/id
+
+end
+end
+end
+
