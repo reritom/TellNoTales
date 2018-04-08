@@ -34,7 +34,7 @@ def expire_by_cutoff():
         cutoff = message.created + timedelta(days=int(message.cutoff))
         if timezone.now() > cutoff:
             print("Expiring a message")
-            #message.expire()
+            message.expire()
 
 def send_reminders():
     # Filter non-expired messages
@@ -81,16 +81,22 @@ def send_reminders():
                             origin='tellnotalesnotif@gmail.com')
 
                 # Update message last reminder
-                '''
                 for message in messages:
                     message.last_reminder = timezone.now()
                     message.save()
-                '''
 
-    pass
 
 def send_messages():
+    # Filter unexpired messages
+    messages = Message.objects.filter(expired=False)
+
     # Filter unnotified messaged passed their lifespan
+    for message in messages:
+        time_since_last_notify = timezone.now() - message.last_notified
+
+        if time_since_last_notify > timedelta(days=int(message.lifespan))):
+            # The message needs to be sent
+            pass
 
     # Instanciate the email sender
 
@@ -98,7 +104,16 @@ def send_messages():
 
         # Retrieve the contacts
 
-        # Format the message and send it
+        # For each email address
+            # Create a tracker
+            # Format the message
+            # Send message with /verify/tracker_id
+
+        # If there are phone numbers
+            # Encrypt the message
+            # For each phone number
+                # Create tracker
+                # Publish encrypted message with verify/tracker url
 
         # Expire the message
     pass
