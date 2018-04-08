@@ -46,4 +46,6 @@ ErrorMapper = {'0000': {'message': 'Unknown error',
                '0011': {'message': 'Locked message',
                         'suggestion': 'This message cannot be manipulated'},
                '0012': {'message': 'Invalid recipient',
-                        'suggestion': 'The recipient parameter needs to be the contact_id from one of your contacts'}}
+                        'suggestion': 'The recipient parameter needs to be the contact_id from one of your contacts'},
+               '0013': {'message': 'Invalid user',
+                        'suggestion': 'This message doesn\'t belong to the profile trying to notify it'}}

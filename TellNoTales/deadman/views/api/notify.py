@@ -27,10 +27,18 @@ def notify(request, message_id=None):
         elif Message.objects.filter(message_id=message_id).exists():
             # Notify a single message
             message = Message.objects.get(message_id=message_id)
-            message.notify()
 
-            response = ResponseObject(status=True, data={'message':message.as_json()})
-            return JsonResponse(response.get_response())
+            # Check that the message belongs to the profile which is trying to notify it
+            if message.profile == profile:
+                message.notify()
+
+                response = ResponseObject(status=True, data={'message':message.as_json()})
+                return JsonResponse(response.get_response())
+
+            else:
+                # Profile doesn't match that of the message
+                response = ResponseObject(status=False, error_code='0013')
+                return JsonResponse(response.get_response())
 
         else:
             # The message_id doesn't exist

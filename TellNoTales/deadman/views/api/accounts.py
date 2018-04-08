@@ -23,6 +23,9 @@ def signup(request):
 
         user = User.objects.create_user(username=username, email=email, password=password)
 
+        response = ResponseObject(status=True, data={'message':'User account successfully created'})
+        return JsonResponse(response.get_response())
+
     else:
         response = ResponseObject(status=False, error_code='0004')
         return JsonResponse(response.get_response())
