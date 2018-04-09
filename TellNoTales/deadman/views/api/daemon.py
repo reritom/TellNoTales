@@ -52,17 +52,16 @@ def send_reminders():
 
             # Get messages
             for message in messages:
-                time_since_last_reminder = timezone.now() - message.last_reminder
-                time_until_sending = (message.last_notified + timedelta(days=int(message.lifespan))) - timezone.now()
                 message_id = message.get_id()
                 notify_url = '127.0.0.1:8000/notify/' + message_id
 
-                bom['messages'].append({'time_until_sending': time_until_sending,
+                bom['messages'].append({'time_until_sending': message.get_time_until_sending(),
                                         'notify_url': notify_url,
                                         'subject': message.subject})
 
-                print("Time since last reminder {0}".format(time_since_last_reminder))
-                if time_since_last_reminder > timedelta(days=5): # Or (time until sending < 1 day and )
+                print("Time since last reminder {0}".format(message.get_time_since_last_reminder()))
+
+                if message.get_time_since_last_reminder() > timedelta(days=5) or (message.get_time_until_sending() < timedelta(days=2) and message.get_time_since_last_reminder() > timedelta(days=1)):
                     flag = True
 
             print("Bom is {0}".format(bom))
@@ -94,7 +93,7 @@ def send_messages():
     for message in messages:
         time_since_last_notify = timezone.now() - message.last_notified
 
-        if time_since_last_notify > timedelta(days=int(message.lifespan))):
+        if time_since_last_notify > timedelta(days=int(message.lifespan)):
             # The message needs to be sent
             pass
 

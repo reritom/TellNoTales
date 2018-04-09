@@ -127,14 +127,14 @@
 							"type": "text"
 						},
 						{
-							"key": "phone_number",
-							"value": "097548930",
+							"key": "phone_numbers",
+							"value": "['097548930']",
 							"description": "",
 							"type": "text"
 						},
 						{
-							"key": "email_address",
-							"value": "riashu@hotmail.com",
+							"key": "email_addresses",
+							"value": "['riashu@hotmail.com']",
 							"description": "",
 							"type": "text"
 						}
@@ -318,7 +318,7 @@
 						},
 						{
 							"key": "message",
-							"value": "This is a serious message",
+							"value": "Yet another message",
 							"description": "",
 							"type": "text"
 						},
@@ -330,7 +330,7 @@
 						},
 						{
 							"key": "recipient",
-							"value": "254e7ab7-ef28-400a-9a70-49709afdac9a",
+							"value": "80b41d21-d2f6-4b33-ac6a-323935a65183",
 							"description": "",
 							"type": "text"
 						},
@@ -505,7 +505,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://127.0.0.1:8000/notify/f54f37be-37bb-4eb6-a731-3838c3cc49de",
+					"raw": "http://127.0.0.1:8000/notify/81ee240b-6af5-4fe1-8971-ba1b6f37abf1",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -516,7 +516,7 @@
 					"port": "8000",
 					"path": [
 						"notify",
-						"f54f37be-37bb-4eb6-a731-3838c3cc49de"
+						"81ee240b-6af5-4fe1-8971-ba1b6f37abf1"
 					]
 				}
 			},
