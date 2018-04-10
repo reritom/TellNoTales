@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, QueryDict
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from deadman.models import Contact, Message, Profile
+from deadman.models import Contact, Message, Profile, Recipient
 
+from deadman.helpers.model_tools import get_message
 from deadman.views.constructors import ResponseObject
 import json, uuid
 
@@ -29,6 +30,13 @@ def message(request, message_id=None):
                 response = ResponseObject(status=False, error_code='0010')
                 return JsonResponse(response.get_response())
 
+            if not Contact.objects.filter(contact_id=request.POST['recipient']).exists():
+                # Invalid contact_id
+                response = ResponseObject(status=False, error_code='0012')
+                return JsonResponse(response.get_response())
+
+            contact = Contact.objects.get(contact_id=request.POST['recipient'])
+
             message = Message.objects.create(profile=profile,
                                              subject=request.POST['subject'],
                                              message=request.POST['message'],
@@ -36,13 +44,7 @@ def message(request, message_id=None):
                                              cutoff=request.POST['cutoff'],
                                              message_id=create_uuid())
 
-
-            if not Contact.objects.filter(contact_id=request.POST['recipient']).exists():
-                # Invalid contact_id
-                response = ResponseObject(status=False, error_code='0012')
-                return JsonResponse(response.get_response())
-
-            message.add_recipient(request.POST['recipient'])
+            recipient = Recipient.objects.get_or_create(contact=contact, message=message)
 
             if 'viewable' in request.POST:
                 message.set_viewable(True if request.POST['viewable'].lower() == 'true' else False)
@@ -50,7 +52,7 @@ def message(request, message_id=None):
             if 'deletable' in request.POST:
                 message.set_deletable(True if request.POST['deletable'].lower() == 'true' else False)
 
-            response = ResponseObject(status=True, data={'message':message.as_json()})
+            response = ResponseObject(status=True, data={'message':get_message(message)})
             return JsonResponse(response.get_response())
 
         elif Message.objects.filter(message_id=message_id).exists():
@@ -74,14 +76,17 @@ def message(request, message_id=None):
                     response = ResponseObject(status=False, error_code='0012')
                     return JsonResponse(response.get_response())
 
+            contact = Contact.objects.get(contact_id=request.POST['recipient'])
+
             if mode == 'UPDATE':
-                message.add_recipient(request.POST['recipient'])
+                recipient = Recipient.objects.get_or_create(contact=contact, message=message)
 
             elif mode == 'REMOVE':
-                message.remove_recipient(request.POST['recipient'])
+                if Recipient.objects.filter(contact=contact, message=message).exists():
+                    Recipient.objects.filter(contact=contact, message=message).delete()
 
 
-            response = ResponseObject(status=True, data={'message':message.as_json()})
+            response = ResponseObject(status=True, data={'message':get_message(message)})
             return JsonResponse(response.get_response())
 
         else:
@@ -95,7 +100,7 @@ def message(request, message_id=None):
             # Return all contacts for this profile
             messages = Message.objects.filter(profile=profile)
 
-            list_of_messages = [message.as_json() for message in messages]
+            list_of_messages = [get_message(message) for message in messages]
 
             response = ResponseObject(status=True, data={'messages':list_of_messages})
             return JsonResponse(response.get_response())
@@ -103,7 +108,7 @@ def message(request, message_id=None):
         elif Message.objects.filter(message_id=message_id).exists():
             # Return the message
             message = Message.objects.get(message_id=message_id)
-            response = ResponseObject(status=True, data={'message':message.as_json()})
+            response = ResponseObject(status=True, data={'message':get_message(message)})
             return JsonResponse(response.get_response())
 
         else:

@@ -71,12 +71,12 @@ def contact(request, contact_id=None):
 
             elif 'mode' in request.POST and request.POST['mode'] == 'REMOVE':
                 if 'email_address' in request.POST:
-                    EmailAddress.objects.filter(email=request.POST['email_address'], contact=contact).exists()
-                    EmailAddress.objects.filter(email=request.POST['email_address'], contact=contact).delete()
+                    if EmailAddress.objects.filter(email=request.POST['email_address'], contact=contact).exists():
+                        EmailAddress.objects.filter(email=request.POST['email_address'], contact=contact).delete()
 
                 if 'phone_number' in request.POST:
-                    PhoneNumber.objects.filter(number=request.POST['phone_number'], contact=contact).exists()
-                    PhoneNumber.objects.filter(number=request.POST['phone_number'], contact=contact).delete()
+                    if PhoneNumber.objects.filter(number=request.POST['phone_number'], contact=contact).exists():
+                        PhoneNumber.objects.filter(number=request.POST['phone_number'], contact=contact).delete()
 
                 response = ResponseObject(status=True, data={'contact':get_contact(contact)})
                 return JsonResponse(response.get_response())

@@ -24,11 +24,8 @@ class Message(models.Model):
     # The user is belongs it
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
-    default_recipients = json.dumps({'contacts':[]})
-
     # Message details
     message_id = models.CharField(default=str(uuid.uuid4()), max_length=255, unique=True)
-    recipients = models.CharField(default=default_recipients, max_length=10000)
     subject = models.CharField(default=0, max_length=255)
     message = models.CharField(default=0, max_length=10000)
     last_notified = models.DateTimeField(default=timezone.now, null=True)
@@ -55,28 +52,6 @@ class Message(models.Model):
     def get_id(self):
         return self.message_id
 
-    def add_recipient(self, contact_id):
-        current_recipients = json.loads(self.recipients)
-
-        if contact_id in current_recipients['contacts']:
-            return
-
-        current_recipients['contacts'].append(contact_id)
-        new_recipients = json.dumps(current_recipients)
-        self.recipients = new_recipients
-        self.save()
-
-    def remove_recipient(self, contact_id):
-        current_recipients = json.loads(self.recipients)
-
-        if contact_id not in current_recipients['contacts']:
-            return
-
-        current_recipients['contacts'].remove(contact_id)
-        new_recipients = json.dumps(current_recipients)
-        self.recipients = new_recipients
-        self.save()
-
     def notify(self):
         self.last_notified = timezone.now()
         self.number_of_notifies = self.number_of_notifies + 1
@@ -97,26 +72,12 @@ class Message(models.Model):
         self.expired = True
         self.save()
 
-    def as_json(self):
-        recipients = json.loads(self.recipients)
-        recipients_list = recipients['contacts']
+    def cutoff_in(self):
+        return (self.created + timedelta(days=int(self.cutoff))) - timezone.now()
 
-        cutoff_in = (self.created + timedelta(days=int(self.cutoff))) - timezone.now()
-        remaining = (self.last_notified + timedelta(days=int(self.lifespan))) - timezone.now()
+    def sending_in(self):
+        return (self.last_notified + timedelta(days=int(self.lifespan))) - timezone.now()
 
-        if not self.viewable:
-            message = "This message can't be viewed"
-        else:
-            message = self.message
-
-        json_self = {'subject': self.subject,
-                     'message': message,
-                     'notify_within': str(remaining),
-                     'recipients': recipients,
-                     'cutoff_in': str(cutoff_in),
-                     'message_id': self.message_id}
-
-        return json_self
 
 class Tracker(models.Model):
     '''
@@ -162,6 +123,12 @@ class Contact(models.Model):
         self.name = name
         self.save()
 
+class Recipient(models.Model):
+    '''
+        A model represents the link between between a message and a contact
+    '''
+    message = models.ForeignKey(Message, on_delete=models.CASCADE)
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
 
 class PhoneNumber(models.Model):
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
