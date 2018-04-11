@@ -1,4 +1,4 @@
-from deadman.models import Contact, Message, Profile, EmailAddress, PhoneNumber, Recipient
+from deadman.models import Contact, Message, Profile, EmailAddress, PhoneNumber, Recipient, Tracker
 
 
 def get_contact(contact):
@@ -31,7 +31,6 @@ def get_message(message):
         message_string = message.message
 
     recipients = Recipient.objects.filter(message=message)
-    print(recipients)
     recipients_list = [recipient.contact.contact_id for recipient in recipients]
 
     message_representation = {'subject': message.subject,
@@ -40,5 +39,19 @@ def get_message(message):
                               'recipients': recipients_list,
                               'cutoff_in': str(message.cutoff_in()),
                               'message_id': message.message_id}
+
+    if message.delivered:
+        message_representation['delivery_status'] = {}
+
+        recipients = Recipient.objects.filter(message=message)
+        for recipient in recipients:
+            message_representation['delivery_status'][recipient.contact.name] = []
+            trackers = Tracker.objects.filter(recipient=recipient)
+            for tracker in trackers:
+                message_representation['delivery_status'][recipient.contact.name].append({'identifier':tracker.identifier,
+                                                                                          'delivery_status': tracker.status,
+                                                                                          'delivery_verified': tracker.verified})
+
+
 
     return message_representation

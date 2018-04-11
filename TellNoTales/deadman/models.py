@@ -16,6 +16,8 @@ class Profile(models.Model):
     '''
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.user.username
 
 class Message(models.Model):
     '''
@@ -34,6 +36,7 @@ class Message(models.Model):
     lifespan = models.IntegerField(default=0)
     cutoff = models.IntegerField(default=0)
     expired = models.BooleanField(default=False)
+    delivered = models.BooleanField(default=False)
 
     # Properties for accessing the message
     viewable = models.BooleanField(default=True)
@@ -42,6 +45,10 @@ class Message(models.Model):
 
     # Metadata
     number_of_notifies = models.IntegerField(default=0)
+
+    def delivered(self):
+        self.delivered = True
+        self.expire()
 
     def get_time_until_sending(self):
         return (self.last_notified + timedelta(days=int(self.lifespan))) - timezone.now()
@@ -78,15 +85,57 @@ class Message(models.Model):
     def sending_in(self):
         return (self.last_notified + timedelta(days=int(self.lifespan))) - timezone.now()
 
+    def __str__(self):
+        return self.subject
+
+class Contact(models.Model):
+    '''
+        A contact belongs to a profile, and is used as a recipient for a message
+    '''
+    # The user this contact belongs it
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    contact_id = models.CharField(default=str(uuid.uuid4()), max_length=255, unique=True)
+
+    # Contact details
+    name = models.CharField(default=0, max_length=255)
+
+    def rename(self, name):
+        self.name = name
+        self.save()
+
+    def __str__(self):
+        return self.name
+
+class Recipient(models.Model):
+    '''
+        A model represents the link between between a message and a contact
+    '''
+    recipient_id = models.CharField(default=0, max_length=255)
+
+    message = models.ForeignKey(Message, on_delete=models.CASCADE)
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.message.subject + ":" + self.contact.name
 
 class Tracker(models.Model):
     '''
         Once a message has been distributed, this model keeps track of their verification statuses
     '''
-    message = models.ForeignKey(Message, on_delete=models.CASCADE)
+    tracker_id = models.CharField(default=0, max_length=255)
+
+    recipient = models.ForeignKey(Recipient, on_delete=models.CASCADE)
     type = models.CharField(default=0, max_length=255)
+    identifier = models.CharField(default=0, max_length=255)
     status = models.CharField(default=0, max_length=255)
     verified = models.BooleanField(default=False)
+
+    def get_id(self):
+        return self.tracker_id
+
+    def set_identifier(self, identifier):
+        self.identifier = identifier
+        self.save()
 
     def set_status_ok(self):
         self.status = "OK"
@@ -108,32 +157,17 @@ class Tracker(models.Model):
         self.type = "Text"
         self.save()
 
-class Contact(models.Model):
-    '''
-        A contact belongs to a profile, and is used as a recipient for a message
-    '''
-    # The user this contact belongs it
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    contact_id = models.CharField(default=str(uuid.uuid4()), max_length=255, unique=True)
-
-    # Contact details
-    name = models.CharField(default=0, max_length=255)
-
-    def rename(self, name):
-        self.name = name
-        self.save()
-
-class Recipient(models.Model):
-    '''
-        A model represents the link between between a message and a contact
-    '''
-    message = models.ForeignKey(Message, on_delete=models.CASCADE)
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
 
 class PhoneNumber(models.Model):
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
     number = models.CharField(default=0, max_length=255)
 
+    def __str__(self):
+        return self.contact.name + ':' + self.number
+
 class EmailAddress(models.Model):
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
     email = models.CharField(default=0, max_length=255)
+
+    def __str__(self):
+        return self.contact.name + ':' + self.email

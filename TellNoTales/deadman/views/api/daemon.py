@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
-from deadman.models import Contact, Message, Profile, Tracker
+from deadman.models import Contact, Message, Profile, Tracker, Recipient, EmailAddress, PhoneNumber
 from django.utils import timezone
 from datetime import timedelta
 
@@ -13,6 +13,13 @@ import json, uuid, os
 
 global gmail_sender
 global gmail_password
+
+def create_tracker_uuid():
+    this_uuid = uuid.uuid4()
+    if Tracker.objects.filter(tracker_id=this_uuid).exists():
+        return create_tracker_uuid()
+    else:
+        return this_uuid
 
 def daemon(request):
     load_config()
@@ -86,6 +93,7 @@ def send_reminders():
 
 
 def send_messages():
+    print("In send_messages")
     # Filter unexpired messages
     messages = Message.objects.filter(expired=False)
 
@@ -94,28 +102,55 @@ def send_messages():
         time_since_last_notify = timezone.now() - message.last_notified
 
         if time_since_last_notify > timedelta(days=int(message.lifespan)):
+            print("Message {0} has passed its lifespan".format(message.get_id()))
             # The message needs to be sent
-            pass
 
-    # Instanciate the email sender
+            # Get the recipients
+            recipients = Recipient.objects.filter(message=message)
+            print("It has {0} recipients".format(len(recipients)))
 
-    # For each message
+            # For each contact
+            for recipient in recipients:
+                email_addresses = EmailAddress.objects.filter(contact=recipient.contact)
+                print("This recipient has {0} email addresses".format(len(email_addresses)))
 
-        # Retrieve the contacts
+                with GmailSender(gmail_sender, gmail_password) as sender:
+                    # For each email address
+                    for email_address in email_addresses:
+                        # Create a tracker
+                        tracker = Tracker.objects.create(recipient=recipient, tracker_id=create_tracker_uuid())
+                        tracker.set_type_email()
+                        tracker.set_identifier(email_address.email)
 
-        # For each email address
-            # Create a tracker
-            # Format the message
-            # Send message with /verify/tracker_id
+                        bom = {'subject': message.subject,
+                               'message': message.message,
+                               'tracker_url': '127.0.0.1:8000/verify/' + str(tracker.get_id())}
 
-        # If there are phone numbers
-            # Encrypt the message
-            # For each phone number
-                # Create tracker
-                # Publish encrypted message with verify/tracker url
+                        # Format the message
+                        handler = TemplateHandler()
+                        rendered = handler.render_template("message.html", bom)
 
-        # Expire the message
-    pass
+                        print("Rendered message is {0}".format(rendered))
+
+                        try:
+                            sender.send(subject=message.subject,
+                                        message=rendered,
+                                        destination=email_address.email,
+                                        origin='tellnotalesnotif@gmail.com')
+
+                            tracker.set_status_ok()
+                        except:
+                            tracker.set_status_ko()
+
+                phone_numbers = PhoneNumber.objects.filter(contact=recipient.contact)
+                # If there are phone numbers
+                    # Encrypt the message
+                    # For each phone number
+                        # Create tracker
+                        # Publish encrypted message with verify/tracker url
+
+            # Expire the message
+            message.delivered()
 
 def load_config():
     # Load a the email and password from a file outside of the repo
