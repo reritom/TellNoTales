@@ -1,19 +1,77 @@
 Vue.component('single-message', {
   props: ['messagedata'],
-  template: '<div><h3>This is a single message with subject {{messagedata.subject}}</h3><p>And message {{messagedata.message}}</p></div>'
+  template: `<div>
+              <h3>This is a single message with subject {{messagedata.subject}}</h3>
+              <p>And message {{messagedata.message}}</p>
+            </div>`
 })
 
 Vue.component('message-group', {
   props: ['messagelist'],
-  template: '<div><div v-for="amessage in messagelist"><single-message :messagedata="amessage"></single-message></div></div>'
+  template: `<div>
+              <div v-for="amessage in messagelist">
+                <single-message :messagedata="amessage"></single-message>
+              </div>
+            </div>`
+})
+
+Vue.component('search-messages', {
+  props: ['noneyet'],
+  template: `<div>Message search bar here</div>`
+})
+
+Vue.component('new-message', {
+  props: ['noneyet'],
+  template: `<div>New message component here</div>`
+})
+
+Vue.component('message-tab', {
+  props: ['messages'],
+  template: `<div>
+              <search-messages></search-messages>
+              <new-message></new-message>
+              <message-group :messagelist="messages"></message-group>
+            </div>`
 })
 
 Vue.component('single-contact', {
   props: ['contactdata'],
-  template: '<div><h3>This is a single contact with name {{contactdata.name}}</h3><p>And email addresses {{contactdata.email_addresses}}</p></div>'
+  template: `<div>
+              <h3>This is a single contact with name {{contactdata.name}}</h3>
+              <p>And email addresses {{contactdata.email_addresses}}</p>
+            </div>`
 })
 
-// Create a contact-group component
+Vue.component('contact-group', {
+  props: ['contactlist'],
+  template: `<div>
+              <div v-if="contactlist[0]">
+                <div v-for="acontact in contactlist">
+                  <single-contact :contactdata="acontact"></single-contact>
+                </div>
+              </div>
+              <div v-else>You have no contacts</div>
+            </div>`
+})
+
+Vue.component('search-contacts', {
+  props: ['noneyet'],
+  template: `<div>Search bar for contacts be this</div>`
+})
+
+Vue.component('new-contact', {
+  props: ['noneyet'],
+  template: `<div>New contact component here</div>`
+})
+
+Vue.component('contact-tab', {
+  props: ['contacts'],
+  template: `<div>
+              <search-contacts></search-contacts>
+              <new-contact></new-contact>
+              <contact-group :contactlist="contacts"></contact-group>
+            </div>`
+})
 // New message component
 // New contact component
 

@@ -32,9 +32,7 @@
 
       <div id="ContactsView" v-if="view==='contacts'">
         <button class="btn btn-info" v-on:click="getContacts()">Contacts</button>
-        <div v-for="contact in contacts" :key="contact.contact_id">
-          <single-contact :contactdata="contact"></single-contact>
-        </div>
+          <contact-tab :contacts='contacts'></contact-tab>
       </div>
 
       <div id="SettingsView" v-if="view==='settings'">
@@ -43,7 +41,7 @@
 
       <div id="MessageView" v-if="view==='messages'">
         <button class="btn btn-info" v-on:click="getMessages()">Messages</button>
-        <message-group :messagelist="messages"></message-group>
+        <message-tab :messages="messages"></message-tab>
       </div>
 
       <div class="loading" v-if="loading===true">Loading&#8230;</div>
