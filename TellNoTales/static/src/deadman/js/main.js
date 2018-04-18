@@ -17,7 +17,20 @@ Vue.component('message-group', {
 
 Vue.component('search-messages', {
   props: ['noneyet'],
-  template: `<div>Message search bar here</div>`
+  data: function () {
+    return {
+      message: ""
+    }
+  },
+  template: `<div>
+              <div>Message search bar here</div>
+              <input @input="broadcastSearch($event.target.value)" placeholder="edit me">
+            </div>`,
+  methods: { broadcastSearch(value) {
+    this.message = value;
+    this.$emit('search', value);
+    //console.log(value);
+  }}
 })
 
 Vue.component('new-message', {
@@ -27,11 +40,20 @@ Vue.component('new-message', {
 
 Vue.component('message-tab', {
   props: ['messages'],
+  data: function () {
+    return {
+      search_key: ""
+    }
+  },
   template: `<div>
-              <search-messages></search-messages>
+              <search-messages v-on:search="search_key = $event"></search-messages>
               <new-message></new-message>
-              <message-group :messagelist="messages"></message-group>
-            </div>`
+              <message-group :messagelist="filtered_messages"></message-group>
+              <p>search key is {{this.search_key}}</p>
+            </div>`,
+  computed: {filtered_messages: function() {
+    return this.messages
+  }}
 })
 
 Vue.component('single-contact', {
