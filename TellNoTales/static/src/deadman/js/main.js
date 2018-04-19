@@ -7,15 +7,52 @@ Vue.component('single-message', {
 })
 
 Vue.component('message-group', {
-  props: ['messagelist'],
+  // message list is the potentially filtered message list.
+  // filtered is a boolean saying whether the list is filtered or not
+  props: ['messagelist', 'filtered'],
   template: `<div>
-              <div v-for="amessage in messagelist">
-                <single-message :messagedata="amessage"></single-message>
+              <div v-if="not_empty">
+                <div v-for="amessage in messagelist">
+                  <single-message :messagedata="amessage"></single-message>
+                </div>
               </div>
-            </div>`
+              <div v-if="empty_filtered">
+                <p>No messages fit this search criteria</p>
+              </div>
+              <div v-if="empty_not_filtered">
+                <p>You have no message history</p>
+              </div>
+            </div>`,
+  computed:{
+    not_empty: function() {
+      if (this.messagelist.length) {
+        return true
+      }
+      else {
+        return false
+      }
+    },
+    empty_filtered: function() {
+      if (!this.messagelist.length && this.filtered){
+        return true
+      }
+      else {
+        return false
+      }
+    },
+    empty_not_filtered: function() {
+      if (!this.messagelist.length && !this.filtered) {
+        return true
+      }
+      else {
+        return false
+      }
+    }
+    }
 })
 
 Vue.component('search-messages', {
+  // A search bar which emits the value of the search
   props: ['noneyet'],
   data: function () {
     return {
@@ -39,21 +76,50 @@ Vue.component('new-message', {
 })
 
 Vue.component('message-tab', {
+  // We capture the search key from the search bar, and use it to filter the messages.
+  // The message group receives the filtered list and an indicator to say whether it has been filtered.
+  // TODO - If a new message is made, the new message component handles the api request and then emits a
+  // .. signal to here saying to re-request the message list.
   props: ['messages'],
   data: function () {
     return {
-      search_key: ""
+      search_key: "",
+      filtered: false
     }
   },
   template: `<div>
               <search-messages v-on:search="search_key = $event"></search-messages>
               <new-message></new-message>
-              <message-group :messagelist="filtered_messages"></message-group>
-              <p>search key is {{this.search_key}}</p>
+              <message-group :messagelist="filtered_messages" :filtered="filtered"></message-group>
+              <p>search key is {{this.search_key}}, </p>
             </div>`,
   computed: {filtered_messages: function() {
-    return this.messages
-  }}
+    // Check to see if search string isn't empty
+    if (this.search_key === ""){
+      this.filtered = false;
+      return this.messages
+    }
+
+    this.filtered = true;
+    var filtered = [];
+    // for each message
+    for (var i = 0; i < this.messages.length; i++) {
+        // see if the search key exists in any of the searchable elements
+        if (this.messages[i].subject.includes(this.search_key.toLowerCase())){
+          filtered.push(this.messages[i]);
+        }
+        else if (this.messages[i].message.includes(this.search_key.toLowerCase())){
+          filtered.push(this.messages[i]);
+        }
+        else {
+          continue;
+        }
+        console.log(this.messages[i].subject);
+    };
+    return filtered
+  }
+  // created: call method to get messages
+}
 })
 
 Vue.component('single-contact', {
