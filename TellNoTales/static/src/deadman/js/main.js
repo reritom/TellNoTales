@@ -72,7 +72,57 @@ Vue.component('search-messages', {
 
 Vue.component('new-message', {
   props: ['noneyet'],
-  template: `<div>New message component here</div>`
+  data: function () {
+    return {
+      clicked: false,
+      loading: false,
+      contact_search: "",
+      contact_focus: false,
+      selected_contacts: [],
+      available_contacts: []
+      }
+  },
+  template: `<div>
+              <p v-on:click="clicked = !clicked">Create new message</p>
+              <div v-if="clicked">
+                <p>New message component here</p>
+                <div v-for="contact in selected_contacts">
+                  <p>List of selected contacts {{ contact.name }}</p>
+                </div>
+                <input @focus="contact_focus = true" @blur="contact_focus = false" v-model="contact_search" v-on:keyup.enter="onContactEnter" placeholder="Choose a contact or group">
+                <p v-if="contact_focus" >There are {{ available_contacts.length }} contacts to choose from</p>
+              </div>
+              <div v-else>
+                <p>Not clicked</p>
+              </div>
+              <div v-if="loading">
+                <p>Am loading</p>
+              </div>
+            </div>`,
+  created: function() {
+    // Retrieve the contact list
+    this.getContacts();
+  },
+  methods: {
+    getContacts: function() {
+      this.loading = true;
+      this.$http.get('/api/contact/')
+          .then((response) => {
+          this.available_contacts = response.data.data.contacts;
+          this.loading = false;
+          })
+          .catch((err) => {
+           this.loading = false;
+           console.log(err);
+          })
+    },
+    onContactEnter: function() {
+      // Get the top of the available list, pop it, and add it to the selected list
+      this.selected_contacts.push(this.available_contacts[0])
+      this.available_contacts.shift()
+    }
+  },
+  computed: {filtered_contacts: function() {}}
 })
 
 Vue.component('message-tab', {
