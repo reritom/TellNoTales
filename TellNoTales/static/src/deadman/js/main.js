@@ -1,8 +1,9 @@
 Vue.component('single-message', {
   props: ['messagedata'],
   template: `<div>
-              <h3>This is a single message with subject {{messagedata.subject}}</h3>
-              <p>And message {{messagedata.message}}</p>
+              <p>subject: {{messagedata.subject}}</p>
+              <p>message: {{messagedata.message}}</p>
+              <p>recipients: {{ messagedata.recipients}}</p>
             </div>`
 })
 
@@ -12,9 +13,11 @@ Vue.component('message-group', {
   props: ['messagelist', 'filtered'],
   template: `<div>
               <div v-if="not_empty">
-                <div v-for="amessage in messagelist">
-                  <single-message :messagedata="amessage"></single-message>
-                </div>
+                <ul>
+                  <li v-for="amessage in messagelist">
+                    <single-message :messagedata="amessage"></single-message>
+                  </li>
+                </ul>
               </div>
               <div v-if="empty_filtered">
                 <p>No messages fit this search criteria</p>
@@ -60,8 +63,7 @@ Vue.component('search-messages', {
     }
   },
   template: `<div>
-              <div>Message search bar here</div>
-              <input @input="broadcastSearch($event.target.value)" placeholder="edit me">
+              <input @input="broadcastSearch($event.target.value)" placeholder="Search messages">
             </div>`,
   methods: { broadcastSearch(value) {
     this.message = value;
@@ -78,19 +80,89 @@ Vue.component('new-message', {
       loading: false,
       contact_search: "",
       contact_focus: false,
+      selection_clicked: false,
+      available_contacts: [],
       selected_contacts: [],
-      available_contacts: []
+      the_message: "",
+      the_subject: "",
+      cutoff: "10",
+      lifespan: "5",
+      deletable: true,
+      locked: false,
+      viewable: true,
+      warnings: [],
+      create_success: false,
+      message_id: ""
       }
   },
   template: `<div>
               <p v-on:click="clicked = !clicked">Create new message</p>
+
+              <div v-if="create_success" class="alert alert-success alert-dismissible fade show" role="alert">
+                <p>Your message has been create</p>
+                <button @click="create_success = true" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
               <div v-if="clicked">
                 <p>New message component here</p>
-                <div v-for="contact in selected_contacts">
-                  <p>List of selected contacts {{ contact.name }}</p>
+
+                <!-- Warnings -->
+                <div v-for="warning in warnings" class="alert alert-warning alert-dismissible fade show" role="alert">
+                  <strong>Uhoh</strong> {{ warning }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
                 </div>
-                <input @focus="contact_focus = true" @blur="contact_focus = false" v-model="contact_search" v-on:keyup.enter="onContactEnter" placeholder="Choose a contact or group">
-                <p v-if="contact_focus" >There are {{ available_contacts.length }} contacts to choose from</p>
+
+                <!-- Contact selection -->
+                <div v-for="contact, index in selected_contacts">
+                  <p>List of selected contacts {{ contact.name }}</p>
+                  <p @click="removeFromSelectedContacts(index)">Click me to remove from the selected</p>
+                </div>
+                <div >
+                  <input ref="contact_search_box" @focus="contact_focus = true" v-model="contact_search" v-on:keyup.enter="onContactEnter" v-on:keyup.tab="contact_focus = false" :placeholder="contact_placeholder">
+                  <div v-if="contact_focus">
+                    <div v-for="available, index in available_contacts">
+                      <p @click="selectionClicked(index)"> {{available.name}} </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Subject header -->
+                <div>
+                  <input ref="subject_input" @focus="contact_focus = false" v-model="the_subject" placeholder="Your subject">
+                </div>
+
+                <!-- The message -->
+                <div>
+                  <textarea v-model="the_message" placeholder="Your message"></textarea>
+                </div>
+
+                <!-- Viewable -->
+                <input type="radio" id="viewable_true" value="true" v-model="viewable">
+                <label for="viewable_true">Viewable</label>
+                <input type="radio" id="viewable_false" value="false" v-model="viewable">
+                <label for="viewable_false">Hidden</label>
+                <br>
+
+                <!-- Deletable -->
+                <input type="radio" id="deletable_true" value="true" v-model="deletable">
+                <label for="deletable_true">Deletable</label>
+                <input type="radio" id="deletable_false" value="false" v-model="deletable">
+                <label for="deletable_false">Undeletable</label>
+                <br>
+
+                <!-- Locked -->
+                <input type="radio" id="locked_false" value="true" v-model="viewable">
+                <label for="locked_false">Unlocked</label>
+                <input type="radio" id="locked_true" value="false" v-model="viewable">
+                <label for="locked_true">Locked</label>
+                <br>
+
+                <button @click="createMessage">Create</button>
+
               </div>
               <div v-else>
                 <p>Not clicked</p>
@@ -104,6 +176,120 @@ Vue.component('new-message', {
     this.getContacts();
   },
   methods: {
+    sendMessageAddRecipient(contact_id){
+      var form = new FormData();
+      form.append("recipient", contact_id);
+      form.append("mode", "UPDATE");
+      console.log("Url is /api/message/" + this.message_id);
+      this.loading = true;
+      this.$http.post('/api/message/' + this.message_id, form)
+          .then((response) => {
+            console.log(response.data);
+            var reply_status = response.data.status;
+            this.loading = false;
+
+            if (reply_status){
+              console.log("Status KO for adding recipient");
+              return true
+              }
+            else {
+              return false
+            }
+          })
+          .catch((err) => {
+           this.loading = false;
+           console.log(err);
+           return false
+          })
+
+    },
+    sendMessage: function(form) {
+        console.log("In send message promise");
+        this.loading = true;
+        this.$http.post('/api/message/', form)
+            .then((response) => {
+              console.log(response.data)
+              var reply_status = response.data.status;
+              this.loading = false;
+              console.log("Reply status is ");
+              console.log(reply_status);
+
+              if (reply_status){
+                  console.log("Returning true")
+                  console.log(response.data.data.message.message_id);
+                  this.message_id = response.data.data.message.message_id;
+                  console.log(this.message_id);
+
+                  console.log("For remaining recipients");
+                  for (var i=0; i<this.selected_contacts.length; i++){
+                      console.log(i);
+                      this.sendMessageAddRecipient(this.selected_contacts[i].contact_id);
+                    }
+                }
+              else {
+                console.log("Reply status KO");
+              }
+            })
+            .catch((err) => {
+               this.loading = false;
+               console.log(err);
+              })
+
+          },
+    createMessage: function() {
+      if (this.validateMessage()) {
+        // API LIMITATION. ONLY 1 CONTACT IN CREATE_MESSAGE, the others need to be added in seperate requests
+
+        console.log(this.selected_contacts[0].contact_id);
+
+        //Construct the form
+        var form = new FormData();
+        form.append("subject", this.the_subject);
+        form.append("message", this.the_message);
+        form.append("recipient", this.selected_contacts[0].contact_id);
+        this.selected_contacts.shift();
+        form.append("viewable", this.viewable);
+        form.append("deletable", this.deletable);
+        form.append("locked", this.locked);
+        form.append("lifespan", this.lifespan);
+        form.append("cutoff", this.cutoff);
+
+        //Send message
+        console.log("Creating a message");
+        this.sendMessage(form)
+
+        // Alert that it has been made successfully
+        this.create_success = true;
+
+        //Close the new message tab
+        this.clicked = false;
+      }
+      else {
+        //Error message
+        console.log("Not sending message, invalid");
+      }
+    },
+    validateMessage: function() {
+      this.warnings = [];
+      var flag = true;
+
+      if (!this.the_subject.length){
+        flag = false;
+        this.warnings.push("Subject is empty");
+      }
+      if (!this.the_message.length){
+        flag = false;
+        this.warnings.push("Message is empty");
+      }
+      if (!this.selected_contacts.length){
+        flag = false;
+        this.warnings.push("You haven't selected any contacts");
+      }
+       console.log("Message validated as ");
+       console.log(flag);
+
+      return flag
+    },
     getContacts: function() {
       this.loading = true;
       this.$http.get('/api/contact/')
@@ -117,12 +303,54 @@ Vue.component('new-message', {
           })
     },
     onContactEnter: function() {
+      // If there are available_contacts
       // Get the top of the available list, pop it, and add it to the selected list
-      this.selected_contacts.push(this.available_contacts[0])
-      this.available_contacts.shift()
+      if (this.available_contacts.length > 0) {
+        this.selected_contacts.push(this.available_contacts[0]);
+        this.available_contacts.shift();
+      }
+      else {
+        // Else, focus on the next input
+        this.$refs.subject_input.focus();
+      }
+    },
+    selectionClicked: function(index) {
+      this.selected_contacts.push(this.available_contacts[index]);
+      this.available_contacts.shift();
+      this.selection_clicked = true;
+       // Refocus on the input box
+       this.$refs.contact_search_box.focus();
+    },
+    checkFocus: function() {
+      // Called when input goes out of focus.
+      // If a suggestion was clicked, keep the list in focus
+      // else, hide the list
+      if (this.selection_clicked === true) {
+        console.log("Selection was clicked");
+        this.selection_clicked = false;
+        this.contact_focus = true;
+      }
+      else {
+        console.log("Something else was clicked");
+        this.contact_focus = false;
+      }
+
+    },
+    removeFromSelectedContacts: function(index) {
+      // Remove from selected, and add to available
+      this.available_contacts.push(this.selected_contacts[index]);
+      Vue.delete(this.selected_contacts, index);
     }
   },
-  computed: {filtered_contacts: function() {}}
+  computed: {filtered_contacts: function() {},
+            contact_placeholder: function() {
+              if (this.selected_contacts.length > 0) {
+                return "Add another contact"
+              }
+              else {
+                return "Add some contacts"
+              }
+            }}
 })
 
 Vue.component('message-tab', {
@@ -130,18 +358,18 @@ Vue.component('message-tab', {
   // The message group receives the filtered list and an indicator to say whether it has been filtered.
   // TODO - If a new message is made, the new message component handles the api request and then emits a
   // .. signal to here saying to re-request the message list.
-  props: ['messages'],
+  //props: ['messages'],
   data: function () {
     return {
       search_key: "",
-      filtered: false
+      filtered: false,
+      messages: []
     }
   },
   template: `<div>
               <search-messages v-on:search="search_key = $event"></search-messages>
               <new-message></new-message>
               <message-group :messagelist="filtered_messages" :filtered="filtered"></message-group>
-              <p>search key is {{this.search_key}}, </p>
             </div>`,
   computed: {filtered_messages: function() {
     // Check to see if search string isn't empty
@@ -164,30 +392,48 @@ Vue.component('message-tab', {
         else {
           continue;
         }
-        console.log(this.messages[i].subject);
     };
     return filtered
+  }},
+  methods: {
+    getMessages: function() {
+      this.loading = true;
+      this.$http.get('/api/message/')
+          .then((response) => {
+            console.log(response);
+              console.log(response.data);
+                console.log(response.data.data);
+          this.messages = response.data.data.messages;
+          this.loading = false;
+          })
+          .catch((err) => {
+           this.loading = false;
+           console.log(err);
+          })
+      }
+    },
+  created: function() {
+    this.getMessages();
   }
   // created: call method to get messages
-}
 })
 
 Vue.component('single-contact', {
   props: ['contactdata'],
   template: `<div>
-              <h3>This is a single contact with name {{contactdata.name}}</h3>
-              <p>And email addresses {{contactdata.email_addresses}}</p>
+              <p>name: {{contactdata.name}}</p>
+              <p>email addresses: {{contactdata.email_addresses}}</p>
             </div>`
 })
 
 Vue.component('contact-group', {
   props: ['contactlist'],
   template: `<div>
-              <div v-if="contactlist[0]">
-                <div v-for="acontact in contactlist">
+              <ul v-if="contactlist[0]">
+                <li v-for="acontact in contactlist">
                   <single-contact :contactdata="acontact"></single-contact>
-                </div>
-              </div>
+                </li>
+              </ul>
               <div v-else>You have no contacts</div>
             </div>`
 })
@@ -218,7 +464,6 @@ new Vue({
   el: '#VueContainer',
   delimiters: ['[[',']]'],
   data: {
-  messages: [],
   contacts: [],
   loading: false,
   view: false},
@@ -239,21 +484,6 @@ methods: {
       this.loading = false;
       console.log(err);
      })
-},
-getMessages: function() {
-  this.loading = true;
-  this.$http.get('/api/message/')
-      .then((response) => {
-        console.log(response);
-          console.log(response.data);
-            console.log(response.data.data);
-      this.messages = response.data.data.messages;
-      this.loading = false;
-      })
-      .catch((err) => {
-       this.loading = false;
-       console.log(err);
-      })
 },
 getContacts: function() {
   this.loading = true;

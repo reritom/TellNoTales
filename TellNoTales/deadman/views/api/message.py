@@ -9,10 +9,11 @@ from deadman.views.constructors import ResponseObject
 import json, uuid
 
 def create_uuid():
-    this_uuid = uuid.uuid4()
+    this_uuid = str(uuid.uuid4())
     if Message.objects.filter(message_id=this_uuid).exists():
         return create_uuid()
     else:
+        print("Message UUID is {0}".format(this_uuid))
         return this_uuid
 
 
@@ -77,7 +78,7 @@ def message(request, message_id=None):
                     return JsonResponse(response.get_response())
 
             contact = Contact.objects.get(contact_id=request.POST['recipient'])
-
+            
             if mode == 'UPDATE':
                 recipient = Recipient.objects.get_or_create(contact=contact, message=message)
 
@@ -90,6 +91,8 @@ def message(request, message_id=None):
             return JsonResponse(response.get_response())
 
         else:
+            print(message_id)
+
             # The message_id doesn't exist
             response = ResponseObject(status=False, error_code='0009')
             return JsonResponse(response.get_response())
