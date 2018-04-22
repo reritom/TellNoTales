@@ -31,7 +31,6 @@
       <button class="btn btn-info" v-on:click="view = 'settings'">Settings</button>
 
       <div id="ContactsView" v-if="view==='contacts'">
-        <button class="btn btn-info" v-on:click="getContacts()">Contacts</button>
           <contact-tab :contacts='contacts'></contact-tab>
       </div>
 

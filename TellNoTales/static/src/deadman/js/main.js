@@ -473,7 +473,19 @@ Vue.component('contact-group', {
 
 Vue.component('search-contacts', {
   props: ['noneyet'],
-  template: `<div>Search bar for contacts be this</div>`
+  data: function() {
+    return {
+      message: ""
+    }
+  },
+  template: `<div>
+              <input @input="broadcastSearch($event.target.value)" placeholder="Search contacts">
+            </div>`,
+  methods: { broadcastSearch(value) {
+    this.message = value;
+    this.$emit('search', value);
+    //console.log(value);
+  }}
 })
 
 Vue.component('new-contact', {
@@ -482,12 +494,38 @@ Vue.component('new-contact', {
 })
 
 Vue.component('contact-tab', {
-  props: ['contacts'],
+  data: function() {
+    return {
+      contacts: [],
+      search: ""
+    }
+  },
   template: `<div>
-              <search-contacts></search-contacts>
+              <search-contacts v-on:search="search = $event"></search-contacts>
               <new-contact></new-contact>
               <contact-group :contactlist="contacts"></contact-group>
-            </div>`
+              <p>Searching for {{ search }}</p>
+            </div>`,
+  created: function() {
+    this.getContacts();
+  },
+  methods: {
+    getContacts: function() {
+      this.loading = true;
+      this.$http.get('/api/contact/')
+          .then((response) => {
+            console.log(response);
+              console.log(response.data);
+                console.log(response.data.data);
+          this.contacts = response.data.data.contacts;
+          this.loading = false;
+          })
+          .catch((err) => {
+           this.loading = false;
+           console.log(err);
+          })
+    }
+  }
 })
 // New message component
 // New contact component
@@ -517,21 +555,7 @@ methods: {
       this.loading = false;
       console.log(err);
      })
-},
-getContacts: function() {
-  this.loading = true;
-  this.$http.get('/api/contact/')
-      .then((response) => {
-        console.log(response);
-          console.log(response.data);
-            console.log(response.data.data);
-      this.contacts = response.data.data.contacts;
-      this.loading = false;
-      })
-      .catch((err) => {
-       this.loading = false;
-       console.log(err);
-      })
 }
+
 }
 })
