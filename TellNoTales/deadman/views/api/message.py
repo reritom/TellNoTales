@@ -78,7 +78,7 @@ def message(request, message_id=None):
                     return JsonResponse(response.get_response())
 
             contact = Contact.objects.get(contact_id=request.POST['recipient'])
-            
+
             if mode == 'UPDATE':
                 recipient = Recipient.objects.get_or_create(contact=contact, message=message)
 
@@ -98,7 +98,7 @@ def message(request, message_id=None):
             return JsonResponse(response.get_response())
 
 
-    if request.method == 'GET':
+    elif request.method == 'GET':
         if message_id is None:
             # Return all contacts for this profile
             messages = Message.objects.filter(profile=profile)
@@ -119,7 +119,7 @@ def message(request, message_id=None):
             response = ResponseObject(status=False, error_code='0009')
             return JsonResponse(response.get_response())
 
-    if request == 'DELETE':
+    elif request.method == 'DELETE':
         if message_id is None:
             # The message_id doesn't exist
             response = ResponseObject(status=False, error_code='0008')

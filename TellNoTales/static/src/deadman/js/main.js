@@ -4,7 +4,29 @@ Vue.component('single-message', {
               <p>subject: {{messagedata.subject}}</p>
               <p>message: {{messagedata.message}}</p>
               <p>recipients: {{ messagedata.recipients}}</p>
-            </div>`
+              <button @click="deleteMessage()">Delete me</button>
+            </div>`,
+  methods: {
+    deleteMessage: function() {
+      var message_id = this.messagedata.message_id;
+      var url = "/api/message/" + message_id;
+      console.log("Url is " + url);
+
+      this.loading = true;
+      this.$http.delete(url)
+          .then((response) => {
+            console.log("Response is " + response);
+            console.log(response.data);
+            var reply_status = response.data.status;
+            this.loading = false;
+            this.$emit("pulse");
+          })
+          .catch((err) => {
+           this.loading = false;
+           console.log(err);
+          })
+    }
+  }
 })
 
 Vue.component('message-group', {
@@ -15,7 +37,7 @@ Vue.component('message-group', {
               <div v-if="not_empty">
                 <ul>
                   <li v-for="amessage in messagelist">
-                    <single-message :messagedata="amessage"></single-message>
+                    <single-message v-on:pulse="$emit('pulse')" :messagedata="amessage"></single-message>
                   </li>
                 </ul>
               </div>
@@ -176,6 +198,10 @@ Vue.component('new-message', {
     this.getContacts();
   },
   methods: {
+    sendPulse() {
+      console.log("Sending pulse");
+      this.$emit("pulse");
+    },
     sendMessageAddRecipient(contact_id){
       var form = new FormData();
       form.append("recipient", contact_id);
@@ -189,7 +215,7 @@ Vue.component('new-message', {
             this.loading = false;
 
             if (reply_status){
-              console.log("Status KO for adding recipient");
+              console.log("Status OK for adding recipient");
               return true
               }
             else {
@@ -225,6 +251,11 @@ Vue.component('new-message', {
                       console.log(i);
                       this.sendMessageAddRecipient(this.selected_contacts[i].contact_id);
                     }
+
+                  console.log("before send pulse");
+                  //Send a pulse so that the message tab knows to update the message list
+                  this.sendPulse();
+                  console.log("after send pulse");
                 }
               else {
                 console.log("Reply status KO");
@@ -256,13 +287,15 @@ Vue.component('new-message', {
 
         //Send message
         console.log("Creating a message");
-        this.sendMessage(form)
+        this.sendMessage(form);
+        console.log("Finished sending message");
 
         // Alert that it has been made successfully
         this.create_success = true;
 
         //Close the new message tab
         this.clicked = false;
+
       }
       else {
         //Error message
@@ -368,8 +401,8 @@ Vue.component('message-tab', {
   },
   template: `<div>
               <search-messages v-on:search="search_key = $event"></search-messages>
-              <new-message></new-message>
-              <message-group :messagelist="filtered_messages" :filtered="filtered"></message-group>
+              <new-message v-on:pulse="getMessages"></new-message>
+              <message-group v-on:pulse="getMessages" :messagelist="filtered_messages" :filtered="filtered"></message-group>
             </div>`,
   computed: {filtered_messages: function() {
     // Check to see if search string isn't empty
