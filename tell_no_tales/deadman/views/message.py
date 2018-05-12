@@ -20,11 +20,13 @@ def create_uuid():
 @csrf_exempt
 @login_required
 def message(request, message_id=None):
+    print("In message flow")
     user = request.user
     profile = Profile.objects.get_or_create(user=user)[0]
 
     if request.method == 'POST':
         if message_id is None:
+            print("Creating new message")
             # Create a new message
             if not ('subject' in request.POST and 'message' in request.POST and 'lifespan' in request.POST and 'cutoff' in request.POST):
                 # Missing parameters
@@ -57,6 +59,7 @@ def message(request, message_id=None):
             return JsonResponse(response.get_response())
 
         elif Message.objects.filter(message_id=message_id).exists():
+            print("Updating a message")
             # Update or remove a message
             message = Message.objects.get(message_id=message_id)
 
@@ -100,7 +103,8 @@ def message(request, message_id=None):
 
     elif request.method == 'GET':
         if message_id is None:
-            # Return all contacts for this profile
+            print("Retrieving all messages")
+            # Return all messages for this profile
             messages = Message.objects.filter(profile=profile)
 
             list_of_messages = [get_message(message) for message in messages]
@@ -109,6 +113,7 @@ def message(request, message_id=None):
             return JsonResponse(response.get_response())
 
         elif Message.objects.filter(message_id=message_id).exists():
+            print("Returning a specific message")
             # Return the message
             message = Message.objects.get(message_id=message_id)
             response = ResponseObject(status=True, data={'message':get_message(message)})
@@ -120,6 +125,7 @@ def message(request, message_id=None):
             return JsonResponse(response.get_response())
 
     elif request.method == 'DELETE':
+        print("Deleting a message")
         if message_id is None:
             # The message_id doesn't exist
             response = ResponseObject(status=False, error_code='0008')

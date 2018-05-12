@@ -15,7 +15,22 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIR =os.path.join(BASE_DIR, 'templates')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+DEPLOYSTAT = False
+
+if DEPLOYSTAT == True:
+    ALLOWED_HOSTS = ['tricle.xyz',
+                    'www.tricle.xyz',
+                    'reritom.pythonanywhere.com']
+    DEBUG = False
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    SECURE_SSL_REDIRECT = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+else:
+    ALLOWED_HOSTS = []
+    DEBUG = True
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,10 +40,6 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 SECRET_KEY = '#k)l%9m6&smdayn@go=_4thx(*at$o%_z9!r(g86j0wo515nxf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -39,8 +50,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'deadman'
+    'deadman',
+    'frontend'
 ]
+
+STATICFILES_FINDERS = (
+  'django.contrib.staticfiles.finders.FileSystemFinder',
+  'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -52,7 +69,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'TellNoTales.urls'
+ROOT_URLCONF = 'config.urls'
 
 
 TEMPLATES = [
@@ -71,7 +88,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'TellNoTales.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database

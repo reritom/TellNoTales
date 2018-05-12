@@ -4,4 +4,4 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 # Create your views here.
 
 def start(request):
-    return render(request, 'deadman/home.html')
+    return render(request, 'frontend/home.html')

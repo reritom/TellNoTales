@@ -6,7 +6,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 from deadman.views.constructors import ResponseObject
-from tools.sender import GmailSender
+from deadman.tools.sender import GmailSender
 from deadman.helpers.messages.template_handler import TemplateHandler
 
 import json, uuid, os
