@@ -11,16 +11,9 @@ from deadman.models.phone_number import PhoneNumber
 from deadman.models.tracker import Tracker
 from deadman.models.recipient import Recipient
 
-from deadman.helpers.model_tools import get_contact
-from deadman.views.constructors import ResponseObject
+from deadman.tools.model_tools import get_contact
+from deadman.tools.constructors import ResponseObject
 import json, uuid
-
-def create_uuid():
-    this_uuid = uuid.uuid4()
-    if Contact.objects.filter(contact_id=this_uuid).exists():
-        return create_uuid()
-    else:
-        return this_uuid
 
 @csrf_exempt
 @login_required
@@ -39,7 +32,7 @@ def contact(request, contact_id=None):
 
             contact = Contact.objects.create(profile=profile,
                                              name=request.POST['name'],
-                                             contact_id=create_uuid())
+                                             contact_id=Contact.create_uuid())
 
             if not isinstance(request.POST['phone_number'], str):
                 return JsonResponse({'nope':'phone number needs to be a string'})

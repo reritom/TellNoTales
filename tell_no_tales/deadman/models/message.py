@@ -36,6 +36,15 @@ class Message(models.Model):
         self.delivered = True
         self.expire()
 
+    @staticmethod
+    def create_uuid():
+        this_uuid = str(uuid.uuid4())
+        if Message.objects.filter(message_id=this_uuid).exists():
+            return Message.create_uuid()
+        else:
+            print("Message UUID is {0}".format(this_uuid))
+            return this_uuid
+
     def get_time_until_sending(self):
         return (self.last_notified + timedelta(days=int(self.lifespan))) - timezone.now()
 

@@ -16,6 +16,14 @@ class Tracker(models.Model):
     def get_id(self):
         return self.tracker_id
 
+    @staticmethod
+    def create_tracker_uuid():
+        this_uuid = uuid.uuid4()
+        if Tracker.objects.filter(tracker_id=this_uuid).exists():
+            return Tracker.create_tracker_uuid()
+        else:
+            return this_uuid
+
     def set_identifier(self, identifier):
         self.identifier = identifier
         self.save()

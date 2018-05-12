@@ -11,7 +11,7 @@ from deadman.models.phone_number import PhoneNumber
 from deadman.models.tracker import Tracker
 from deadman.models.recipient import Recipient
 
-from deadman.views.constructors import ResponseObject
+from deadman.tools.constructors import ResponseObject
 import json
 
 

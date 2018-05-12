@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 
-from deadman.views.constructors import ResponseObject
+from deadman.tools.constructors import ResponseObject
 
 @csrf_exempt
 def signup(request):

@@ -11,18 +11,9 @@ from deadman.models.phone_number import PhoneNumber
 from deadman.models.tracker import Tracker
 from deadman.models.recipient import Recipient
 
-from deadman.helpers.model_tools import get_message
-from deadman.views.constructors import ResponseObject
+from deadman.tools.model_tools import get_message
+from deadman.tools.constructors import ResponseObject
 import json, uuid
-
-def create_uuid():
-    this_uuid = str(uuid.uuid4())
-    if Message.objects.filter(message_id=this_uuid).exists():
-        return create_uuid()
-    else:
-        print("Message UUID is {0}".format(this_uuid))
-        return this_uuid
-
 
 @csrf_exempt
 @login_required
@@ -52,7 +43,7 @@ def message(request, message_id=None):
                                              message=request.POST['message'],
                                              lifespan=request.POST['lifespan'],
                                              cutoff=request.POST['cutoff'],
-                                             message_id=create_uuid())
+                                             message_id=Message.create_uuid())
 
             recipient = Recipient.objects.get_or_create(contact=contact, message=message)
 

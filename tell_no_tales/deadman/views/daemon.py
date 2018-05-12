@@ -11,21 +11,14 @@ from deadman.models.phone_number import PhoneNumber
 from deadman.models.tracker import Tracker
 from deadman.models.recipient import Recipient
 
-from deadman.views.constructors import ResponseObject
-from deadman.tools.sender import GmailSender
+from deadman.tools.constructors import ResponseObject
+from deadman.helpers.sender.sender import GmailSender
 from deadman.helpers.messages.template_handler import TemplateHandler
 
 import json, uuid, os
 
 global gmail_sender
 global gmail_password
-
-def create_tracker_uuid():
-    this_uuid = uuid.uuid4()
-    if Tracker.objects.filter(tracker_id=this_uuid).exists():
-        return create_tracker_uuid()
-    else:
-        return this_uuid
 
 def daemon(request):
     load_config()
@@ -124,7 +117,7 @@ def send_messages():
                     # For each email address
                     for email_address in email_addresses:
                         # Create a tracker
-                        tracker = Tracker.objects.create(recipient=recipient, tracker_id=create_tracker_uuid())
+                        tracker = Tracker.objects.create(recipient=recipient, tracker_id=Tracker.create_tracker_uuid())
                         tracker.set_type_email()
                         tracker.set_identifier(email_address.email)
 

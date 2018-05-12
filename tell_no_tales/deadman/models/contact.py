@@ -13,6 +13,14 @@ class Contact(models.Model):
     # Contact details
     name = models.CharField(default=0, max_length=255)
 
+    @staticmethod
+    def create_uuid():
+        this_uuid = uuid.uuid4()
+        if Contact.objects.filter(contact_id=this_uuid).exists():
+            return Contact.create_uuid()
+        else:
+            return this_uuid
+
     def rename(self, name):
         self.name = name
         self.save()
