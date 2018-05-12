@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from deadman.models import Tracker
+
+from deadman.models.tracker import Tracker
 
 def verify(request, tracker_id):
     print("This is a verification")

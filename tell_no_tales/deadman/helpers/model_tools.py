@@ -1,5 +1,10 @@
-from deadman.models import Contact, Message, Profile, EmailAddress, PhoneNumber, Recipient, Tracker
-
+from deadman.models.contact import Contact
+from deadman.models.profile import Profile
+from deadman.models.message import Message
+from deadman.models.email_address import EmailAddress
+from deadman.models.phone_number import PhoneNumber
+from deadman.models.tracker import Tracker
+from deadman.models.recipient import Recipient
 
 def get_contact(contact):
     '''

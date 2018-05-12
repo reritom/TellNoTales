@@ -2,7 +2,14 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, QueryDict
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from deadman.models import Contact, Message, Profile, Recipient
+
+from deadman.models.contact import Contact
+from deadman.models.profile import Profile
+from deadman.models.message import Message
+from deadman.models.email_address import EmailAddress
+from deadman.models.phone_number import PhoneNumber
+from deadman.models.tracker import Tracker
+from deadman.models.recipient import Recipient
 
 from deadman.helpers.model_tools import get_message
 from deadman.views.constructors import ResponseObject

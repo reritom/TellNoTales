@@ -1,9 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
-from deadman.models import Contact, Message, Profile, Tracker, Recipient, EmailAddress, PhoneNumber
-from django.utils import timezone
 from datetime import timedelta
+
+from deadman.models.contact import Contact
+from deadman.models.profile import Profile
+from deadman.models.message import Message
+from deadman.models.email_address import EmailAddress
+from deadman.models.phone_number import PhoneNumber
+from deadman.models.tracker import Tracker
+from deadman.models.recipient import Recipient
 
 from deadman.views.constructors import ResponseObject
 from deadman.tools.sender import GmailSender
