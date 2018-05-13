@@ -460,7 +460,8 @@ Vue.component('single-contact', {
       new_addresses: [],
       new_numbers: [],
       deleted_addresses: [],
-      deleted_numbers: []
+      deleted_numbers: [],
+      loading: false
     }
   },
   template: `<div>
@@ -507,11 +508,26 @@ Vue.component('single-contact', {
                 <button>Delete me</button>
               </div>
 
-              <button v-if="editted">Save changes</button>
+              <button v-if="editted" @click="saveChanges()">Save changes</button>
             </div>`,
     methods: {
       saveChanges() {
-        return
+       var formData = new FormData();
+
+       formData.append('new_addresses', JSON.stringify(this.new_addresses));
+       formData.append('new_numbers', JSON.stringify(this.new_numbers));
+       formData.append('deleted_numbers', JSON.stringify(this.deleted_numbers));
+       formData.append('deleted_addresses', JSON.stringify(this.deleted_addresses));
+
+        this.$http.post('/api/contact/' + this.contactdata.contact_id, formData)
+            .then((response) => {
+              console.log(response.data);
+              this.loading = false;
+            })
+            .catch((err) => {
+             this.loading = false;
+             console.log(err);
+            })
       },
       addAddress(){
         var value = this.$refs.email_input.value;

@@ -49,41 +49,36 @@ def contact(request, contact_id=None):
 
         if Contact.objects.filter(contact_id=contact_id).exists():
             # Update and append new data to the contact
-            contact = Contact.objects.get(contact_id=contact_id)
+            contact = Contact.objects.get(contact_id=contact_id, profile=profile)
 
-            if not profile == contact.profile:
-                # Profile doesn't match that of the message
-                response = ResponseObject(status=False, error_code='0013')
-                return JsonResponse(response.get_response())
+            if 'new_addresses' in request.POST:
+                new_addresses = json.loads(request.POST.get('new_addresses'))
+                for new_address in new_addresses:
+                    EmailAddress.objects.get_or_create(email=new_address, contact=contact)
 
-            if 'mode' in request.POST and request.POST['mode'] == 'UPDATE':
-                if 'email_address' in request.POST:
-                    EmailAddress.objects.get_or_create(email=request.POST['email_address'], contact=contact)
+            if 'deleted_addresses' in request.POST:
+                deleted_addresses = json.loads(request.POST.get('deleted_addresses'))
+                for deleted_address in deleted_addresses:
+                    if EmailAddress.objects.filter(email=deleted_address, contact=contact).exists():
+                        EmailAddress.objects.filter(email=deleted_address, contact=contact).delete()
 
-                if 'name' in request.POST:
-                    contact.rename(request.POST['name'])
+            if 'new_numbers' in request.POST:
+                new_numbers = json.loads(request.POST.get('new_numbers'))
+                for new_number in new_numbers:
+                    PhoneNumber.objects.get_or_create(number=new_number, contact=contact)
 
-                if 'phone_number' in request.POST:
-                    PhoneNumber.objects.get_or_create(number=request.POST['phone_number'], contact=contact)
+            if 'deleted_numbers' in request.POST:
+                deleted_numbers = json.loads(request.POST.get('deleted_numbers'))
+                for deleted_number in deleted_numbers:
+                    if PhoneNumber.objects.filter(number=deleted_number, contact=contact).exists():
+                        PhoneNumber.objects.filter(number=deleted_number, contact=contact).delete()
 
-                response = ResponseObject(status=True, data={'contact':get_contact(contact)})
-                return JsonResponse(response.get_response())
+            if 'name' in request.POST:
+                contact.rename(request.POST['name'])
 
-            elif 'mode' in request.POST and request.POST['mode'] == 'REMOVE':
-                if 'email_address' in request.POST:
-                    if EmailAddress.objects.filter(email=request.POST['email_address'], contact=contact).exists():
-                        EmailAddress.objects.filter(email=request.POST['email_address'], contact=contact).delete()
+            response = ResponseObject(status=True, data={'contact':get_contact(contact)})
+            return JsonResponse(response.get_response())
 
-                if 'phone_number' in request.POST:
-                    if PhoneNumber.objects.filter(number=request.POST['phone_number'], contact=contact).exists():
-                        PhoneNumber.objects.filter(number=request.POST['phone_number'], contact=contact).delete()
-
-                response = ResponseObject(status=True, data={'contact':get_contact(contact)})
-                return JsonResponse(response.get_response())
-
-            else:
-                response = ResponseObject(status=False, error_code='0005')
-                return JsonResponse(response.get_response())
 
         else:
             # The contact_id doesn't exist
