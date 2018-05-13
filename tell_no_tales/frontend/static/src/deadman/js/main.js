@@ -455,6 +455,7 @@ Vue.component('single-contact', {
   props: ['contactdata'],
   data: function() {
     return {
+      expanded_toggle: false,
       delete_toggle: false,
       edit_toggle: false,
       new_addresses: [],
@@ -465,50 +466,58 @@ Vue.component('single-contact', {
     }
   },
   template: `<div>
-              <p>name: {{contactdata.name}}</p>
+              <p @click="expanded_toggle = !expanded_toggle">name: {{contactdata.name}}</p>
 
-              <div v-if="contactdata.email_addresses.length">
-                <div v-for="address, index in contactdata.email_addresses">
-                  <p>Address is {{address}}</p><p v-if="edit_toggle" @click="removeEmailFromExisting(index)">remove</p>
+              <div v-if="expanded_toggle">
+
+                <div v-if="contactdata.email_addresses.length">
+                  <div v-for="address, index in contactdata.email_addresses">
+                    <p>Address is {{address}}</p><p v-if="edit_toggle" @click="removeEmailFromExisting(index)">remove</p>
+                  </div>
                 </div>
-              </div>
 
-              <div v-else>
-                <p>This contact has no existing addresses</p>
-              </div>
-
-              <div v-for="address, index in new_addresses">
-                <p>New Address is {{address}}</p><p v-if="edit_toggle" @click="removeEmailFromNew(index)">remove</p>
-              </div>
-
-              <input ref="email_input" v-if="edit_toggle" placeholder="Add an email">
-              <button v-if="edit_toggle" @click="addAddress">Tick</button>
-
-              <p>These are the phone numbers</p>
-              <div v-if="contactdata.phone_numbers.length">
-                <div v-for="number, index in contactdata.phone_numbers">
-                <p>Existing number {{number}}</p><p v-if="edit_toggle" @click="removeNumberFromExisting(index)">delete this number</p>
+                <div v-else>
+                  <p>This contact has no existing addresses</p>
                 </div>
+
+                <div v-if="edit_toggle">
+                  <div v-for="address, index in new_addresses">
+                    <p>New Address is {{address}}</p><p v-if="edit_toggle" @click="removeEmailFromNew(index)">remove</p>
+                  </div>
+                </div>
+
+                <input ref="email_input" v-if="edit_toggle" placeholder="Add an email">
+                <button v-if="edit_toggle" @click="addAddress">Tick</button>
+
+                <p>These are the phone numbers</p>
+                <div v-if="contactdata.phone_numbers.length">
+                  <div v-for="number, index in contactdata.phone_numbers">
+                  <p>Existing number {{number}}</p><p v-if="edit_toggle" @click="removeNumberFromExisting(index)">delete this number</p>
+                  </div>
+                </div>
+
+                <div v-else>
+                  <p>This contact has no current numbers</p>
+                </div>
+
+                <div v-if="edit_toggle">
+                  <div v-for="number, index in new_numbers">
+                    <p>New number {{number}}</p><p v-if="edit_toggle" @click="removeNumberFromNew(index)">remove</p>
+                  </div>
+                </div>
+
+                <input ref="number_input" v-if="edit_toggle" placeholder="Add a phone number">
+                <button v-if="edit_toggle" @click="addNumber">Tick</button>
+
+                <button @click="edit_toggle = !edit_toggle">Edit me</button>
+
+                <div v-if="edit_toggle">
+                  <button>Delete me</button>
+                </div>
+
+                <button v-if="editted" @click="saveChanges()">Save changes</button>
+
               </div>
-
-              <div v-else>
-                <p>This contact has no current numbers</p>
-              </div>
-
-              <div v-for="number, index in new_numbers">
-                <p>New number {{number}}</p><p v-if="edit_toggle" @click="removeNumberFromNew(index)">remove</p>
-              </div>
-
-              <input ref="number_input" v-if="edit_toggle" placeholder="Add a phone number">
-              <button v-if="edit_toggle" @click="addNumber">Tick</button>
-
-              <button @click="edit_toggle = !edit_toggle">Edit me</button>
-
-              <div v-if="edit_toggle">
-                <button>Delete me</button>
-              </div>
-
-              <button v-if="editted" @click="saveChanges()">Save changes</button>
             </div>`,
     methods: {
       saveChanges() {
@@ -523,11 +532,23 @@ Vue.component('single-contact', {
             .then((response) => {
               console.log(response.data);
               this.loading = false;
+
+              //TODO IF status ok, then show success message, else show error
+              this.emitRefreshPulse();
+              this.edit_toggle = false;
+
+              this.new_numbers = [];
+              this.new_addresses = [];
+              this.deleted_numbers = [];
+              this.deleted_addresses = [];
             })
             .catch((err) => {
              this.loading = false;
              console.log(err);
+             this.emitRefreshPulse();
+             this.edit_toggle = false;
             })
+
       },
       addAddress(){
         var value = this.$refs.email_input.value;
@@ -570,7 +591,7 @@ Vue.component('single-contact', {
         Vue.delete(this.new_numbers, index);
       },
       emitRefreshPulse(){
-        return
+        this.$emit('pulse');
       }
     },
     computed: {
@@ -586,15 +607,25 @@ Vue.component('single-contact', {
 })
 
 Vue.component('contact-group', {
-  props: ['contactlist'],
+  props: ['contactlist', 'filtered'],
   template: `<div>
-              <ul v-if="contactlist[0]">
-                <li v-for="acontact in contactlist">
-                  <single-contact :contactdata="acontact"></single-contact>
-                </li>
-              </ul>
-              <div v-else>You have no contacts</div>
-            </div>`
+              <div v-if="empty_filtered">
+                <p>Nothing for your search criteria</p>
+              </div>
+              <div v-else>
+                <ul v-if="contactlist.length > 0">
+                  <li v-for="acontact in contactlist">
+                    <single-contact :contactdata="acontact" v-on:pulse="$emit('pulse')"></single-contact>
+                  </li>
+                </ul>
+                <div v-else>You have no contacts</div>
+              </div>
+            </div>`,
+    computed: {
+      empty_filtered: function(){
+        return (this.filtered && this.contactlist.length === 0)
+      }
+    }
 })
 
 Vue.component('search-contacts', {
@@ -623,26 +654,25 @@ Vue.component('contact-tab', {
   data: function() {
     return {
       contacts: [],
-      search: ""
+      search_key: "",
+      filtered: false
     }
   },
   template: `<div>
-              <search-contacts v-on:search="search = $event"></search-contacts>
+              <search-contacts v-on:search="search_key = $event"></search-contacts>
               <new-contact></new-contact>
-              <contact-group :contactlist="contacts"></contact-group>
-              <p>Searching for {{ search }}</p>
+              <contact-group :contactlist="filtered_contacts" :filtered="filtered" v-on:pulse="getContacts()"></contact-group>
+              <p>Searching for {{ search_key }}</p>
             </div>`,
   created: function() {
     this.getContacts();
   },
   methods: {
     getContacts: function() {
+      console.log("Retrieving contacts");
       this.loading = true;
       this.$http.get('/api/contact/')
           .then((response) => {
-            console.log(response);
-              console.log(response.data);
-                console.log(response.data.data);
           this.contacts = response.data.data.contacts;
           this.loading = false;
           })
@@ -651,11 +681,33 @@ Vue.component('contact-tab', {
            console.log(err);
           })
     }
+  },
+  computed: {
+    filtered_contacts: function() {
+      if (this.search_key === ""){
+        this.filtered = false;
+        return this.contacts
+      }
+
+      this.filtered = true;
+      var filtered_messages = [];
+      // for each message
+      for (var i = 0; i < this.contacts.length; i++) {
+          // see if the search key exists in any of the searchable elements
+          var lower_name = this.contacts[i].name.toLowerCase();
+          var lower_key = this.search_key.toLowerCase()
+
+          if (lower_name.indexOf(lower_key) != -1){
+            filtered_messages.push(this.contacts[i]);
+          }
+          else {
+            continue;
+          }
+      };
+      return filtered_messages
+    }
   }
 })
-// New message component
-// New contact component
-
 
 new Vue({
   el: '#VueContainer',
