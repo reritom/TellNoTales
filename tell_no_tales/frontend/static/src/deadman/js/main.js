@@ -460,28 +460,51 @@ Vue.component('single-contact', {
       new_addresses: [],
       new_numbers: [],
       deleted_addresses: [],
+      deleted_numbers: []
     }
   },
   template: `<div>
               <p>name: {{contactdata.name}}</p>
 
-              <div v-for="address in contactdata.email_addresses">
-              <p>Address is {{address}}</p>
+              <div v-if="contactdata.email_addresses.length">
+                <div v-for="address, index in contactdata.email_addresses">
+                  <p>Address is {{address}}</p><p v-if="edit_toggle" @click="removeEmailFromExisting(index)">remove</p>
+                </div>
               </div>
 
-              <div v-for="address in new_addresses">
-              <p>New Address is {{address}}</p>
+              <div v-else>
+                <p>This contact has no existing addresses</p>
+              </div>
+
+              <div v-for="address, index in new_addresses">
+                <p>New Address is {{address}}</p><p v-if="edit_toggle" @click="removeEmailFromNew(index)">remove</p>
               </div>
 
               <input ref="email_input" v-if="edit_toggle" placeholder="Add an email">
-              <button @click="addAddress">Tick</button>
+              <button v-if="edit_toggle" @click="addAddress">Tick</button>
 
-              <button @click="new_numbers = [1]">test</button>
+              <p>These are the phone numbers</p>
+              <div v-if="contactdata.phone_numbers.length">
+                <div v-for="number, index in contactdata.phone_numbers">
+                <p>Existing number {{number}}</p><p v-if="edit_toggle" @click="removeNumberFromExisting(index)">delete this number</p>
+                </div>
+              </div>
+
+              <div v-else>
+                <p>This contact has no current numbers</p>
+              </div>
+
+              <div v-for="number, index in new_numbers">
+                <p>New number {{number}}</p><p v-if="edit_toggle" @click="removeNumberFromNew(index)">remove</p>
+              </div>
+
+              <input ref="number_input" v-if="edit_toggle" placeholder="Add a phone number">
+              <button v-if="edit_toggle" @click="addNumber">Tick</button>
 
               <button @click="edit_toggle = !edit_toggle">Edit me</button>
 
               <div v-if="edit_toggle">
-              <button>Delete me</button>
+                <button>Delete me</button>
               </div>
 
               <button v-if="editted">Save changes</button>
@@ -491,13 +514,47 @@ Vue.component('single-contact', {
         return
       },
       addAddress(){
-        value = this.$refs.email_input.value;
+        var value = this.$refs.email_input.value;
 
         if (value != ""){
           this.new_addresses.push(value);
         }
 
         this.$refs.email_input.value = "";
+      },
+      addNumber(){
+        var value = this.$refs.number_input.value;
+
+        if (value != ""){
+          this.new_numbers.push(value);
+        }
+
+        this.$refs.number_input.value = "";
+      },
+      removeEmailFromExisting(index){
+        // Add it to the deleted list
+        this.deleted_addresses.push(this.contactdata.email_addresses[index]);
+
+        // Remove from the existing
+        Vue.delete(this.contactdata.email_addresses, index);
+      },
+      removeNumberFromExisting(index){
+        // Add it to the deleted list
+        this.deleted_numbers.push(this.contactdata.phone_numbers[index]);
+
+        // Remove from the existing
+        Vue.delete(this.contactdata.phone_numbers, index);
+      },
+      removeEmailFromNew(index){
+        // Remove from the new
+        Vue.delete(this.new_addresses, index);
+      },
+      removeNumberFromNew(index){
+        // Remove from the existing
+        Vue.delete(this.new_numbers, index);
+      },
+      emitRefreshPulse(){
+        return
       }
     },
     computed: {
