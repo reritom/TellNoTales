@@ -1,0 +1,4 @@
+-When editting a contact, before saving, send an api request to
+see if the contact is related to a locked message, and return a warning if that is the case
+
+-

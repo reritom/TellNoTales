@@ -453,10 +453,63 @@ Vue.component('message-tab', {
 
 Vue.component('single-contact', {
   props: ['contactdata'],
+  data: function() {
+    return {
+      delete_toggle: false,
+      edit_toggle: false,
+      new_addresses: [],
+      new_numbers: [],
+      deleted_addresses: [],
+    }
+  },
   template: `<div>
               <p>name: {{contactdata.name}}</p>
-              <p>email addresses: {{contactdata.email_addresses}}</p>
-            </div>`
+
+              <div v-for="address in contactdata.email_addresses">
+              <p>Address is {{address}}</p>
+              </div>
+
+              <div v-for="address in new_addresses">
+              <p>New Address is {{address}}</p>
+              </div>
+
+              <input ref="email_input" v-if="edit_toggle" placeholder="Add an email">
+              <button @click="addAddress">Tick</button>
+
+              <button @click="new_numbers = [1]">test</button>
+
+              <button @click="edit_toggle = !edit_toggle">Edit me</button>
+
+              <div v-if="edit_toggle">
+              <button>Delete me</button>
+              </div>
+
+              <button v-if="editted">Save changes</button>
+            </div>`,
+    methods: {
+      saveChanges() {
+        return
+      },
+      addAddress(){
+        value = this.$refs.email_input.value;
+
+        if (value != ""){
+          this.new_addresses.push(value);
+        }
+
+        this.$refs.email_input.value = "";
+      }
+    },
+    computed: {
+      editted: function() {
+        if ((this.new_addresses.length) || (this.new_numbers.length) || (this.deleted_addresses.length)){
+          return true
+        }
+        else {
+          return false
+        }
+      }
+    }
 })
 
 Vue.component('contact-group', {
