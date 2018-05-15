@@ -1,17 +1,25 @@
 from django.conf.urls import url, include
-from deadman.views import contact, message, notify, accounts, verify, daemon
+from deadman.views import accounts
+from deadman.views.contact import contact
+from deadman.views.single_contact import single_contact
+from deadman.views.message import message
+from deadman.views.single_message import single_message
+from deadman.views.notify import notify
+from deadman.views.single_notify import single_notify
+from deadman.views.verify import verify
+from deadman.views.daemon import daemon
 
 app_name = 'deadman'
 
 urlpatterns = [
-    url(r'contact/(?P<contact_id>[-\w]+)', contact.contact, name='contact'),
-    url(r'contact', contact.contact, name='contact'),
-    url(r'message/(?P<message_id>[-\w]+)', message.message, name='message'),
-    url(r'message', message.message, name='message'),
-    url(r'notify/(?P<message_id>[-\w]+)', notify.notify, name='notify'),
-    url(r'notify', notify.notify, name='notify'),
-    url(r'verify/(?P<tracker_id>[-\w]+)', verify.verify, name='verify'),
-    url(r'daemon', daemon.daemon, name='daemon'),
+    url(r'contact/(?P<contact_id>[-\w]+)', single_contact, name='single_contact'),
+    url(r'contact', contact, name='contact'),
+    url(r'message/(?P<message_id>[-\w]+)', single_message, name='single_message'),
+    url(r'message', message, name='message'),
+    url(r'notify/(?P<message_id>[-\w]+)', single_notify, name='single_notify'),
+    url(r'notify', notify, name='notify'),
+    url(r'verify/(?P<tracker_id>[-\w]+)', verify, name='verify'),
+    url(r'daemon', daemon, name='daemon'),
     url(r'login', accounts.login_user, name='login_user'),
     url(r'signup', accounts.signup, name='signup'),
     url(r'logout', accounts.logout_user, name='logout_user'),

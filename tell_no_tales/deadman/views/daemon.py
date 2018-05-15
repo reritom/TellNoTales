@@ -11,7 +11,7 @@ from deadman.models.phone_number import PhoneNumber
 from deadman.models.tracker import Tracker
 from deadman.models.recipient import Recipient
 
-from deadman.tools.constructors import ResponseObject
+
 from deadman.helpers.sender.sender import GmailSender
 from deadman.helpers.messages.template_handler import TemplateHandler
 

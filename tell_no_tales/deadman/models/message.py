@@ -32,9 +32,20 @@ class Message(models.Model):
     # Metadata
     number_of_notifies = models.IntegerField(default=0)
 
+    def is_edittable(self):
+        return not self.locked and not self.expired
+
     def delivered(self):
         self.delivered = True
         self.expire()
+
+    def set_message(self, message):
+        self.message = message
+        self.save()
+
+    def set_subject(self, subject):
+        self.subject = subject
+        self.save()
 
     @staticmethod
     def create_uuid():
@@ -65,6 +76,10 @@ class Message(models.Model):
 
     def set_deletable(self, deletable):
         self.deletable = deletable
+        self.save()
+
+    def set_lock(self, lock):
+        self.locked = lock
         self.save()
 
     def is_locked(self):

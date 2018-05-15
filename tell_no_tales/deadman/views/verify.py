@@ -1,7 +1,5 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-
 from deadman.models.tracker import Tracker
+from deadman.tools.response_tools import response_ok, response_ko
 
 def verify(request, tracker_id):
     print("This is a verification")
@@ -11,6 +9,6 @@ def verify(request, tracker_id):
         tracker.set_verified()
 
     else:
-        print("Invalid tracker id")
+        return response_ko("Invalid tracker id")
 
-    return JsonResponse({'status':"OK"})
+    return response_ok({'message':"verified"})
