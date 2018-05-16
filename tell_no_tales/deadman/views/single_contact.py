@@ -22,6 +22,8 @@ def single_contact(request, contact_id):
         # Update and append new data to the contact
         contact = Contact.objects.get(contact_id=contact_id, profile=profile)
 
+        print(request.POST)
+
         if 'new_addresses' in request.POST:
             new_addresses = json.loads(request.POST.get('new_addresses'))
             for new_address in new_addresses:
