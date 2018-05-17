@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from deadman.models.contact import Contact
 from deadman.models.message import Message
 from deadman.models.recipient import Recipient
+from deadman.models.profile import Profile
 
 from deadman.tools.model_tools import get_message
 from deadman.tools.response_tools import response_ok, response_ko
@@ -29,6 +30,9 @@ def single_message(request, message_id):
             change_message = str
         '''
         print("Updating a message")
+        user = request.user
+        profile = Profile.objects.get_or_create(user=user)[0]
+
         # Update or remove a message
         message = Message.objects.get(message_id=message_id)
 
@@ -60,15 +64,15 @@ def single_message(request, message_id):
             for new_recipient in new_recipients:
                 # If the contact id exists and belongs to the profile, add it as a recipient
                 if Contact.objects.filter(profile=profile, contact_id=new_recipient).exists():
-                    contact = Contact.objects.filter(profile=profile, contact_id=new_recipient)
+                    contact = Contact.objects.get(profile=profile, contact_id=new_recipient)
                     added_recipient = Recipient.objects.get_or_create(contact=contact, message=message)
 
         if 'deleted_recipients' in request.POST:
             deleted_recipients = json.loads(request.POST.get('deleted_recipients'))
             for deleted_recipient in deleted_recipients:
                 # If the contact id exists and belongs to the profile
-                if Contact.objects.filter(profile=profile, contact_id=contact_id).exists():
-                    contact = Contact.objects.filter(profile=profile, contact_id=new_recipient)
+                if Contact.objects.filter(profile=profile, contact_id=deleted_recipient).exists():
+                    contact = Contact.objects.filter(profile=profile, contact_id=deleted_recipient)
                     # If the contact is a recipient of this message
                     if Recipient.objects.filter(contact=contact, message=message).exists():
                         Recipient.objects.filter(contact=contact, message=message).delete()

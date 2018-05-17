@@ -1,15 +1,18 @@
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
 from deadman.tools.response_tools import response_ok, response_ko
 
+@csrf_exempt
 def validate_username(request):
-    username = request.GET.get('username', False)
+    username = request.POST.get('username', False)
     if not username:
         return response_ko("No username is request")
 
     return response_ok({'valid': User.objects.filter(username__iexact=username).exists()})
 
+@csrf_exempt
 def validate_email(request):
-    email = request.GET.get('email', False)
+    email = request.POST.get('email', False)
     if not email:
         return response_ko("No email in request")
 

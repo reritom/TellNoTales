@@ -8,6 +8,7 @@ from deadman.views.notify import notify
 from deadman.views.single_notify import single_notify
 from deadman.views.verify import verify
 from deadman.views.daemon import daemon
+from deadman.views import ajax
 
 app_name = 'deadman'
 
@@ -23,4 +24,6 @@ urlpatterns = [
     url(r'login', accounts.login_user, name='login_user'),
     url(r'signup', accounts.signup, name='signup'),
     url(r'logout', accounts.logout_user, name='logout_user'),
+    url(r'ajax/username', ajax.validate_username, name='validate_username'),
+    url(r'ajax/email', ajax.validate_email, name='validate_username'),
 ]

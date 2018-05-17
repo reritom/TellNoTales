@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
 from datetime import timedelta
+from django.utils import timezone
 
 from deadman.models.contact import Contact
 from deadman.models.profile import Profile
