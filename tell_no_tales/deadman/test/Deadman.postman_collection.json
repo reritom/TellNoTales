@@ -1,49 +1,10 @@
 {
 	"info": {
-		"_postman_id": "8760a5ea-e903-41f0-885f-75c2bcea41ee",
+		"_postman_id": "cc8ab2a5-9d0f-4aaa-9776-41c831cfc8e0",
 		"name": "Deadman",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
-		{
-			"name": "Login",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "username",
-							"value": "reritom",
-							"description": "",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "testpassword",
-							"description": "",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/login",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
 		{
 			"name": "Signup",
 			"request": {
@@ -55,25 +16,22 @@
 						{
 							"key": "username",
 							"value": "reritom",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "password",
 							"value": "testpassword",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "email",
 							"value": "test@gmail.com",
-							"description": "",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/signup",
+					"raw": "http://127.0.0.1:8000/api/signup",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -83,7 +41,46 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "reritom",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "testpassword",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/login",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"login"
 					]
 				}
 			},
@@ -94,9 +91,12 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/logout",
+					"raw": "http://127.0.0.1:8000/api/logout",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -106,6 +106,7 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"logout"
 					]
 				}
@@ -122,26 +123,23 @@
 					"formdata": [
 						{
 							"key": "name",
-							"value": "Test user",
-							"description": "",
+							"value": "Cheeseman",
 							"type": "text"
 						},
 						{
-							"key": "phone_numbers",
-							"value": "['097548930']",
-							"description": "",
+							"key": "phone_number",
+							"value": "097548930",
 							"type": "text"
 						},
 						{
-							"key": "email_addresses",
-							"value": "['riashu@hotmail.com']",
-							"description": "",
+							"key": "email_address",
+							"value": "riashu@hotmail.com",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/contact",
+					"raw": "http://127.0.0.1:8000/api/contact",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -151,6 +149,7 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"contact"
 					]
 				}
@@ -162,9 +161,12 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/contact",
+					"raw": "http://127.0.0.1:8000/api/contact",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -174,6 +176,7 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"contact"
 					]
 				}
@@ -185,9 +188,12 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/contact/9904ab18-9aaa-48c0-9989-75478fbb830d",
+					"raw": "http://127.0.0.1:8000/api/contact/40039c67-4785-4766-b201-7dc1b3d5aa4e",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -197,8 +203,9 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"contact",
-						"9904ab18-9aaa-48c0-9989-75478fbb830d"
+						"40039c67-4785-4766-b201-7dc1b3d5aa4e"
 					]
 				}
 			},
@@ -208,60 +215,30 @@
 			"name": "Update Existing Contact",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
 						{
-							"key": "email_address",
-							"value": "a_new_address_again@gmail.com",
-							"description": "",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/contact/08595fe5-e690-4e41-a9d3-38c6ddd987b9",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"contact",
-						"08595fe5-e690-4e41-a9d3-38c6ddd987b9"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Existing Contact (Remove)",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "email_address",
-							"value": "thero@gmail.com",
-							"description": "",
+							"key": "new_addresses",
+							"value": "[\"hello\",\"world\"]",
 							"type": "text"
 						},
 						{
-							"key": "mode",
-							"value": "REMOVE",
+							"key": "deleted_addresses",
+							"value": "[\"a\",\"_\",\"n\",\"e\",\"w\"]",
 							"description": "",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/contact/9904ab18-9aaa-48c0-9989-75478fbb830d",
+					"raw": "http://127.0.0.1:8000/api/contact/40039c67-4785-4766-b201-7dc1b3d5aa4e",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -271,8 +248,9 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"contact",
-						"9904ab18-9aaa-48c0-9989-75478fbb830d"
+						"40039c67-4785-4766-b201-7dc1b3d5aa4e"
 					]
 				}
 			},
@@ -283,9 +261,12 @@
 			"request": {
 				"method": "DELETE",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/contact/9904ab18-9aaa-48c0-9989-75478fbb830d",
+					"raw": "http://127.0.0.1:8000/api/contact/40039c67-4785-4766-b201-7dc1b3d5aa4e",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -295,8 +276,9 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"contact",
-						"9904ab18-9aaa-48c0-9989-75478fbb830d"
+						"40039c67-4785-4766-b201-7dc1b3d5aa4e"
 					]
 				}
 			},
@@ -313,49 +295,42 @@
 						{
 							"key": "subject",
 							"value": "To Tom",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "message",
 							"value": "Yet another message",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "cutoff",
 							"value": "10",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "recipient",
-							"value": "80b41d21-d2f6-4b33-ac6a-323935a65183",
-							"description": "",
+							"value": "22bf4cd8-3e7a-4f7e-bc19-d23c0145db04",
 							"type": "text"
 						},
 						{
 							"key": "lifespan",
 							"value": "5",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "viewable",
 							"value": "True",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "deletable",
 							"value": "True",
-							"description": "",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/message",
+					"raw": "http://127.0.0.1:8000/api/message",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -365,6 +340,7 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"message"
 					]
 				}
@@ -376,9 +352,12 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/message",
+					"raw": "http://127.0.0.1:8000/api/message",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -388,6 +367,7 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"message"
 					]
 				}
@@ -399,9 +379,12 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/message/f54f37be-37bb-4eb6-a731-3838c3cc49de",
+					"raw": "http://127.0.0.1:8000/api/message/f959a95d-9cfb-4de2-b3f5-ae53a6ef45e9",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -411,15 +394,16 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"message",
-						"f54f37be-37bb-4eb6-a731-3838c3cc49de"
+						"f959a95d-9cfb-4de2-b3f5-ae53a6ef45e9"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Add Contact To Message",
+			"name": "Add/Remove Contact To Message",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -427,21 +411,45 @@
 					"mode": "formdata",
 					"formdata": [
 						{
-							"key": "recipient",
-							"value": "aa8ac0e0-93ee-44da-be32-b7c3a0854a83",
+							"key": "new_recipients",
+							"value": "[\"a6814a86-3522-423c-b07b-d0ea4c70c938\"]",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "deleted_recipients",
+							"value": "[\"22bf4cd8-3e7a-4f7e-bc19-d23c0145db04\"]",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "make_anonymous",
+							"value": "True",
 							"description": "",
 							"type": "text"
 						},
 						{
-							"key": "mode",
-							"value": "UPDATE",
+							"key": "make_undeletable",
+							"value": "true",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "make_hidden",
+							"value": "false",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "make_locked",
+							"value": "true",
 							"description": "",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/message/81ee240b-6af5-4fe1-8971-ba1b6f37abf1",
+					"raw": "http://127.0.0.1:8000/api/message/f959a95d-9cfb-4de2-b3f5-ae53a6ef45e9",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -451,48 +459,9 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"message",
-						"81ee240b-6af5-4fe1-8971-ba1b6f37abf1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Add Contact To Message (Remove)",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "recipient",
-							"value": "a664cc1f-6b3e-4fd2-8b1b-1843f417c584",
-							"description": "",
-							"type": "text"
-						},
-						{
-							"key": "mode",
-							"value": "REMOVE",
-							"description": "",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/message/2152d20f-a426-402f-bebd-72d5d2798dd8",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"message",
-						"2152d20f-a426-402f-bebd-72d5d2798dd8"
+						"f959a95d-9cfb-4de2-b3f5-ae53a6ef45e9"
 					]
 				}
 			},
@@ -503,9 +472,12 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/notify/81ee240b-6af5-4fe1-8971-ba1b6f37abf1",
+					"raw": "http://127.0.0.1:8000/api/notify/f959a95d-9cfb-4de2-b3f5-ae53a6ef45e9",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -515,8 +487,9 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"notify",
-						"81ee240b-6af5-4fe1-8971-ba1b6f37abf1"
+						"f959a95d-9cfb-4de2-b3f5-ae53a6ef45e9"
 					]
 				}
 			},
@@ -527,9 +500,12 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/verify/1234566",
+					"raw": "http://127.0.0.1:8000/api/verify/1234566",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -539,6 +515,7 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"verify",
 						"1234566"
 					]
@@ -551,9 +528,12 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/daemon",
+					"raw": "http://127.0.0.1:8000/api/daemon",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -563,6 +543,7 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"daemon"
 					]
 				}
@@ -574,9 +555,12 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/notify",
+					"raw": "http://127.0.0.1:8000/api/notify",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -586,7 +570,78 @@
 					],
 					"port": "8000",
 					"path": [
+						"api",
 						"notify"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AJAX username",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "tom",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/ajax/username",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"ajax",
+						"username"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AJAX email",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "riashu@hotmail.com",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/ajax/email",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"ajax",
+						"email"
 					]
 				}
 			},
