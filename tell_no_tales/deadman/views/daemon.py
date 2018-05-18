@@ -150,7 +150,7 @@ def send_messages():
                         # Publish encrypted message with verify/tracker url
 
             # Expire the message
-            message.delivered()
+            message.set_delivered()
 
 def load_config():
     # Load a the email and password from a file outside of the repo

@@ -1,4 +1,3 @@
-
 from deadman.models.profile import Profile
 from deadman.models.message import Message
 from deadman.models.contact import Contact

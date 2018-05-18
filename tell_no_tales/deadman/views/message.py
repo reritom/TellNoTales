@@ -61,6 +61,5 @@ def message(request):
 
         return response_ok({'messages':list_of_messages})
 
-
     else:
         return response_ko("Unsupported request method")

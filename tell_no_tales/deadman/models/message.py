@@ -23,6 +23,7 @@ class Message(models.Model):
     cutoff = models.IntegerField(default=0)
     expired = models.BooleanField(default=False)
     delivered = models.BooleanField(default=False)
+    anonymous = models.BooleanField(default=False)
 
     # Properties for accessing the message
     viewable = models.BooleanField(default=True)
@@ -32,10 +33,17 @@ class Message(models.Model):
     # Metadata
     number_of_notifies = models.IntegerField(default=0)
 
+    def get_delivered(self):
+        return self.delivered
+
+    def set_anonymous(self, anon):
+        self.anonymous = anon
+        self.save()
+
     def is_edittable(self):
         return not self.locked and not self.expired
 
-    def delivered(self):
+    def set_delivered(self):
         self.delivered = True
         self.expire()
 
@@ -78,7 +86,7 @@ class Message(models.Model):
         self.deletable = deletable
         self.save()
 
-    def set_lock(self, lock):
+    def set_locked(self, lock):
         self.locked = lock
         self.save()
 

@@ -8,6 +8,7 @@ from deadman.models.profile import Profile
 
 from deadman.tools.model_tools import get_message
 from deadman.tools.response_tools import response_ok, response_ko
+from deadman.tools.core_tools import to_bool
 from deadman.tools.validation.decorators import validate_message_id
 import json, uuid
 
@@ -44,19 +45,23 @@ def single_message(request, message_id):
             return response_ko("This message can't be editted")
 
         if 'make_undeletable' in request.POST:
-            if isinstance(request.POST['make_undeletable'], bool()):
-                message.set_deletable(request.POST['make_undeletable'])
+            if isinstance(to_bool(request.POST['make_undeletable']), bool):
+                message.set_deletable(not to_bool(request.POST['make_undeletable']))
+
+        if 'make_anonymous' in request.POST:
+            if isinstance(to_bool(request.POST['make_anonymous']), bool):
+                message.set_anonymous(to_bool(request.POST['make_anonymous']))
 
         if 'make_hidden' in request.POST:
-            if isinstance(request.POST['make_hidden'], bool()):
-                message.set_viewable(not request.POST['make_hidden'])
+            if isinstance(to_bool(request.POST['make_hidden']), bool):
+                message.set_viewable(not to_bool(request.POST['make_hidden']))
 
         if 'change_subject' in request.POST:
-            if isinstance(request.post['change_subject'], str()):
+            if isinstance(request.post['change_subject'], str):
                 message.set_subject(request.post['change_subject'])
 
         if 'change_message' in request.POST:
-            if isinstance(request.post['change_message'], str()):
+            if isinstance(request.post['change_message'], str):
                 message.set_message(request.post['change_message'])
 
         if 'new_recipients' in request.POST:
@@ -78,9 +83,9 @@ def single_message(request, message_id):
                         Recipient.objects.filter(contact=contact, message=message).delete()
                         print("Recipient has been deleted {0}".format(deleted_recipient))
 
-        if 'set_lock' in request.POST:
-            if isinstance(request.POST['set_lock'], bool()):
-                message.set_viewable(request.POST['set_lock'])
+        if 'make_locked' in request.POST:
+            if isinstance(to_bool(request.POST['make_locked']), bool):
+                message.set_locked(to_bool(request.POST['make_locked']))
 
         return response_ok({'message':get_message(message)})
 

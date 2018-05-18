@@ -43,9 +43,13 @@ def get_message(message):
                               'notify_within': str(message.sending_in()),
                               'recipients': recipients_list,
                               'cutoff_in': str(message.cutoff_in()),
-                              'message_id': message.message_id}
+                              'message_id': message.message_id,
+                              'anonymous': message.anonymous,
+                              'deletable': message.deletable,
+                              'delivered': message.get_delivered(),
+                              'locked': message.locked}
 
-    if message.delivered:
+    if message.get_delivered():
         message_representation['delivery_status'] = {}
 
         recipients = Recipient.objects.filter(message=message)
