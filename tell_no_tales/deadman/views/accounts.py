@@ -40,18 +40,15 @@ def signup(request):
             return response_ko("This username already exists")
 
         user = User.objects.create_user(username=username, email=email, password=password)
-
         profile = Profile.objects.get_or_create(user=user)[0]
 
-        gmail_sender, gmail_password = load_config()
-        # Create EmailValidator
         email_validator = EmailValidator.objects.get_or_create(profile=profile, validator_id=EmailValidator.create_uuid())[0]
-        # Create UUID
-        # Send email
+
         bom = {'username':username,
                'validation_url': app_settings.BASE_URL + "/confirm/email/" + email_validator.get_id()}
-        # TODO send the confirmation email
 
+        # We will load some gmail account details 
+        gmail_sender, gmail_password = load_config()
         with GmailSender(gmail_sender, gmail_password) as sender:
             # Format the message
             handler = TemplateHandler()
