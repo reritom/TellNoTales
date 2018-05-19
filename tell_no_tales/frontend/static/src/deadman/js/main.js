@@ -866,9 +866,11 @@ Vue.component('settings-tab', {
             if (response.data.status === true) {
               if (response.data.data.logged_in === true){
                 this.logged_in = true;
+                this.$emit('logged_in', true);
               }
               else {
                 this.logged_in = false;
+                this.$emit('logged_in', false);
               }
             }
           })
@@ -886,13 +888,14 @@ Vue.component('core-component', {
   data: function() {
     return {
       loading: false,
-      view: "settings"
+      view: "settings",
+      logged_in: false
     }
   },
   template: `<div class="container">
 
-                <button class="btn btn-info" v-on:click="view = 'messages'">Messages</button>
-                <button class="btn btn-info" v-on:click="view = 'contacts'">Contacts</button>
+                <button class="btn btn-info" :disabled="!logged_in" v-on:click="view = 'messages'">Messages</button>
+                <button class="btn btn-info" :disabled="!logged_in" v-on:click="view = 'contacts'">Contacts</button>
                 <button class="btn btn-info" v-on:click="view = 'settings'">Settings</button>
 
                 <div id="ContactsView" v-if="view==='contacts'">
@@ -900,7 +903,7 @@ Vue.component('core-component', {
                 </div>
 
                 <div id="SettingsView" v-if="view==='settings'">
-                  <settings-tab></settings-tab>
+                  <settings-tab v-on:logged_in="logged_in = $event"></settings-tab>
                 </div>
 
                 <div id="MessageView" v-if="view==='messages'">
