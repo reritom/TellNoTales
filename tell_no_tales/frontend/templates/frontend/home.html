@@ -24,26 +24,7 @@
 
 
   <div id="VueContainer">
-    <div class="container">
-
-      <button class="btn btn-info" v-on:click="view = 'messages'">Messages</button>
-      <button class="btn btn-info" v-on:click="view = 'contacts'">Contacts</button>
-      <button class="btn btn-info" v-on:click="view = 'settings'">Settings</button>
-
-      <div id="ContactsView" v-if="view==='contacts'">
-          <contact-tab :contacts='contacts'></contact-tab>
-      </div>
-
-      <div id="SettingsView" v-if="view==='settings'">
-        <button class="btn btn-info" v-on:click="logIn()">Login</button>
-      </div>
-
-      <div id="MessageView" v-if="view==='messages'">
-        <message-tab></message-tab>
-      </div>
-
-      <div class="loading" v-if="loading===true">Loading&#8230;</div>
-    </div>
+    <core-component></core-component>
   </div>
 
 

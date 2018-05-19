@@ -782,11 +782,71 @@ Vue.component('contact-tab', {
   }
 })
 
+Vue.component('login-tab', {
+  template: `<div>
+                <p>This is a login tab</p>
+             </div>`
+})
+
+Vue.component('signup-tab', {
+  template: `<div>
+                <p>This is a signup tab</p>
+             </div>`
+})
+
+Vue.component('logout-tab', {
+  template: `<div>
+                <p>This is a logout tab</p>
+             </div>`
+})
+
+Vue.component('settings-tab', {
+  template: `<div>
+                <p>This is a settings tab</p>
+                <login-tab></login-tab>
+                <signup-tab></signup-tab>
+                <logout-tab></logout-tab>
+             </div>`,
+  methods: {
+    checkLoginStatus() {
+      // Check the status, if logged in, show logout and account modification tab, else show login and signup
+    }
+  }
+})
+
+Vue.component('core-component', {
+  data: function() {
+    return {
+      loading: false,
+      view: "settings"
+    }
+  },
+  template: `<div class="container">
+
+                <button class="btn btn-info" v-on:click="view = 'messages'">Messages</button>
+                <button class="btn btn-info" v-on:click="view = 'contacts'">Contacts</button>
+                <button class="btn btn-info" v-on:click="view = 'settings'">Settings</button>
+
+                <div id="ContactsView" v-if="view==='contacts'">
+                    <contact-tab></contact-tab>
+                </div>
+
+                <div id="SettingsView" v-if="view==='settings'">
+                  <settings-tab></settings-tab>
+                </div>
+
+                <div id="MessageView" v-if="view==='messages'">
+                  <message-tab></message-tab>
+                </div>
+
+                <div class="loading" v-if="loading===true">Loading&#8230;</div>
+              </div>`
+})
+
 new Vue({
   el: '#VueContainer',
   delimiters: ['[[',']]'],
   data: {
-  contacts: [],
   loading: false,
   view: false},
 methods: {
