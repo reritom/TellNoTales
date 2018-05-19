@@ -4,6 +4,14 @@ from deadman.models.contact import Contact
 from deadman.tools.response_tools import response_ko, response_ok
 from django.utils.functional import wraps
 
+def validate_email_verified(view):
+    @wraps(view)
+    def inner(request, *args):
+        print("Checking that profile email is verified")
+
+        return view(request, *args)
+    return inner
+
 
 def validate_message_id(view):
     @wraps(view)

@@ -12,7 +12,7 @@ from deadman.models.phone_number import PhoneNumber
 from deadman.models.tracker import Tracker
 from deadman.models.recipient import Recipient
 
-
+from deadman.tools.core_tools import load_config
 from deadman.helpers.sender.sender import GmailSender
 from deadman.helpers.messages.template_handler import TemplateHandler
 
@@ -22,7 +22,6 @@ global gmail_sender
 global gmail_password
 
 def daemon(request):
-    load_config()
     expire_by_cutoff()
     send_reminders()
     send_messages()
@@ -45,6 +44,8 @@ def expire_by_cutoff():
 
 def send_reminders():
     # Filter non-expired messages
+
+    gmail_sender, gmail_password = load_config()
     print("In Send Reminders")
     for profile in Profile.objects.all():
         print("Profile is {0}".format(profile.user.username))
@@ -94,6 +95,7 @@ def send_reminders():
 
 def send_messages():
     print("In send_messages")
+    gmail_sender, gmail_password = load_config()
     # Filter unexpired messages
     messages = Message.objects.filter(expired=False)
 
@@ -151,15 +153,3 @@ def send_messages():
 
             # Expire the message
             message.set_delivered()
-
-def load_config():
-    # Load a the email and password from a file outside of the repo
-    print(os.listdir(os.path.join('..', '..')))
-    path_to_config = os.path.join('..', '..', 'non_git_settings.json')
-    config = json.load(open(path_to_config))
-
-    global gmail_sender
-    gmail_sender = config['gmail_sender']
-
-    global gmail_password
-    gmail_password = config['gmail_password']

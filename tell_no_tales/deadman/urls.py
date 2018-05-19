@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'logout', accounts.logout_user, name='logout_user'),
     url(r'ajax/username', ajax.validate_username, name='validate_username'),
     url(r'ajax/email', ajax.validate_email, name='validate_username'),
+    url(r'confirm/email/(?P<validator_id>[-\w]+)', accounts.email_confirmed, name='email_confirmed'),
 ]
