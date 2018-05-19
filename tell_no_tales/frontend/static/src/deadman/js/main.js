@@ -622,7 +622,105 @@ Vue.component('search-contacts', {
 
 Vue.component('new-contact', {
   props: ['noneyet'],
-  template: `<div>New contact component here</div>`
+  data: function() {
+    return {
+      name: "",
+      addresses: [],
+      numbers: [],
+      expanded_toggle: false
+    }
+  },
+  computed: {
+    valid_form: function() {
+      return ((this.name != "") && (this.addresses.length > 0 || this.numbers.length > 0 ))
+    }
+  },
+  methods: {
+    addEmail() {
+      var email = this.$refs.email_input.value;
+      if (email != ""){
+        this.addresses.push(email);
+        this.$refs.email_input.value = "";
+      }
+    },
+    addNumber() {
+      var number = this.$refs.number_input.value;
+      if (number != ""){
+        this.numbers.push(number);
+        this.$refs.number_input.value = "";
+      }
+    },
+    removeEmail(index) {
+      Vue.delete(this.addresses, index)
+    },
+    removeNumber(index) {
+      Vue.delete(this.numbers, index)
+    },
+    emitRefreshPulse() {
+      this.$emit('pulse');
+    },
+    createContact() {
+      if (this.valid_form) {
+        formData = new FormData;
+
+        formData.append('name', this.name);
+        formData.append('numbers', JSON.stringify(this.numbers));
+        formData.append('addresses', JSON.stringify(this.addresses));
+
+        this.sendContact(formData);
+
+      }
+    },
+    sendContact(formData) {
+      this.$http.post('/api/contact' + formData)
+          .then((response) => {
+            console.log(response.data);
+            this.loading = false;
+
+            //TODO IF status ok, then show success message, else show error
+            this.emitRefreshPulse();
+            this.edit_toggle = false;
+
+            this.numbers = [];
+            this.addresses = [];
+            this.name = ""
+          })
+          .catch((err) => {
+           this.loading = false;
+           console.log(err);
+           this.emitRefreshPulse();
+           this.expanded_toggle = false;
+          })
+    }
+  },
+  template: `<div>
+                <div @click="expanded_toggle = !expanded_toggle">
+                  <p>New contact component here</p>
+                </div>
+                <div v-if="expanded_toggle">
+                  <p>This is the expanded part</p>
+
+                  <input v-model="name" placeholder="Add their name">
+
+                  <div v-for="number, index in numbers">
+                    <p @click="removeNumber(index)">{{number}}</p>
+                  </div>
+                  <div>
+                    <input ref="number_input" placeholder="Add an number">
+                    <button @click="addNumber()">Number tick</button>
+                  </div>
+
+                  <div v-for="address, index in addresses">
+                    <p @click="removeEmail(index)">{{address}}</p>
+                  </div>
+                  <div>
+                    <input ref="email_input" placeholder="Add an email">
+                    <button @click="addEmail()">Email tick</button>
+                  </div>
+
+                  <button :disabled="!valid_form" @click="createContact()">save</button>
+                </div>
+             </div>`
 })
 
 Vue.component('contact-tab', {
@@ -635,7 +733,7 @@ Vue.component('contact-tab', {
   },
   template: `<div>
               <search-contacts v-on:search="search_key = $event"></search-contacts>
-              <new-contact></new-contact>
+              <new-contact v-on:pulse="getContacts()"></new-contact>
               <contact-group :contactlist="filtered_contacts" :filtered="filtered" v-on:pulse="getContacts()"></contact-group>
               <p>Searching for {{ search_key }}</p>
             </div>`,
