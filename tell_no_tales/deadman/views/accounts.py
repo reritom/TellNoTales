@@ -87,10 +87,16 @@ def signup(request):
 
 @csrf_exempt
 def login_user(request):
-    if request.user.is_authenticated:
-        return response_ok({"message": "Already logged in"})
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            return response_ok({'logged_in': True})
+        else:
+            return response_ok({'logged_in': False})
 
-    if request.method == 'POST':
+    elif request.method == 'POST':
+        if request.user.is_authenticated:
+            return response_ko("User already logged in")
+
         username = request.POST['username']
         password = request.POST['password']
 

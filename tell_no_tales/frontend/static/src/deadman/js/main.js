@@ -783,9 +783,41 @@ Vue.component('contact-tab', {
 })
 
 Vue.component('login-tab', {
+  data: function() {
+    return {
+      username: "",
+      password: ""
+    }
+  },
   template: `<div>
                 <p>This is a login tab</p>
-             </div>`
+                <input v-model="username" placeholder="Username">
+                <input v-model="password" type="password" placeholder="Password">
+                <button :disabled="!form_valid" @click="login">Log in</button>
+             </div>`,
+  methods: {
+    login() {
+      var formData = new FormData();
+       formData.append('username', this.username);
+       formData.append('password', this.password);
+
+      this.$http.post('/api/login/', formData)
+            .then((response) => {
+            console.log(response.data);
+            this.password = "";
+            this.username = "";
+            this.$emit('login');
+          })
+          .catch((err) => {
+           console.log(err);
+          })
+    }
+  },
+  computed: {
+    form_valid: function() {
+      return (this.username != "" && this.password != "")
+    }
+  }
 })
 
 Vue.component('signup-tab', {
@@ -797,20 +829,56 @@ Vue.component('signup-tab', {
 Vue.component('logout-tab', {
   template: `<div>
                 <p>This is a logout tab</p>
-             </div>`
+                <button @click="logout()">Logout</button>
+             </div>`,
+  methods: {
+    logout() {
+      this.$http.get('/api/logout/')
+          .then((response) => {
+            console.log(response.data);
+            this.$emit('logout');
+          })
+          .catch((err) => {
+           console.log(err);
+          })
+    }
+  }
 })
 
 Vue.component('settings-tab', {
+  data: function() {
+    return {
+      logged_in: false
+    }
+  },
   template: `<div>
                 <p>This is a settings tab</p>
-                <login-tab></login-tab>
-                <signup-tab></signup-tab>
-                <logout-tab></logout-tab>
+                <login-tab v-if="!logged_in" v-on:login="checkLoginStatus()"></login-tab>
+                <signup-tab v-if="!logged_in" v-on:signup="checkLoginStatus()"></signup-tab>
+                <logout-tab v-if="logged_in" v-on:logout="checkLoginStatus()"></logout-tab>
              </div>`,
   methods: {
     checkLoginStatus() {
       // Check the status, if logged in, show logout and account modification tab, else show login and signup
+      this.$http.get('/api/login/')
+          .then((response) => {
+            console.log(response.data);
+            if (response.data.status === true) {
+              if (response.data.data.logged_in === true){
+                this.logged_in = true;
+              }
+              else {
+                this.logged_in = false;
+              }
+            }
+          })
+          .catch((err) => {
+           console.log(err);
+          })
     }
+  },
+  created: function() {
+    this.checkLoginStatus()
   }
 })
 
@@ -845,28 +913,5 @@ Vue.component('core-component', {
 
 new Vue({
   el: '#VueContainer',
-  delimiters: ['[[',']]'],
-  data: {
-  loading: false,
-  view: false},
-methods: {
-  logIn: function() {
- this.loading = true;
-
-   var formData = new FormData();
-  formData.append('username', 'reritom13');
-  formData.append('password', 'testpassword');
-
- this.$http.post('/api/login/', formData)
-     .then((response) => {
-       console.log(response.data);
-       this.loading = false;
-     })
-     .catch((err) => {
-      this.loading = false;
-      console.log(err);
-     })
-}
-
-}
+  delimiters: ['[[',']]']
 })
