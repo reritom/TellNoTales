@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from deadman.models.profile import Profile
 from deadman.models.email_validator import EmailValidator
@@ -11,8 +12,38 @@ from deadman.tools.response_tools import response_ok, response_ko
 from deadman.tools.core_tools import load_config
 from deadman import app_settings
 
+def send_confirmation_email(validator_id):
+    try:
+        bom = {'username':username,
+               'validation_url': app_settings.BASE_URL + "/confirm/email/" + validator_id}
+
+        # We will load some gmail account details
+        gmail_sender, gmail_password = load_config()
+        with GmailSender(gmail_sender, gmail_password) as sender:
+            # Format the message
+            handler = TemplateHandler()
+            rendered = handler.render_template("confirm_address.html", bom)
+
+            print("Rendered message is {0}".format(rendered))
+            sender.send(subject="Confirm your email address",
+                        message=rendered,
+                        destination=email,
+                        origin='tellnotalesnotif@gmail.com')
+
+    except:
+        print("Failed to send email to {0}".format(email))
+
+@login_required
 def resend_confirmation_email(request):
-    pass
+    user = request.user
+    profile = Profile.objects.get_or_create(user=user)[0]
+
+    if not profile.is_validated:
+        email_validator = EmailValidator.objects.get_or_create(profile=profile, validator_id=EmailValidator.create_uuid())[0]
+        validator_id = email_validator.get_id()
+        send_confirmation_email(validator_id)
+
+    return response_ok({'message':"Confirmation email has been sent"})
 
 def email_confirmed(request, validator_id):
     if EmailValidator.objects.filter(validator_id=validator_id).exists():
@@ -44,29 +75,10 @@ def signup(request):
 
         user = User.objects.create_user(username=username, email=email, password=password)
         profile = Profile.objects.get_or_create(user=user)[0]
-
         email_validator = EmailValidator.objects.get_or_create(profile=profile, validator_id=EmailValidator.create_uuid())[0]
+        validator_id = email_validator.get_id()
 
-        bom = {'username':username,
-               'validation_url': app_settings.BASE_URL + "/confirm/email/" + email_validator.get_id()}
-
-        try:
-            # We will load some gmail account details
-            gmail_sender, gmail_password = load_config()
-            with GmailSender(gmail_sender, gmail_password) as sender:
-                # Format the message
-                handler = TemplateHandler()
-                rendered = handler.render_template("confirm_address.html", bom)
-
-                print("Rendered message is {0}".format(rendered))
-                sender.send(subject="Confirm your email address",
-                            message=rendered,
-                            destination=email,
-                            origin='tellnotalesnotif@gmail.com')
-
-        except:
-            print("Failed to send email to {0}".format(email))
-
+        send_confirmation_email(validator_id)
 
         return response_ok({'message':'User account successfully created'})
 

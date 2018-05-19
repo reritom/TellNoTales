@@ -15,7 +15,7 @@
 					"formdata": [
 						{
 							"key": "username",
-							"value": "reritom",
+							"value": "reritom14",
 							"type": "text"
 						},
 						{
@@ -25,7 +25,7 @@
 						},
 						{
 							"key": "email",
-							"value": "test@gmail.com",
+							"value": "reikudjinn@gmail.com",
 							"type": "text"
 						}
 					]
@@ -58,7 +58,7 @@
 					"formdata": [
 						{
 							"key": "username",
-							"value": "reritom",
+							"value": "reritom13",
 							"type": "text"
 						},
 						{
@@ -642,6 +642,31 @@
 						"api",
 						"ajax",
 						"email"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Resend Email Confirmation",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/confirm/resend",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"confirm",
+						"resend"
 					]
 				}
 			},

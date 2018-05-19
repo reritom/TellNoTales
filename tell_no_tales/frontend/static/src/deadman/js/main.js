@@ -239,26 +239,12 @@ Vue.component('new-message', {
               this.loading = false;
               console.log("Reply status is ");
               console.log(reply_status);
+              if (reply_status === true){
+                // Alert that it has been made successfully
+                this.create_success = true;
 
-              if (reply_status){
-                  console.log("Returning true")
-                  console.log(response.data.data.message.message_id);
-                  this.message_id = response.data.data.message.message_id;
-                  console.log(this.message_id);
-
-                  console.log("For remaining recipients");
-                  for (var i=0; i<this.selected_contacts.length; i++){
-                      console.log(i);
-                      this.sendMessageAddRecipient(this.selected_contacts[i].contact_id);
-                    }
-
-                  console.log("before send pulse");
-                  //Send a pulse so that the message tab knows to update the message list
-                  this.sendPulse();
-                  console.log("after send pulse");
-                }
-              else {
-                console.log("Reply status KO");
+                //Close the new message tab
+                this.clicked = false;
               }
             })
             .catch((err) => {
@@ -269,16 +255,11 @@ Vue.component('new-message', {
           },
     createMessage: function() {
       if (this.validateMessage()) {
-        // API LIMITATION. ONLY 1 CONTACT IN CREATE_MESSAGE, the others need to be added in seperate requests
-
-        console.log(this.selected_contacts[0].contact_id);
-
         //Construct the form
         var form = new FormData();
         form.append("subject", this.the_subject);
         form.append("message", this.the_message);
-        form.append("recipient", this.selected_contacts[0].contact_id);
-        this.selected_contacts.shift();
+        form.append("recipients", JSON.stringify(this.selected_contacts));
         form.append("viewable", this.viewable);
         form.append("deletable", this.deletable);
         form.append("locked", this.locked);
@@ -289,12 +270,6 @@ Vue.component('new-message', {
         console.log("Creating a message");
         this.sendMessage(form);
         console.log("Finished sending message");
-
-        // Alert that it has been made successfully
-        this.create_success = true;
-
-        //Close the new message tab
-        this.clicked = false;
 
       }
       else {
@@ -721,7 +696,7 @@ methods: {
  this.loading = true;
 
    var formData = new FormData();
-  formData.append('username', 'tom');
+  formData.append('username', 'reritom13');
   formData.append('password', 'testpassword');
 
  this.$http.post('/api/login/', formData)
