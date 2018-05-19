@@ -23,6 +23,10 @@ def message(request):
 
     if request.method == 'POST':
         print("Creating new message")
+        # Check email has been validated
+        if not profile.is_validated():
+            return response_ko("Profile email address not validated")
+
         # Create a new message
         if not ('subject' in request.POST and 'message' in request.POST and 'lifespan' in request.POST and 'cutoff' in request.POST):
             # Missing parameters

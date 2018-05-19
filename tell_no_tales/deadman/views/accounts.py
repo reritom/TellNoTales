@@ -11,6 +11,9 @@ from deadman.tools.response_tools import response_ok, response_ko
 from deadman.tools.core_tools import load_config
 from deadman import app_settings
 
+def resend_confirmation_email(request):
+    pass
+
 def email_confirmed(request, validator_id):
     if EmailValidator.objects.filter(validator_id=validator_id).exists():
         validator = EmailValidator.objects.get(validator_id=validator_id)
@@ -47,23 +50,22 @@ def signup(request):
         bom = {'username':username,
                'validation_url': app_settings.BASE_URL + "/confirm/email/" + email_validator.get_id()}
 
-        # We will load some gmail account details 
-        gmail_sender, gmail_password = load_config()
-        with GmailSender(gmail_sender, gmail_password) as sender:
-            # Format the message
-            handler = TemplateHandler()
-            rendered = handler.render_template("confirm_address.html", bom)
+        try:
+            # We will load some gmail account details
+            gmail_sender, gmail_password = load_config()
+            with GmailSender(gmail_sender, gmail_password) as sender:
+                # Format the message
+                handler = TemplateHandler()
+                rendered = handler.render_template("confirm_address.html", bom)
 
-            print("Rendered message is {0}".format(rendered))
-
-            try:
+                print("Rendered message is {0}".format(rendered))
                 sender.send(subject="Confirm your email address",
                             message=rendered,
                             destination=email,
                             origin='tellnotalesnotif@gmail.com')
 
-            except:
-                print("Failed to send email to {0}".format(email))
+        except:
+            print("Failed to send email to {0}".format(email))
 
 
         return response_ok({'message':'User account successfully created'})

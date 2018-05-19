@@ -17,3 +17,6 @@ class Profile(models.Model):
     def set_email_validated(self):
         self.email_validated = True
         self.save()
+
+    def is_validated(self):
+        return self.email_validated

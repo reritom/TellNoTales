@@ -16,8 +16,11 @@ def contact(request):
     profile = Profile.objects.get_or_create(user=user)[0]
 
     if request.method == 'POST':
-        # Create new contact using post data
+        # Check if profile has been validated
+        if not profile.is_validated():
+            return response_ko("Profile email address not validated")
 
+        # Create new contact using post data
         if not ('name' in request.POST and ('phone_number' in request.POST or 'email_address' in request.POST)):
             return response_ko("Missing parameter, contact requires 'name', and ('email_address' and/or 'phone_number')")
 
