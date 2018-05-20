@@ -40,9 +40,9 @@ def message(request):
                                          cutoff=request.POST['cutoff'],
                                          message_id=Message.create_uuid())
 
-        for recipient in request.POST['recipient']:
+        for recipient in request.POST['recipients']:
             if Contact.objects.filter(contact_id=recipient).exists():
-                contact = Contact.objects.get(contact_id=request.POST['recipient'])
+                contact = Contact.objects.get(contact_id=recipient)
                 recipient = Recipient.objects.get_or_create(contact=contact, message=message)
 
         if 'viewable' in request.POST:

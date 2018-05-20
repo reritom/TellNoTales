@@ -12,6 +12,11 @@ from deadman.tools.response_tools import response_ok, response_ko
 from deadman.tools.core_tools import load_config
 from deadman import app_settings
 
+def get_profile(request):
+    # This returns the profile details (message count, contact count, delivered messages, pending messages, and email validation setting with a resend link)
+    pass
+
+
 def send_confirmation_email(validator_id):
     try:
         bom = {'username':username,

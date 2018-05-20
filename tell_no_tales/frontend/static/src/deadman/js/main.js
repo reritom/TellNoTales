@@ -202,33 +202,6 @@ Vue.component('new-message', {
       console.log("Sending pulse");
       this.$emit("pulse");
     },
-    sendMessageAddRecipient(contact_id){
-      var form = new FormData();
-      form.append("recipient", contact_id);
-      form.append("mode", "UPDATE");
-      console.log("Url is /api/message/" + this.message_id);
-      this.loading = true;
-      this.$http.post('/api/message/' + this.message_id, form)
-          .then((response) => {
-            console.log(response.data);
-            var reply_status = response.data.status;
-            this.loading = false;
-
-            if (reply_status){
-              console.log("Status OK for adding recipient");
-              return true
-              }
-            else {
-              return false
-            }
-          })
-          .catch((err) => {
-           this.loading = false;
-           console.log(err);
-           return false
-          })
-
-    },
     sendMessage: function(form) {
         console.log("In send message promise");
         this.loading = true;
@@ -689,7 +662,6 @@ Vue.component('new-contact', {
            this.loading = false;
            console.log(err);
            this.emitRefreshPulse();
-           this.expanded_toggle = false;
           })
     }
   },
@@ -826,6 +798,12 @@ Vue.component('signup-tab', {
              </div>`
 })
 
+Vue.component('profile-tab', {
+  template: `<div>
+                <p>This is a profile tab</p>
+             </div>`
+})
+
 Vue.component('logout-tab', {
   template: `<div>
                 <p>This is a logout tab</p>
@@ -856,6 +834,7 @@ Vue.component('settings-tab', {
                 <login-tab v-if="!logged_in" v-on:login="checkLoginStatus()"></login-tab>
                 <signup-tab v-if="!logged_in" v-on:signup="checkLoginStatus()"></signup-tab>
                 <logout-tab v-if="logged_in" v-on:logout="checkLoginStatus()"></logout-tab>
+                <profile-tab v-if="logged_in"></profile-tab>
              </div>`,
   methods: {
     checkLoginStatus() {
