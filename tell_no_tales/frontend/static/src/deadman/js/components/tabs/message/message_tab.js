@@ -34,21 +34,21 @@ export default {
     }
 
     this.filtered = true;
-    var filtered = [];
+    var filtered_messages = [];
     // for each message
     for (var i = 0; i < this.messages.length; i++) {
         // see if the search key exists in any of the searchable elements
-        if (this.messages[i].subject.includes(this.search_key.toLowerCase())){
-          filtered.push(this.messages[i]);
+        if (this.messages[i].subject.toLowerCase().indexOf(this.search_key.toLowerCase()) != -1){
+          filtered_messages.push(this.messages[i]);
         }
-        else if (this.messages[i].message.includes(this.search_key.toLowerCase())){
-          filtered.push(this.messages[i]);
+        else if (this.messages[i].message.toLowerCase().indexOf(this.search_key.toLowerCase()) != -1){
+          filtered_messages.push(this.messages[i]);
         }
         else {
           continue;
         }
     };
-    return filtered
+    return filtered_messages
   }},
   methods: {
     getMessages: function() {
