@@ -40,7 +40,7 @@ export default {
     },
     createContact() {
       if (this.valid_form) {
-        formData = new FormData;
+        var formData = new FormData();
 
         formData.append('name', this.name);
         formData.append('numbers', JSON.stringify(this.numbers));
@@ -51,18 +51,27 @@ export default {
       }
     },
     sendContact(formData) {
-      this.$http.post('/api/contact' + formData)
+      console.log("Posting new contact with data");
+
+      // Display the key/value pairs
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]);
+        }
+
+      this.$http.post('/api/contact', formData)
           .then((response) => {
             console.log(response.data);
             this.loading = false;
 
             //TODO IF status ok, then show success message, else show error
-            this.emitRefreshPulse();
-            this.edit_toggle = false;
+            if (response.data.status === true) {
+              this.emitRefreshPulse();
+              this.edit_toggle = false;
 
-            this.numbers = [];
-            this.addresses = [];
-            this.name = ""
+              this.numbers = [];
+              this.addresses = [];
+              this.name = ""
+            }
           })
           .catch((err) => {
            this.loading = false;

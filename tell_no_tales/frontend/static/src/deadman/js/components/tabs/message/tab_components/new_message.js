@@ -1,6 +1,5 @@
 export default {
   name: "NewMessage",
-  props: ['noneyet'],
   data: function () {
     return {
       clicked: false,
@@ -82,9 +81,9 @@ export default {
                 <br>
 
                 <!-- Locked -->
-                <input type="radio" id="locked_false" value="true" v-model="viewable">
+                <input type="radio" id="locked_false" value="false" v-model="locked">
                 <label for="locked_false">Unlocked</label>
-                <input type="radio" id="locked_true" value="false" v-model="viewable">
+                <input type="radio" id="locked_true" value="true" v-model="locked">
                 <label for="locked_true">Locked</label>
                 <br>
 
@@ -103,7 +102,7 @@ export default {
     this.getContacts();
   },
   methods: {
-    sendPulse() {
+    sendPulse: function() {
       console.log("Sending pulse");
       this.$emit("pulse");
     },
@@ -119,7 +118,10 @@ export default {
               console.log(reply_status);
               if (reply_status === true){
                 // Alert that it has been made successfully
+                console.log("About to send pulse")
                 this.create_success = true;
+
+                this.sendPulse();
 
                 //Close the new message tab
                 this.clicked = false;
@@ -143,6 +145,11 @@ export default {
         form.append("locked", this.locked);
         form.append("lifespan", this.lifespan);
         form.append("cutoff", this.cutoff);
+
+        // Display the key/value pairs
+          for (var pair of form.entries()) {
+              console.log(pair[0]+ ', ' + pair[1]);
+          }
 
         //Send message
         console.log("Creating a message");

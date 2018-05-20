@@ -8,6 +8,7 @@ class GmailSender():
         self.server.login(gmail_sender, gmail_password)
 
     def send(self, subject, message, destination, origin):
+        print("Sending message from {0} to {1}".format(origin, destination))
         email_message = MIMEText(message, 'html')
         email_message['Subject'] = subject
         email_message['From'] = origin

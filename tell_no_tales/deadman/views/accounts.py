@@ -12,13 +12,46 @@ from deadman.tools.response_tools import response_ok, response_ko
 from deadman.tools.core_tools import load_config
 from deadman import app_settings
 
+@csrf_exempt
+@login_required
 def get_profile(request):
     # This returns the profile details (message count, contact count, delivered messages, pending messages, and email validation setting with a resend link)
-    pass
+    user = request.user
+    profile = Profile.objects.get_or_create(user=user)[0]
+
+    if request.method == 'GET':
+        bom = profile.get_profile_as_json()
+
+        return response_ok(bom)
+
+    elif request.method == 'POST':
+        #Post new name, new email, new password (+ old)
+        if 'new_address' in request.POST:
+            if EmailValidator.objects.filter(profile=profile).exists():
+                EmailValidator.objects.filter(profile=profile).delete()
+
+            new_id = EmailValidator.create_uuid()
+            new_validator = EmailValidator.objects.get_or_create(validator_id=new_id,
+                                                                 email=request.POST['new_address'],
+                                                                 profile=profile)[0]
+
+            print("Creating new validator with email {0} and uuid {1}".format(request.POST['new_address'], new_id))
+
+            send_confirmation_email(new_id)
+            return response_ok({'message': "Confirmation email sent"})
+        return response_ok({})
+    else:
+        return response_ko("Unsupported request method")
 
 
 def send_confirmation_email(validator_id):
     try:
+        validator = EmailValidator.objects.get(validator_id=validator_id)
+        email = validator.get_email()
+        username = validator.profile.user.username
+
+        print("Sending confirmation for {0} to {1} with id {2}".format(username, email, validator.get_id()))
+
         bom = {'username':username,
                'validation_url': app_settings.BASE_URL + "/confirm/email/" + validator_id}
 
@@ -43,23 +76,37 @@ def resend_confirmation_email(request):
     user = request.user
     profile = Profile.objects.get_or_create(user=user)[0]
 
-    if not profile.is_validated:
-        email_validator = EmailValidator.objects.get_or_create(profile=profile, validator_id=EmailValidator.create_uuid())[0]
+    if EmailValidator.objects.filter(profile=profile).exists():
+        email_validator = EmailValidator.objects.get(profile=profile)
         validator_id = email_validator.get_id()
         send_confirmation_email(validator_id)
+        return response_ok({'message':"Confirmation email has been sent"})
 
-    return response_ok({'message':"Confirmation email has been sent"})
+    else:
+        email_validator = EmailValidator.objects.get_or_create(profile=profile, validator_id=EmailValidator.create_uuid(), email=profile.user.email)[0]
+        validator_id = email_validator.get_id()
+        send_confirmation_email(validator_id)
+        return response_ok({'message':"Confirmation email has been sent"})
+
+    return response_ko("")
 
 def email_confirmed(request, validator_id):
     if EmailValidator.objects.filter(validator_id=validator_id).exists():
         validator = EmailValidator.objects.get(validator_id=validator_id)
         validator.profile.set_email_validated()
+        validator.profile.user.email = validator.get_email()
+        validator.profile.user.save()
 
         EmailValidator.objects.filter(validator_id=validator_id).delete()
 
         # TODO depending on the FE, we either redirect, or render our own confirmation page
         # TODO set a timeout and the option to resend the email
         return response_ok({})
+
+    else:
+        #TODO - this will happen if they have changed their email, so the original validator is deleted
+        # So maybe have another template for this case
+        pass
 
     return response_ko("Invalid validator id")
 

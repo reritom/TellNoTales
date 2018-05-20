@@ -28,8 +28,10 @@ def message(request):
         if not profile.is_validated():
             return response_ko("Profile email address not validated")
 
+
+        print(request.POST.keys())
         # Create a new message
-        if not ('subject' in request.POST and 'message' in request.POST and 'lifespan' in request.POST and 'cutoff' in request.POST):
+        if not ('subject' in request.POST and 'message' in request.POST and 'lifespan' in request.POST and 'cutoff' in request.POST and 'recipients' in request.POST):
             # Missing parameters
             return response_ko('Missing parameters, message requires "message" (str), "subject" (str), "lifespan" (int) (days), "cutoff" (int) (days) and the optional parameters of "viewable" (bool) and "deletable" (bool)')
 
@@ -40,7 +42,11 @@ def message(request):
                                          cutoff=request.POST['cutoff'],
                                          message_id=Message.create_uuid())
 
-        for recipient in request.POST['recipients']:
+        print(request.POST['recipients'])
+
+        for recipient_obj in json.loads(request.POST['recipients']):
+            recipient = recipient_obj['contact_id']            
+            print("Recipient {0}".format(recipient))
             if Contact.objects.filter(contact_id=recipient).exists():
                 contact = Contact.objects.get(contact_id=recipient)
                 recipient = Recipient.objects.get_or_create(contact=contact, message=message)

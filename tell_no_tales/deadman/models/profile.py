@@ -20,3 +20,10 @@ class Profile(models.Model):
 
     def is_validated(self):
         return self.email_validated
+
+    def get_profile_as_json(self):
+        return {'username': self.user.username,
+                'email': self.user.email,
+                'validated': self.email_validated}
+
+        # TODO - check if there is a new email waiting to be validated

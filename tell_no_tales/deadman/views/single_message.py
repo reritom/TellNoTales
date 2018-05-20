@@ -97,13 +97,17 @@ def single_message(request, message_id):
 
     elif request.method == 'DELETE':
         print("Deleting a message")
-        message = Message.objects.filter(message_id=message_id)
+        if Message.objects.filter(message_id=message_id).exists():
+            message = Message.objects.get(message_id=message_id)
 
-        if message.is_deletable():
-            message.delete()
-            return response_ok({'message':"message deleted"})
+            if message.is_deletable():
+                message.delete()
+                return response_ok({'message':"message deleted"})
+            else:
+                return response_ko("This message is undeletable")
+
         else:
-            return response_ko("This message is undeletable")
+            return response_ko("Message doesn't exist")
 
     else:
         return response_ko("Unsupported request method")

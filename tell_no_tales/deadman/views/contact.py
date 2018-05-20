@@ -9,6 +9,8 @@ from deadman.models.phone_number import PhoneNumber
 from deadman.tools.model_tools import get_contact
 from deadman.tools.response_tools import response_ok, response_ko
 
+import json
+
 @csrf_exempt
 @login_required
 def contact(request):
@@ -19,6 +21,8 @@ def contact(request):
         # Check if profile has been validated
         if not profile.is_validated():
             return response_ko("Profile email address not validated")
+
+        print(request.POST.keys())
 
         # Create new contact using post data
         if not ('name' in request.POST and ('numbers' in request.POST or 'addresses' in request.POST)):

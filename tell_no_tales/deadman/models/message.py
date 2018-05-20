@@ -86,6 +86,9 @@ class Message(models.Model):
         self.deletable = deletable
         self.save()
 
+    def is_deletable(self):
+        return self.deletable
+
     def set_locked(self, lock):
         self.locked = lock
         self.save()

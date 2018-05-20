@@ -5,6 +5,7 @@ import uuid
 class EmailValidator(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     validator_id = models.CharField(default=0, max_length=255)
+    email = models.CharField(default=0, max_length=255)
 
     def __str__(self):
         return self.profile.user.username + '_' + "email_validator"
@@ -20,3 +21,10 @@ class EmailValidator(models.Model):
 
     def get_id(self):
         return self.validator_id
+
+    def get_email(self):
+        return self.email
+
+    def set_email(self, email):
+        self.email = email
+        self.save()
