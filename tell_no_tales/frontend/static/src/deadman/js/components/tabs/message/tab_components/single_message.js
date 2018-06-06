@@ -1,10 +1,17 @@
 export default {
   name: "SingleMessage",
   props: ['messagedata'],
+  data: function () {
+    return {
+      expanded_toggle: false
+    }
+  },
   template: `<div>
-              <p>subject: {{messagedata.subject}}</p>
-              <p>message: {{messagedata.message}}</p>
-              <p>recipients: {{ messagedata.recipients}}</p>
+              <div @click="expanded_toggle = !expanded_toggle" class="expand-inner-tile-button">{{messagedata.subject}}</div>
+              <div v-if="expanded_toggle">
+                <p>message: {{messagedata.message}}</p>
+                <p>recipients: {{ messagedata.recipients}}</p>
+              </div>
               <button @click="deleteMessage()">Delete me</button>
             </div>`,
   methods: {

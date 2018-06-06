@@ -20,7 +20,6 @@ export default {
               <search-contacts v-on:search="search_key = $event"></search-contacts>
               <new-contact v-on:pulse="getContacts()"></new-contact>
               <contact-group :contactlist="filtered_contacts" :filtered="filtered" v-on:pulse="getContacts()"></contact-group>
-              <p>Searching for {{ search_key }}</p>
             </div>`,
   created: function() {
     this.getContacts();

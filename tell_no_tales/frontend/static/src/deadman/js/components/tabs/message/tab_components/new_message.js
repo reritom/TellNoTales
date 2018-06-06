@@ -90,9 +90,7 @@ export default {
                 <button @click="createMessage">Create</button>
 
               </div>
-              <div v-else>
-                <p>Not clicked</p>
-              </div>
+              
               <div v-if="loading">
                 <p>Am loading</p>
               </div>

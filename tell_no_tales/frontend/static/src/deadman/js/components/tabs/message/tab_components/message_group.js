@@ -10,15 +10,13 @@ export default {
   props: ['messagelist', 'filtered'],
   template: `<div>
               <div v-if="not_empty">
-                <ul>
-                  <li v-for="amessage in messagelist">
-                    <single-message v-on:pulse="$emit('pulse')" :messagedata="amessage"></single-message>
-                  </li>
-                </ul>
+                    <single-message v-for="amessage in messagelist" v-on:pulse="$emit('pulse')" :messagedata="amessage"></single-message>
               </div>
+
               <div v-if="empty_filtered">
                 <p>No messages fit this search criteria</p>
               </div>
+
               <div v-if="empty_not_filtered">
                 <p>You have no message history</p>
               </div>
