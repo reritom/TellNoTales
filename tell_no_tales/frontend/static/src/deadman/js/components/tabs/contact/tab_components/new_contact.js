@@ -15,6 +15,14 @@ export default {
     }
   },
   methods: {
+    getNewButtonIcon() {
+      if (!this.expanded_toggle) {
+        return '<i class="fa fa-plus fa-2x"></i>'
+      }
+      else {
+        return '<i class="fa fa-minus fa-2x"></i>'
+      }
+    },
     addEmail() {
       var email = this.$refs.email_input.value;
       if (email != ""){
@@ -80,14 +88,12 @@ export default {
           })
     }
   },
-  template: `<div>
-                <div @click="expanded_toggle = !expanded_toggle">
-                  <p>New contact component here</p>
-                </div>
+  template: `<div class="inner-tile">
+                <button class="new-button" @click="expanded_toggle = !expanded_toggle" v-html="getNewButtonIcon()"></button>
                 <div v-if="expanded_toggle">
                   <p>This is the expanded part</p>
 
-                  <input v-model="name" placeholder="Add their name">
+                  <input class="search-bar" v-model="name" placeholder="Add their name">
 
                   <div v-for="number, index in numbers">
                     <p @click="removeNumber(index)">{{number}}</p>

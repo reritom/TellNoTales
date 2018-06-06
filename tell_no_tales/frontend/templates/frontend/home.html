@@ -9,7 +9,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="keywords" content="vuejs, django, crudapp, restapi">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
 </head>
+
+<style>
+
+body {
+  background-color: grey;
+}
+
+button {
+  border: none;
+}
+
+button:focus {
+  border: none;
+}
+
+.main-tile {
+  background-color: white;
+  min-height: 50%;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.inner-tile {
+  width: 100%;
+}
+
+.inner-nav {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.new-button {
+  width: 100%;
+  border: green;
+}
+
+.search-bar {
+  width: 100%;
+}
+
+.inner-nav-item {
+  flex-grow: 0;
+  flex-basis: 30%;
+  background-color: white;
+  border-bottom: 1px solid grey;
+  height: 50px;
+  padding-bottom: 10px;
+}
+
+.selected {
+  color: pink;
+}
+
+.not-selected {
+  color: grey;
+}
+
+.not-selected:hover {
+  color: pink;
+}
+
+</style>
 
 <body>
 

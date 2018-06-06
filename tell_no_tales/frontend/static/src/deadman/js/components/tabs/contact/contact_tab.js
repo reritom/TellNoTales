@@ -48,7 +48,7 @@ export default {
       }
 
       this.filtered = true;
-      var filtered_messages = [];
+      var filtered_contacts = [];
       // for each message
       for (var i = 0; i < this.contacts.length; i++) {
           // see if the search key exists in any of the searchable elements
@@ -56,13 +56,13 @@ export default {
           var lower_key = this.search_key.toLowerCase()
 
           if (lower_name.indexOf(lower_key) != -1){
-            filtered_messages.push(this.contacts[i]);
+            filtered_contacts.push(this.contacts[i]);
           }
           else {
             continue;
           }
       };
-      return filtered_messages
+      return filtered_contacts
     }
   }
 };

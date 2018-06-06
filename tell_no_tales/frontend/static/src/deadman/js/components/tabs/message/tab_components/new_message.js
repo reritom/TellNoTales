@@ -2,7 +2,7 @@ export default {
   name: "NewMessage",
   data: function () {
     return {
-      clicked: false,
+      expanded_toggle: false,
       loading: false,
       contact_search: "",
       contact_focus: false,
@@ -22,7 +22,7 @@ export default {
       }
   },
   template: `<div>
-              <p v-on:click="clicked = !clicked">Create new message</p>
+              <button class="new-button" v-on:click="expanded_toggle = !expanded_toggle" v-html="getNewButtonIcon()"></button>
 
               <div v-if="create_success" class="alert alert-success alert-dismissible fade show" role="alert">
                 <p>Your message has been create</p>
@@ -31,7 +31,7 @@ export default {
                 </button>
               </div>
 
-              <div v-if="clicked">
+              <div v-if="expanded_toggle">
                 <p>New message component here</p>
 
                 <!-- Warnings -->
@@ -102,6 +102,14 @@ export default {
     this.getContacts();
   },
   methods: {
+    getNewButtonIcon() {
+      if (!this.expanded_toggle) {
+        return '<i class="fa fa-plus fa-2x"></i>'
+      }
+      else {
+        return '<i class="fa fa-minus fa-2x"></i>'
+      }
+    },
     sendPulse: function() {
       console.log("Sending pulse");
       this.$emit("pulse");
@@ -124,7 +132,7 @@ export default {
                 this.sendPulse();
 
                 //Close the new message tab
-                this.clicked = false;
+                this.expanded_toggle = false;
               }
             })
             .catch((err) => {

@@ -13,7 +13,7 @@ export default {
       loading: false
     }
   },
-  template: `<div>
+  template: `<div class="inner-tile">
               <p @click="expanded_toggle = !expanded_toggle">name: {{contactdata.name}}</p>
 
               <div v-if="expanded_toggle">

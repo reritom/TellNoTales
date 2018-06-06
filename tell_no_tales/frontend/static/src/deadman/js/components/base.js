@@ -16,23 +16,32 @@ export default {
       logged_in: false
     }
   },
-  template: `<div class="container">
+  template: `<div>
+              <!-- As a heading -->
+                <nav class="navbar navbar-dark bg-dark">
+                <span class="navbar-brand mb-0 h1">TellNoTales by seres</span>
+                </nav>
 
-                <button class="btn btn-info" :disabled="!logged_in" v-on:click="view = 'messages'">Messages</button>
-                <button class="btn btn-info" :disabled="!logged_in" v-on:click="view = 'contacts'">Contacts</button>
-                <button class="btn btn-info" v-on:click="view = 'settings'">Settings</button>
 
-                <div id="ContactsView" v-if="view==='contacts'">
-                    <contact-tab></contact-tab>
-                </div>
+                <div class="main-tile container">
+                    <div class="inner-nav">
+                      <button class="inner-nav-item selected" :disabled="!logged_in" v-on:click="view = 'messages'"><i class="fa fa-envelope fa-2x"></i></button>
+                      <button class="inner-nav-item not-selected" v-on:click="view = 'settings'"><i class="fa fa-bars fa-2x"></i></button>
+                      <button class="inner-nav-item selected" :disabled="!logged_in" v-on:click="view = 'contacts'"><i class="fa fa-users fa-2x"></i></button>
+                    </div>
 
-                <div id="SettingsView" v-if="view==='settings'">
-                  <settings-tab v-on:logged_in="logged_in = $event"></settings-tab>
-                </div>
+                    <div id="ContactsView" v-if="view==='contacts'">
+                        <contact-tab></contact-tab>
+                    </div>
 
-                <div id="MessageView" v-if="view==='messages'">
-                  <message-tab></message-tab>
-                </div>
+                    <div id="SettingsView" v-if="view==='settings'">
+                      <settings-tab v-on:logged_in="logged_in = $event"></settings-tab>
+                    </div>
+
+                    <div id="MessageView" v-if="view==='messages'">
+                      <message-tab></message-tab>
+                    </div>
+                  </div>
 
                 <div class="loading" v-if="loading===true">Loading&#8230;</div>
               </div>`

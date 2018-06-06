@@ -7,7 +7,7 @@ export default {
     }
   },
   template: `<div>
-              <input @input="broadcastSearch($event.target.value)" placeholder="Search contacts">
+              <input class="search-bar" @input="broadcastSearch($event.target.value)" placeholder="Search contacts">
             </div>`,
   methods: { broadcastSearch(value) {
     this.message = value;

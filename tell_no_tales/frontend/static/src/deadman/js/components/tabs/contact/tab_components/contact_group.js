@@ -11,11 +11,11 @@ export default {
                 <p>Nothing for your search criteria</p>
               </div>
               <div v-else>
-                <ul v-if="contactlist.length > 0">
-                  <li v-for="acontact in contactlist">
-                    <single-contact :contactdata="acontact" v-on:pulse="$emit('pulse')"></single-contact>
-                  </li>
-                </ul>
+                <div v-if="contactlist.length > 0">
+
+                    <single-contact v-for="acontact in contactlist" :contactdata="acontact" v-on:pulse="$emit('pulse')"></single-contact>
+
+                </div>
                 <div v-else>You have no contacts</div>
               </div>
             </div>`,
