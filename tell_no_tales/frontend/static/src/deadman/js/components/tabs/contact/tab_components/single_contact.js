@@ -60,7 +60,7 @@ export default {
                 <button @click="edit_toggle = !edit_toggle">Edit me</button>
 
                 <div v-if="edit_toggle">
-                  <button>Delete me</button>
+                  <button @click="deleteContact()">Delete me</button>
                 </div>
 
                 <button v-if="editted" @click="saveChanges()">Save changes</button>
@@ -140,7 +140,26 @@ export default {
       },
       emitRefreshPulse(){
         this.$emit('pulse');
-      }
+      },
+      deleteContact() {
+      var contact_id = this.contactdata.contact_id;
+      var url = "/api/contact/" + contact_id;
+      console.log("Url is " + url);
+
+      this.loading = true;
+      this.$http.delete(url)
+          .then((response) => {
+            console.log("Response is " + response);
+            console.log(response.data);
+            var reply_status = response.data.status;
+            this.loading = false;
+            this.$emit("pulse");
+          })
+          .catch((err) => {
+           this.loading = false;
+           console.log(err);
+          })
+        }
     },
     computed: {
       editted: function() {

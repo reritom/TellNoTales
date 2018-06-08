@@ -9,6 +9,7 @@ from deadman.helpers.sender.sender import GmailSender
 from deadman.helpers.messages.template_handler import TemplateHandler
 
 from deadman.tools.response_tools import response_ok, response_ko
+from deadman.tools.model_tools import get_profile_bom
 from deadman.tools.core_tools import load_config
 from deadman import app_settings
 
@@ -20,7 +21,7 @@ def get_profile(request):
     profile = Profile.objects.get_or_create(user=user)[0]
 
     if request.method == 'GET':
-        bom = profile.get_profile_as_json()
+        bom = get_profile_bom(profile)
 
         return response_ok(bom)
 

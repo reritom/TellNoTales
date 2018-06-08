@@ -28,5 +28,5 @@ urlpatterns = [
     url(r'ajax/username', ajax.validate_username, name='validate_username'),
     url(r'ajax/email', ajax.validate_email, name='validate_username'),
     url(r'confirm/email/(?P<validator_id>[-\w]+)', accounts.email_confirmed, name='email_confirmed'),
-    url(r'confirm/resend', accounts.resend_confirmation_email, name='resend_confirmation'),
+    url(r'confirm/resend', accounts.resend_confirmation_email, name='resend_confirmation')
 ]

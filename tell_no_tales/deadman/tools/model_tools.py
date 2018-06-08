@@ -6,6 +6,21 @@ from deadman.models.phone_number import PhoneNumber
 from deadman.models.tracker import Tracker
 from deadman.models.recipient import Recipient
 
+def get_profile_bom(profile_obj):
+    '''
+        This method constructs a profile bom
+    '''
+
+    profile_bom = profile_obj.get_profile_as_json()
+
+    messages_delivered = Message.objects.filter(profile=profile_obj, delivered=True).count()
+    profile_bom['messages_delivered'] = messages_delivered
+
+    messages_undelivered = Message.objects.filter(profile=profile_obj, delivered=False).count()
+    profile_bom['messages_undelivered'] = messages_undelivered
+
+    return profile_bom
+
 def get_contact(contact):
     '''
         This function creates a json object representing a contact.

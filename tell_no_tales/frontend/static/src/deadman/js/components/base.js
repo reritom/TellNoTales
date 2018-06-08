@@ -16,6 +16,35 @@ export default {
       logged_in: false
     }
   },
+  methods: {
+    checkLogin(){
+      console.log("Sending checkLogin")
+      this.loading = true;
+      this.$http.get('/api/login')
+          .then((response) => {
+            console.log(response);
+              console.log(response.data);
+                console.log(response.data.data);
+          this.logged_in = response.data.data.logged_in;
+
+          if (!this.logged_in) {
+            this.view = "settings"
+          }
+
+          this.loading = false;
+          })
+          .catch((err) => {
+           this.loading = false;
+           console.log(err);
+          })
+    }
+  },
+  watch: {
+    view: function() {
+      console.log("Watching view");
+      this.checkLogin();
+    }
+  },
   template: `<div>
               <!-- As a heading -->
                 <nav class="navbar navbar-dark bg-dark">
