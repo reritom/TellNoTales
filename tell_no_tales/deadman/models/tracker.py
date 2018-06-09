@@ -1,5 +1,6 @@
 from django.db import models
 from deadman.models.recipient import Recipient
+import uuid
 
 class Tracker(models.Model):
     '''

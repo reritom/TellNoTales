@@ -45,7 +45,8 @@ class Message(models.Model):
 
     def set_delivered(self):
         self.delivered = True
-        self.expire()
+        self.expired = True
+        self.save()
 
     def set_message(self, message):
         self.message = message

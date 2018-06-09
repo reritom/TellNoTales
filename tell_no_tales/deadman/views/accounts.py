@@ -51,6 +51,8 @@ def send_confirmation_email(validator_id):
         email = validator.get_email()
         username = validator.profile.user.username
 
+        print("Email {0}".format(email))
+
         print("Sending confirmation for {0} to {1} with id {2}".format(username, email, validator.get_id()))
 
         bom = {'username':username,
@@ -74,12 +76,15 @@ def send_confirmation_email(validator_id):
 
 @login_required
 def resend_confirmation_email(request):
+    print("In resend")
     user = request.user
     profile = Profile.objects.get_or_create(user=user)[0]
 
     if EmailValidator.objects.filter(profile=profile).exists():
+        print("Validator exists")
         email_validator = EmailValidator.objects.get(profile=profile)
         validator_id = email_validator.get_id()
+        print("Validator email is {0}".format(email_validator.get_email()))
         send_confirmation_email(validator_id)
         return response_ok({'message':"Confirmation email has been sent"})
 
@@ -128,7 +133,7 @@ def signup(request):
 
         user = User.objects.create_user(username=username, email=email, password=password)
         profile = Profile.objects.get_or_create(user=user)[0]
-        email_validator = EmailValidator.objects.get_or_create(profile=profile, validator_id=EmailValidator.create_uuid())[0]
+        email_validator = EmailValidator.objects.get_or_create(profile=profile, validator_id=EmailValidator.create_uuid(), email=email)[0]
         validator_id = email_validator.get_id()
 
         send_confirmation_email(validator_id)

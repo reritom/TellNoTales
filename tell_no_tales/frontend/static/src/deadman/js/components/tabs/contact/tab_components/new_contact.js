@@ -91,7 +91,6 @@ export default {
   template: `<div class="inner-tile">
                 <button class="new-button" @click="expanded_toggle = !expanded_toggle" v-html="getNewButtonIcon()"></button>
                 <div v-if="expanded_toggle">
-                  <p>This is the expanded part</p>
 
                   <input class="search-bar" v-model="name" placeholder="Add their name">
 

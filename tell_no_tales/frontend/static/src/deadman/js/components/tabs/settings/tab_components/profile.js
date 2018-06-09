@@ -7,7 +7,8 @@ export default {
       email: "",
       resendClicked: false,
       new_address: "",
-      edit_toggle: false
+      edit_toggle: false,
+      profile: {},
     }
   },
   computed: {
@@ -22,6 +23,9 @@ export default {
                 <div v-if="!edit_toggle">
                   <p>Username: {{username}}</p>
                   <p>Email: {{email}}</p>
+                  <p>Messages delivered: {{profile.messages_delivered}}</p>
+                  <p>Pending messages: {{profile.messages_undelivered}}</p>
+                  <p>{{profile}}</p>
                 </div>
                 <div v-else>
                   <input v-model="new_address" :placeholder="email">
@@ -77,6 +81,7 @@ export default {
               console.log("Retrieving profile");
             console.log(response.data);
             if (response.data.status === true) {
+              this.profile = response.data.data;
               if (response.data.data.validated === true) {
                 this.email_validated = true;
               }

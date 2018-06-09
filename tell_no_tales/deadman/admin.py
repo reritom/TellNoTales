@@ -8,6 +8,7 @@ from deadman.models.tracker import Tracker
 from deadman.models.recipient import Recipient
 from deadman.models.front_end import FrontEnd
 from deadman.models.file_item import FileItem
+from deadman.models.email_validator import EmailValidator
 
 # Register your models here.
 
@@ -16,6 +17,7 @@ admin.site.register(Profile)
 admin.site.register(Message)
 admin.site.register(EmailAddress)
 admin.site.register(PhoneNumber)
+admin.site.register(EmailValidator)
 admin.site.register(Tracker)
 admin.site.register(Recipient)
 admin.site.register(FrontEnd)

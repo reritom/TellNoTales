@@ -10,7 +10,7 @@ def notify(request):
         profile = Profile.objects.get_or_create(user=user)[0]
 
         # Notify all the messages
-        messages = Message.objects.filter(profile=profile)
+        messages = Message.objects.filter(profile=profile, expired=False)
 
         for message in messages:
             message.notify()

@@ -10,7 +10,8 @@ export default {
   props: ['messagelist', 'filtered'],
   template: `<div>
               <div v-if="not_empty">
-                    <single-message v-for="amessage in messagelist" v-on:pulse="$emit('pulse')" :messagedata="amessage"></single-message>
+                    <button @click="NotifyAll()">Notify All</button>
+                    <single-message v-for="amessage in messagelist" v-on:pulse="$emit('pulse')" :messagedata="amessage" :key="amessage.message_id"></single-message>
               </div>
 
               <div v-if="empty_filtered">
@@ -46,5 +47,19 @@ export default {
         return false
       }
     }
+  },
+  methods: {
+    NotifyAll() {
+      this.loading = true;
+      this.$http.get('/api/notify/')
+          .then((response) => {
+          this.$emit("pulse");
+          this.loading = false;
+          })
+          .catch((err) => {
+           this.loading = false;
+           console.log(err);
+          })
     }
+  }
 };

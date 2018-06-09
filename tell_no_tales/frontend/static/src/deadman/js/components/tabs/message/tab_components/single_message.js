@@ -3,18 +3,44 @@ export default {
   props: ['messagedata'],
   data: function () {
     return {
-      expanded_toggle: false
+      expanded_toggle: false,
+      edit_toggle: false
     }
   },
   template: `<div>
               <div @click="expanded_toggle = !expanded_toggle" class="expand-inner-tile-button">{{messagedata.subject}}</div>
               <div v-if="expanded_toggle">
                 <p>message: {{messagedata.message}}</p>
+                <p>sending in: {{messagedata.notify_within}}</p>
+                <p>cutoff in: {{messagedata.cutoff_in}}</p>
                 <p>recipients: {{ messagedata.recipients}}</p>
+
+                <p>{{ messagedata }}</p>
+
+                <div v-if="!messagedata.expired">
+                  <button @click="notifyMessage()">Notify me</button>
+                  <button :disabled="messagedata.locked" @click="edit_toggle = !edit_toggle">Edit me</button>
+
+                  <div v-if="edit_toggle">
+                    <p>hi</p>
+                    <button :disabled="!messagedata.deletable" @click="deleteMessage()">Delete me</button>
+                  </div>
+                </div>
               </div>
-              <button @click="deleteMessage()">Delete me</button>
             </div>`,
   methods: {
+    notifyMessage: function() {
+      this.loading = true;
+      this.$http.get('/api/notify/' + this.messagedata.message_id)
+          .then((response) => {
+          this.$emit("pulse");
+          this.loading = false;
+          })
+          .catch((err) => {
+           this.loading = false;
+           console.log(err);
+          })
+    },
     deleteMessage: function() {
       var message_id = this.messagedata.message_id;
       var url = "/api/message/" + message_id;
