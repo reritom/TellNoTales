@@ -136,6 +136,8 @@ def signup(request):
         email_validator = EmailValidator.objects.get_or_create(profile=profile, validator_id=EmailValidator.create_uuid(), email=email)[0]
         validator_id = email_validator.get_id()
 
+        login(request, user)
+
         send_confirmation_email(validator_id)
 
         return response_ok({'message':'User account successfully created'})
