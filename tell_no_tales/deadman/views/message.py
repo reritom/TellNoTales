@@ -10,7 +10,7 @@ from deadman.models.phone_number import PhoneNumber
 from deadman.models.tracker import Tracker
 from deadman.models.recipient import Recipient
 
-from deadman.tools.model_tools import get_message
+from deadman.tools.model_tools import get_message, create_contact_revisions
 from deadman.tools.response_tools import response_ok, response_ko
 from deadman.tools.core_tools import to_bool
 import json, uuid
@@ -45,7 +45,7 @@ def message(request):
         print(request.POST['recipients'])
 
         for recipient_obj in json.loads(request.POST['recipients']):
-            recipient = recipient_obj['contact_id']            
+            recipient = recipient_obj['contact_id']
             print("Recipient {0}".format(recipient))
             if Contact.objects.filter(contact_id=recipient).exists():
                 contact = Contact.objects.get(contact_id=recipient)
@@ -56,6 +56,10 @@ def message(request):
 
         if 'deletable' in request.POST:
             message.set_deletable(to_bool(request.POST['deletable']))
+
+        if 'locked' in request.POST:
+            message.set_locked(to_bool(request.POST['locked']))
+            create_contact_revisions(message)
 
         return response_ok({'message':get_message(message)})
 

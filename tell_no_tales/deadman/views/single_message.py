@@ -6,7 +6,7 @@ from deadman.models.message import Message
 from deadman.models.recipient import Recipient
 from deadman.models.profile import Profile
 
-from deadman.tools.model_tools import get_message
+from deadman.tools.model_tools import get_message, create_contact_revisions
 from deadman.tools.response_tools import response_ok, response_ko
 from deadman.tools.core_tools import to_bool
 from deadman.tools.validation.decorators import validate_message_id
@@ -86,6 +86,8 @@ def single_message(request, message_id):
         if 'make_locked' in request.POST:
             if isinstance(to_bool(request.POST['make_locked']), bool):
                 message.set_locked(to_bool(request.POST['make_locked']))
+                # The message is locked, so all the contacts need replacing with ones with versions of the current contact state
+                create_contact_revisions(message_object=message)
 
         return response_ok({'message':get_message(message)})
 

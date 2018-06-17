@@ -5,6 +5,7 @@ from deadman.models.contact import Contact
 from deadman.models.profile import Profile
 from deadman.models.email_address import EmailAddress
 from deadman.models.phone_number import PhoneNumber
+from deadman.models.recipient import Recipient
 
 from deadman.tools.model_tools import get_contact
 from deadman.tools.response_tools import response_ok, response_ko
@@ -20,7 +21,7 @@ def single_contact(request, contact_id):
 
     if request.method == 'POST':
         # Update and append new data to the contact
-        contact = Contact.objects.get(contact_id=contact_id, profile=profile)
+        contact = Contact.objects.get(contact_id=contact_id, profile=profile, revisions=False)
 
         print(request.POST)
 
@@ -57,8 +58,15 @@ def single_contact(request, contact_id):
         return response_ok({'contact':get_contact(contact)})
 
     elif request.method == 'DELETE':
+        contact = Contact.objects.get(contact_id=contact_id, revision=False)
+
         # Delete contact (But remain accessable to preexisting messages)
-        Contact.objects.filter(contact_id=contact_id).delete()
+        if Recipient.objects.filter(contact=contact).exists():
+            for recipient in Recipient.objects.filter(contact=contact):
+                if recipient.message.is_locked():
+                    return response_ko("This contact is being used by an active message")
+
+        Contact.objects.filter(contact_id=contact_id, revision=False).delete()
         return response_ok({'message':'Contact has been deleted'})
 
     else:

@@ -94,3 +94,27 @@ def get_message(message):
 
 
     return message_representation
+
+
+def create_contact_revisions(message_object):
+    print("Creating contact revision")
+    for recipient in Recipient.objects.filter(message=message_object):
+        print("Recipient {0}".format(recipient.contact.name))
+        # Create a new contact with the same values as the existing one
+        revision_contact = Contact.objects.create(contact_id=Contact.create_uuid(),
+                                                   name=recipient.contact.name,
+                                                   profile=recipient.contact.profile,
+                                                   revision=True)
+
+        for email_address in EmailAddress.objects.filter(contact=recipient.contact):
+            print("Email address {0}".format(email_address.email))
+            EmailAddress.objects.create(contact=revision_contact,
+                                        email=email_address.email)
+
+        for phone_number in PhoneNumber.objects.filter(contact=recipient.contact):
+            print("Phone number {0}".format(phone_number.number))
+            PhoneNumber.objects.create(contact=revision_contact,
+                                       number=phone_number.number)
+
+        recipient.contact = revision_contact
+        recipient.save()

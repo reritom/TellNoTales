@@ -9,6 +9,7 @@ class Contact(models.Model):
     # The user this contact belongs it
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     contact_id = models.CharField(default=str(uuid.uuid4()), max_length=255, unique=True)
+    revision = models.BooleanField(default=False)
 
     # Contact details
     name = models.CharField(default=0, max_length=255)

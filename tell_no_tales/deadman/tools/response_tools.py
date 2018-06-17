@@ -9,6 +9,8 @@ def response_ok(response_data):
     response = {'status': True,
                 'data': response_data}
 
+    print("Response OK: {0}".format(response_data))
+
     return JsonResponse(response)
 
 def response_ko(error):

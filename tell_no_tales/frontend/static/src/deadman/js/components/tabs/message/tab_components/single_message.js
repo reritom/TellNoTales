@@ -20,11 +20,8 @@ export default {
                 <div v-if="!messagedata.expired">
                   <button @click="notifyMessage()">Notify me</button>
                   <button :disabled="messagedata.locked" @click="edit_toggle = !edit_toggle">Edit me</button>
+                  <button :disabled="!messagedata.deletable" @click="deleteMessage()">Delete me</button>
 
-                  <div v-if="edit_toggle">
-                    <p>hi</p>
-                    <button :disabled="!messagedata.deletable" @click="deleteMessage()">Delete me</button>
-                  </div>
                 </div>
               </div>
             </div>`,

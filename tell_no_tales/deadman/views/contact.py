@@ -47,7 +47,7 @@ def contact(request):
 
     elif request.method == 'GET':
         # Return all contacts for this profile
-        contacts = Contact.objects.filter(profile=profile)
+        contacts = Contact.objects.filter(profile=profile, revision=False)
 
         list_of_contacts = [get_contact(contact) for contact in contacts]
 
