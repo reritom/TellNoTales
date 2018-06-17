@@ -50,6 +50,7 @@ def message(request):
             if Contact.objects.filter(contact_id=recipient).exists():
                 contact = Contact.objects.get(contact_id=recipient)
                 recipient = Recipient.objects.get_or_create(contact=contact, message=message)
+                print("Recipient created for message {0} and contact id {1}".format(message.message_id, contact.contact_id))
 
         if 'viewable' in request.POST:
             message.set_viewable(to_bool(request.POST['viewable']))
@@ -59,7 +60,9 @@ def message(request):
 
         if 'locked' in request.POST:
             message.set_locked(to_bool(request.POST['locked']))
-            create_contact_revisions(message)
+            
+            if to_bool(request.POST['locked']):
+                create_contact_revisions(message)
 
         return response_ok({'message':get_message(message)})
 

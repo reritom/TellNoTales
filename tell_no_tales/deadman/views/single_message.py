@@ -87,7 +87,8 @@ def single_message(request, message_id):
             if isinstance(to_bool(request.POST['make_locked']), bool):
                 message.set_locked(to_bool(request.POST['make_locked']))
                 # The message is locked, so all the contacts need replacing with ones with versions of the current contact state
-                create_contact_revisions(message_object=message)
+                if to_bool(request.POST['make_locked']):
+                    create_contact_revisions(message_object=message)
 
         return response_ok({'message':get_message(message)})
 

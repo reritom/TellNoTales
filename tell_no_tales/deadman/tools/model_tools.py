@@ -38,6 +38,9 @@ def get_contact(contact):
     phone_numbers = PhoneNumber.objects.filter(contact=contact)
     contact_representation['phone_numbers'] = [number.number for number in phone_numbers]
 
+    # Only deletable if not being used by an unlocked message
+    contact_representation['deletable'] = not Recipient.objects.filter(contact=contact).exists()
+
     return contact_representation
 
 def get_message(message):
@@ -76,35 +79,21 @@ def get_message(message):
                 message_representation['delivery_status'][recipient.contact.name].append({'identifier':tracker.identifier,
                                                                                           'delivery_status': tracker.status,
                                                                                           'delivery_verified': tracker.verified})
-    '''
-    else:
-        # Just to check
-        message_representation['delivery_status'] = {}
 
-        recipients = Recipient.objects.filter(message=message)
-        for recipient in recipients:
-            message_representation['delivery_status'][recipient.contact.name] = []
-            trackers = Tracker.objects.filter(recipient=recipient)
-            for tracker in trackers:
-                message_representation['delivery_status'][recipient.contact.name].append({'identifier':tracker.identifier,
-                                                                                          'delivery_status': tracker.status,
-                                                                                          'delivery_verified': tracker.verified})
-
-    '''
 
 
     return message_representation
 
 
 def create_contact_revisions(message_object):
-    print("Creating contact revision")
     for recipient in Recipient.objects.filter(message=message_object):
-        print("Recipient {0}".format(recipient.contact.name))
         # Create a new contact with the same values as the existing one
         revision_contact = Contact.objects.create(contact_id=Contact.create_uuid(),
                                                    name=recipient.contact.name,
                                                    profile=recipient.contact.profile,
                                                    revision=True)
+
+        print("New contact id for this revision is {0}".format(revision_contact.contact_id))
 
         for email_address in EmailAddress.objects.filter(contact=recipient.contact):
             print("Email address {0}".format(email_address.email))

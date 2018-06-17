@@ -59,8 +59,8 @@ export default {
 
                 <button @click="edit_toggle = !edit_toggle">Edit me</button>
 
-                <div v-if="edit_toggle">
-                  <button @click="deleteContact()">Delete me</button>
+                <div>
+                  <button :disabled="!contactdata.deletable" @click="deleteContact()">Delete me</button>
                 </div>
 
                 <button v-if="editted" @click="saveChanges()">Save changes</button>

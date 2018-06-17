@@ -59,12 +59,12 @@ def single_contact(request, contact_id):
 
     elif request.method == 'DELETE':
         contact = Contact.objects.get(contact_id=contact_id, revision=False)
-
+        print("Contact is {0}".format(contact))
         # Delete contact (But remain accessable to preexisting messages)
+        print(Recipient.objects.filter(contact=contact))
+        print("Deleting contact {0}".format(contact.contact_id))
         if Recipient.objects.filter(contact=contact).exists():
-            for recipient in Recipient.objects.filter(contact=contact):
-                if recipient.message.is_locked():
-                    return response_ko("This contact is being used by an active message")
+            return response_ko("This contact is being used by an active message")
 
         Contact.objects.filter(contact_id=contact_id, revision=False).delete()
         return response_ok({'message':'Contact has been deleted'})
