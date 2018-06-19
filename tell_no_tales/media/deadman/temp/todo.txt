@@ -1,0 +1,1 @@
+This dir will have subdirs with message ids, which contain the attached files, which are linked to fileitem models
