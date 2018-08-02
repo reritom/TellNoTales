@@ -10,6 +10,8 @@ from deadman.tools.model_tools import get_message, create_contact_revisions
 from deadman.tools.response_tools import response_ok, response_ko
 from deadman.tools.core_tools import to_bool
 from deadman.tools.validation.decorators import validate_message_id
+from deadman.tools import media_tools
+
 import json, uuid
 
 @csrf_exempt
@@ -105,6 +107,7 @@ def single_message(request, message_id):
 
             if message.is_deletable():
                 message.delete()
+                media_tools.delete_dir(message.get_id())
                 return response_ok({'message':"message deleted"})
             else:
                 return response_ko("This message is undeletable")

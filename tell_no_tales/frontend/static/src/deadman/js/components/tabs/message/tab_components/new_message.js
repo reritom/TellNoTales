@@ -1,5 +1,10 @@
+const FileHandler = () => import('./file_handler.js');
+
 export default {
   name: "NewMessage",
+  components: {
+    FileHandler,
+  },
   data: function () {
     return {
       expanded_toggle: false,
@@ -9,6 +14,7 @@ export default {
       selection_clicked: false,
       available_contacts: [],
       selected_contacts: [],
+      files: [],
       the_message: "",
       the_subject: "",
       cutoff: "10",
@@ -87,10 +93,13 @@ export default {
                 <label for="locked_true">Locked</label>
                 <br>
 
+                <!-- File handler -->
+                <file-handler v-on:filesadded="files = $event"></file-handler>
+
                 <button @click="createMessage">Create</button>
 
               </div>
-              
+
               <div v-if="loading">
                 <p>Am loading</p>
               </div>
@@ -151,6 +160,14 @@ export default {
         form.append("locked", this.locked);
         form.append("lifespan", this.lifespan);
         form.append("cutoff", this.cutoff);
+        form.append("attachments", this.files);
+
+        // append the files to FormData
+          Array
+            .from(Array(this.files.length).keys())
+            .map(x => {
+              form.append('attachments', this.files[x], this.files[x].name);
+            });
 
         // Display the key/value pairs
           for (var pair of form.entries()) {

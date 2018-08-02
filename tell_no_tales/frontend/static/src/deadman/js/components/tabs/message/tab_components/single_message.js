@@ -1,5 +1,10 @@
+const FileHandler = () => import('./file_handler.js');
+
 export default {
   name: "SingleMessage",
+  components: {
+    FileHandler,
+  },
   props: ['messagedata'],
   data: function () {
     return {

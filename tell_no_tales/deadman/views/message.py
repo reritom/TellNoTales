@@ -9,11 +9,13 @@ from deadman.models.email_address import EmailAddress
 from deadman.models.phone_number import PhoneNumber
 from deadman.models.tracker import Tracker
 from deadman.models.recipient import Recipient
+from deadman.models.file_item import FileItem
 
 from deadman.tools.model_tools import get_message, create_contact_revisions
 from deadman.tools.response_tools import response_ok, response_ko
+from deadman.tools import media_tools
 from deadman.tools.core_tools import to_bool
-import json, uuid
+import json, uuid, os
 
 @csrf_exempt
 @login_required
@@ -60,9 +62,27 @@ def message(request):
 
         if 'locked' in request.POST:
             message.set_locked(to_bool(request.POST['locked']))
-            
+
             if to_bool(request.POST['locked']):
                 create_contact_revisions(message)
+
+        if request.FILES.getlist('attachments'):
+            media_path = media_tools.create_media_dir(message.get_id())
+
+            for f in request.FILES.getlist('attachments'):
+                file_name, file_type = os.path.splitext(f.name.lower())
+                file_path = os.path.join(media_path, f.name)
+
+                # We will create a model to represent this attachment with an ID and store the file under this id
+                file_model = FileItem.objects.create(message=message,
+                                                     file_id=FileItem.create_uuid(),
+                                                     file_type=file_type,
+                                                     file_name=file_name)
+
+                with open(os.path.join(media_path, file_model.get_id() + "." + file_type), 'wb') as file:
+                    file.write(f.read())
+                # # TODO
+                pass
 
         return response_ok({'message':get_message(message)})
 
