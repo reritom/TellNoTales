@@ -5,6 +5,7 @@ from deadman.models.email_address import EmailAddress
 from deadman.models.phone_number import PhoneNumber
 from deadman.models.tracker import Tracker
 from deadman.models.recipient import Recipient
+from deadman.models.file_item import FileItem
 
 def get_profile_bom(profile_obj):
     '''
@@ -54,7 +55,7 @@ def get_message(message):
         message_string = message.message
 
     recipients = Recipient.objects.filter(message=message)
-    recipients_list = [recipient.contact.contact_id for recipient in recipients]
+    recipients_list = [{'id': recipient.contact.contact_id, 'name': recipient.contact.name} for recipient in recipients]
 
     message_representation = {'subject': message.subject,
                               'message': message_string,
@@ -66,7 +67,12 @@ def get_message(message):
                               'deletable': message.deletable,
                               'delivered': message.get_delivered(),
                               'locked': message.locked,
-                              'expired': message.expired}
+                              'expired': message.expired,
+                              'viewable': message.viewable,
+                              'attachments': []}
+
+    for file_item in FileItem.objects.filter(message=message):
+        message_representation['attachments'].append(file_item.file_name)
 
     if message.get_delivered():
         message_representation['delivery_status'] = {}
