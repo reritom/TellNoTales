@@ -6,6 +6,7 @@ export default {
       expanded_toggle: false,
       delete_toggle: false,
       edit_toggle: false,
+      finalise_delete_toggle: false,
       new_addresses: [],
       new_numbers: [],
       deleted_addresses: [],
@@ -60,7 +61,12 @@ export default {
                 <button @click="edit_toggle = !edit_toggle">Edit me</button>
 
                 <div>
-                  <button :disabled="!contactdata.deletable" @click="deleteContact()">Delete me</button>
+                  <button :disabled="!contactdata.deletable" @click="finalise_delete_toggle = true">Delete me</button>
+                  <div v-if="finalise_delete_toggle">
+                    <p>Are you sure?</p>
+                    <button @click="finalise_delete_toggle = false">No</button>
+                    <button @click="deleteContact()">Yes</button>
+                  </div>
                 </div>
 
                 <button v-if="editted" @click="saveChanges()">Save changes</button>

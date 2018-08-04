@@ -19,7 +19,7 @@ export default {
   methods: {
     checkLogin(){
       console.log("Sending checkLogin")
-      this.loading = true;
+      //this.loading = true;
       this.$http.get('/api/login')
           .then((response) => {
             console.log(response);
@@ -31,10 +31,10 @@ export default {
             this.view = "settings"
           }
 
-          this.loading = false;
+          //this.loading = false;
           })
           .catch((err) => {
-           this.loading = false;
+           //this.loading = false;
            console.log(err);
           })
     }
@@ -59,15 +59,15 @@ export default {
                       <button class="inner-nav-item selected" :disabled="!logged_in" v-on:click="view = 'contacts'"><i class="fa fa-users fa-2x"></i></button>
                     </div>
 
-                    <div id="ContactsView" v-if="view==='contacts'">
+                    <div id="ContactsView" v-show="view==='contacts'">
                         <contact-tab></contact-tab>
                     </div>
 
-                    <div id="SettingsView" v-if="view==='settings'">
+                    <div id="SettingsView" v-show="view==='settings'">
                       <settings-tab v-on:logged_in="logged_in = $event"></settings-tab>
                     </div>
 
-                    <div id="MessageView" v-if="view==='messages'">
+                    <div id="MessageView" v-show="view==='messages'">
                       <message-tab></message-tab>
                     </div>
                   </div>
