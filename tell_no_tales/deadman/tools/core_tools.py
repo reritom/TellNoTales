@@ -24,3 +24,6 @@ def load_config():
     gmail_password = config['gmail_password']
 
     return gmail_sender, gmail_password
+
+def timedelta_to_days_hours_minutes(td):
+    return td.days, td.seconds//3600, (td.seconds//60)%60

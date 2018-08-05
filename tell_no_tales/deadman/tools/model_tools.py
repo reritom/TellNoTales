@@ -7,6 +7,8 @@ from deadman.models.tracker import Tracker
 from deadman.models.recipient import Recipient
 from deadman.models.file_item import FileItem
 
+from deadman.tools import core_tools
+
 def get_profile_bom(profile_obj):
     '''
         This method constructs a profile bom
@@ -59,9 +61,17 @@ def get_message(message):
 
     message_representation = {'subject': message.subject,
                               'message': message_string,
-                              'notify_within': str(message.sending_in()),
                               'recipients': recipients_list,
-                              'cutoff_in': str(message.cutoff_in()),
+                              'notify': {'within': {'full': str(message.sending_in()),
+                                                    'days': core_tools.timedelta_to_days_hours_minutes(message.sending_in())[0],
+                                                    'hours': core_tools.timedelta_to_days_hours_minutes(message.sending_in())[1],
+                                                    'minutes': core_tools.timedelta_to_days_hours_minutes(message.sending_in())[2]},
+                                         'before': str(message.sending_at())},
+                              'cutoff': {'in': {'full': str(message.cutoff_in()),
+                                                'days': core_tools.timedelta_to_days_hours_minutes(message.cutoff_in())[0],
+                                                'hours': core_tools.timedelta_to_days_hours_minutes(message.cutoff_in())[1],
+                                                'minutes': core_tools.timedelta_to_days_hours_minutes(message.cutoff_in())[2]},
+                                         'at': str(message.cutoff_at())},
                               'message_id': message.message_id,
                               'anonymous': message.anonymous,
                               'deletable': message.deletable,

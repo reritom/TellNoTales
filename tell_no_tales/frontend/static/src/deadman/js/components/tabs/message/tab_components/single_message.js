@@ -18,8 +18,8 @@ export default {
               <div @click="expanded_toggle = !expanded_toggle" class="expand-inner-tile-button">{{messagedata.subject}}</div>
               <div v-if="expanded_toggle">
                 <p>message: {{messagedata.message}}</p>
-                <p>sending in: {{messagedata.notify_within}}</p>
-                <p>cutoff in: {{messagedata.cutoff_in}}</p>
+                <p>sending in: {{ notifyWithin }}</p>
+                <p>cutoff in: {{ cutoffIn }}</p>
                 <p>recipients: {{ existingRecipients }}</p>
                 <p>attachments: {{ messagedata.attachments }}</p>
 
@@ -73,7 +73,43 @@ export default {
         }
 
       return existing
-    }
+    },
+    notifyWithin: function() {
+      if (this.messagedata.notify.within.days == 0) {
+        if (this.messagedata.notify.within.hours == 0) {
+          if (this.messagedata.notify.within.minutes == 0) {
+            return 'a few seconds'
+          }
+          else {
+            return this.messagedata.notify.within.minutes.toString() + ' minutes'
+          }
+        }
+        else {
+          return this.messagedata.notify.within.hours.toString() + ' hours'
+        }
+      }
+      else {
+        return this.messagedata.notify.within.days.toString() + ' days'
+      }
+    },
+    cutoffIn: function() {
+      if (this.messagedata.cutoff.in.days == 0) {
+        if (this.messagedata.cutoff.in.hours == 0) {
+          if (this.messagedata.cutoff.in.minutes == 0) {
+            return 'a few seconds'
+          }
+          else {
+            return this.messagedata.cutoff.in.minutes.toString() + ' minutes'
+          }
+        }
+        else {
+          return this.messagedata.cutoff.in.hours.toString() + ' hours'
+        }
+      }
+      else {
+        return this.messagedata.cutoff.in.days.toString() + ' days'
+      }
+    },
   },
   methods: {
     updateMessage: function(key, value) {

@@ -104,8 +104,14 @@ class Message(models.Model):
     def cutoff_in(self):
         return (self.created + timedelta(days=int(self.cutoff))) - timezone.now()
 
+    def cutoff_at(self):
+        return (self.created + timedelta(days=int(self.cutoff)))
+
     def sending_in(self):
         return (self.last_notified + timedelta(days=int(self.lifespan))) - timezone.now()
+
+    def sending_at(self):
+        return (self.last_notified + timedelta(days=int(self.lifespan)))
 
     def __str__(self):
         return self.subject
