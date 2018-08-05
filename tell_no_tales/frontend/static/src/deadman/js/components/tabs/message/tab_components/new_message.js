@@ -28,7 +28,7 @@ export default {
       }
   },
   template: `<div>
-              <button class="new-button" v-on:click="expanded_toggle = !expanded_toggle" v-html="getNewButtonIcon()"></button>
+              <button class="btn btn-outline-success my-2 my-sm-0" v-on:click="expanded_toggle = !expanded_toggle">New message</button>
 
               <div v-if="create_success" class="alert alert-success alert-dismissible fade show" role="alert">
                 <p>Your message has been create</p>
@@ -109,14 +109,6 @@ export default {
     this.getContacts();
   },
   methods: {
-    getNewButtonIcon() {
-      if (!this.expanded_toggle) {
-        return '<i class="fa fa-plus fa-2x"></i>'
-      }
-      else {
-        return '<i class="fa fa-minus fa-2x"></i>'
-      }
-    },
     sendPulse: function() {
       console.log("Sending pulse");
       this.$emit("pulse");

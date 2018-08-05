@@ -14,15 +14,36 @@ export default {
       finalise_delete_toggle: false
     }
   },
-  template: `<div>
-              <div @click="expanded_toggle = !expanded_toggle" class="expand-inner-tile-button">{{messagedata.subject}}</div>
+  template: `<div :class="{'mobile-single-message-main': isMobile, 'desktop-single-message-main': !isMobile}">
+
+              <!-- Unexpanded area -->
+              <div @click="expanded_toggle = !expanded_toggle" class="single-message-unexpanded-area-container">
+                <div class="single-message-unexpanded-area-child-left" v-if="!messagedata.expired">
+                  <div class="single-message-notify-within">{{ notifyWithin[0] }}</div>
+                  <div>{{notifyWithin[1]}}</div>
+                </div>
+                <div class="single-message-unexpanded-area-child-middle">
+                  <div v-else>E</div>
+                  <div>{{messagedata.subject}}</div>
+                </div>
+                <div class="single-message-unexpanded-area-child-right">
+                  <div v-show="expanded_toggle">Unexp</div>
+                  <div v-show="!expanded_toggle">Exp</div>
+                </div>
+              </div>
+
+
+              <!-- Expanded area -->
               <div v-if="expanded_toggle">
                 <p>message: {{messagedata.message}}</p>
                 <p>sending in: {{ notifyWithin }}</p>
                 <p>cutoff in: {{ cutoffIn }}</p>
                 <p>recipients: {{ existingRecipients }}</p>
-                <p>attachments: {{ messagedata.attachments }}</p>
+                <div v-if="messagedata.attachments.length > 0">
+                  <p>attachments: {{ messagedata.attachments }}</p>
+                </div>
 
+                <!-- Modification options -->
                 <div v-if="!messagedata.expired">
                   <button @click="notifyMessage()">Notify me</button>
                   <button :disabled="messagedata.locked" @click="edit_toggle = !edit_toggle">Edit me</button>
@@ -33,8 +54,8 @@ export default {
                     <button @click="deleteMessage()">Yes</button>
                   </div>
 
+                  <!-- Editting Options -->
                   <div v-if="edit_toggle">
-
                     <div v-if="messagedata.anonymous">
                       <p>anon</p>
                       <button @click="updateMessage('make_anonymous', false)">Unanonymise me</button>
@@ -74,22 +95,25 @@ export default {
 
       return existing
     },
+    isMobile: function() {
+      return true
+    },
     notifyWithin: function() {
       if (this.messagedata.notify.within.days == 0) {
         if (this.messagedata.notify.within.hours == 0) {
           if (this.messagedata.notify.within.minutes == 0) {
-            return 'a few seconds'
+            return ['e', 'a few seconds']
           }
           else {
-            return this.messagedata.notify.within.minutes.toString() + ' minutes'
+            return [this.messagedata.notify.within.minutes.toString(), ' minutes']
           }
         }
         else {
-          return this.messagedata.notify.within.hours.toString() + ' hours'
+          return [this.messagedata.notify.within.hours.toString(), ' hours']
         }
       }
       else {
-        return this.messagedata.notify.within.days.toString() + ' days'
+        return [this.messagedata.notify.within.days.toString(), 'days']
       }
     },
     cutoffIn: function() {

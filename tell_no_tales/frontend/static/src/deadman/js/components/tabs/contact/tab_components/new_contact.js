@@ -89,9 +89,9 @@ export default {
     }
   },
   template: `<div class="inner-tile">
-                <button class="new-button" @click="expanded_toggle = !expanded_toggle" v-html="getNewButtonIcon()"></button>
-                <div v-if="expanded_toggle">
+                <button class="btn btn-outline-success my-2 my-sm-0" v-on:click="expanded_toggle = !expanded_toggle">New contact</button>
 
+                <div v-if="expanded_toggle">
                   <input class="search-bar" v-model="name" placeholder="Add their name">
 
                   <div v-for="number, index in numbers">
@@ -103,11 +103,24 @@ export default {
                   </div>
 
                   <div v-for="address, index in addresses">
-                    <p @click="removeEmail(index)">{{address}}</p>
+                    <div class="input-group">
+                      <input type="text" readonly class="form-control" :placeholder="address" aria-label="Email" aria-describedby="basic-addon1">
+                      <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon1" @click="removeEmail(index)">x</span>
+                      </div>
+                    </div>
                   </div>
                   <div>
+                    <div class="input-group">
+                      <input ref="email_input" type="text" class="form-control" placeholder="Add Email Address" aria-label="Email" aria-describedby="basic-addon1">
+                      <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon1" @click="addEmail()">@</span>
+                      </div>
+                    </div>
+                    <!--
                     <input ref="email_input" placeholder="Add an email">
                     <button @click="addEmail()">Email tick</button>
+                    -->
                   </div>
 
                   <button :disabled="!valid_form" @click="createContact()">save</button>

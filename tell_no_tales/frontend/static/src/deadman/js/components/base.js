@@ -48,16 +48,17 @@ export default {
   template: `<div>
               <!-- As a heading -->
                 <nav class="navbar navbar-dark bg-dark">
-                <span class="navbar-brand mb-0 h1">TellNoTales by seres</span>
+                <span class="navbar-brand mb-0 h1">TellNoTales</span>
                 </nav>
 
+                <div class="inner-nav">
+                  <button class="inner-nav-item selected" :disabled="!logged_in" v-on:click="view = 'messages'"><i class="fa fa-envelope fa-2x"></i></button>
+                  <button class="inner-nav-item not-selected" v-on:click="view = 'settings'"><i class="fa fa-bars fa-2x"></i></button>
+                  <button class="inner-nav-item selected" :disabled="!logged_in" v-on:click="view = 'contacts'"><i class="fa fa-users fa-2x"></i></button>
+                </div>
 
-                <div class="main-tile container">
-                    <div class="inner-nav">
-                      <button class="inner-nav-item selected" :disabled="!logged_in" v-on:click="view = 'messages'"><i class="fa fa-envelope fa-2x"></i></button>
-                      <button class="inner-nav-item not-selected" v-on:click="view = 'settings'"><i class="fa fa-bars fa-2x"></i></button>
-                      <button class="inner-nav-item selected" :disabled="!logged_in" v-on:click="view = 'contacts'"><i class="fa fa-users fa-2x"></i></button>
-                    </div>
+
+                <div class="tab-container">
 
                     <div id="ContactsView" v-show="view==='contacts'">
                         <contact-tab></contact-tab>

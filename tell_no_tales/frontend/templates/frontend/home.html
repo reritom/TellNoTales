@@ -29,7 +29,7 @@ button:focus {
 .main-tile {
   background-color: white;
   min-height: 50%;
-  padding: 20px;
+  padding: 10px;
   border-radius: 5px;
 }
 
@@ -43,15 +43,6 @@ button:focus {
   justify-content: space-between;
 }
 
-.new-button {
-  width: 100%;
-  border: green;
-}
-
-.search-bar {
-  width: 100%;
-}
-
 .inner-nav-item {
   flex-grow: 0;
   flex-basis: 30%;
@@ -61,16 +52,44 @@ button:focus {
   padding-bottom: 10px;
 }
 
-.selected {
-  color: pink;
+.mobile-single-message-main {
+  width: 100%;
+  border: 1px solid red;
+  padding: 5px;
+  border-radius: 5px;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
-.not-selected {
-  color: grey;
+.single-message-unexpanded-area-container {
+  display: flex;
+  flex-wrap: nowrap;
 }
 
-.not-selected:hover {
-  color: pink;
+.single-message-unexpanded-area-child-left {
+  margin: auto;
+  width: 30%;
+  text-align: left;
+}
+
+.single-message-unexpanded-area-child-middle {
+  margin: auto;
+  width: 30%;
+  text-align: center;
+}
+
+.single-message-unexpanded-area-child-right {
+  margin: auto;
+  width: 30%;
+  text-align: right;
+}
+
+.single-message-notify-within {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  border: 1px solid red;
+  text-align: center;
 }
 
 </style>
