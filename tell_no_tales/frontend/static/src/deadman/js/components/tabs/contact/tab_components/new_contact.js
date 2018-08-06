@@ -92,18 +92,36 @@ export default {
                 <button class="btn btn-outline-success my-2 my-sm-0" v-on:click="expanded_toggle = !expanded_toggle">New contact</button>
 
                 <div v-if="expanded_toggle">
-                  <input class="search-bar" v-model="name" placeholder="Add their name">
+                  <input type="text" v-model="name" class="form-control" placeholder="Add their name">
 
                   <div v-for="number, index in numbers">
-                    <p @click="removeNumber(index)">{{number}}</p>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon4">phone</span>
+                      </div>
+                      <input type="text" readonly class="form-control" :placeholder="number" aria-label="Number" aria-describedby="basic-addon4">
+                      <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon4" @click="removeNumber(index)">x</span>
+                      </div>
+                    </div>
                   </div>
                   <div>
-                    <input ref="number_input" placeholder="Add an number">
-                    <button @click="addNumber()">Number tick</button>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">phone</span>
+                      </div>
+                      <input ref="number_input" type="text" class="form-control" placeholder="Add Phone Number" aria-label="Phone" aria-describedby="basic-addon2">
+                      <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2" @click="addNumber()">t</span>
+                      </div>
+                    </div>
                   </div>
 
                   <div v-for="address, index in addresses">
                     <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">@</span>
+                      </div>
                       <input type="text" readonly class="form-control" :placeholder="address" aria-label="Email" aria-describedby="basic-addon1">
                       <div class="input-group-append">
                         <span class="input-group-text" id="basic-addon1" @click="removeEmail(index)">x</span>
@@ -112,9 +130,12 @@ export default {
                   </div>
                   <div>
                     <div class="input-group">
-                      <input ref="email_input" type="text" class="form-control" placeholder="Add Email Address" aria-label="Email" aria-describedby="basic-addon1">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">@</span>
+                      </div>
+                      <input ref="email_input" type="text" class="form-control" placeholder="Add Email Address" aria-label="Email" aria-describedby="basic-addon3">
                       <div class="input-group-append">
-                        <span class="input-group-text" id="basic-addon1" @click="addEmail()">@</span>
+                        <span class="input-group-text" id="basic-addon3" @click="addEmail()">t</span>
                       </div>
                     </div>
                     <!--
@@ -123,7 +144,7 @@ export default {
                     -->
                   </div>
 
-                  <button :disabled="!valid_form" @click="createContact()">save</button>
+                  <button :disabled="!valid_form" class="btn btn-primary btn-block mb-2" @click="createContact()">save</button>
                 </div>
              </div>`
 };
