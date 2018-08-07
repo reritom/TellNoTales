@@ -88,7 +88,7 @@ export default {
           })
     }
   },
-  template: `<div class="inner-tile">
+  template: `<div class="inner-tile container">
                 <button class="btn btn-outline-success my-2 my-sm-0" v-on:click="expanded_toggle = !expanded_toggle">New contact</button>
 
                 <div v-if="expanded_toggle">
@@ -138,10 +138,6 @@ export default {
                         <span class="input-group-text" id="basic-addon3" @click="addEmail()">t</span>
                       </div>
                     </div>
-                    <!--
-                    <input ref="email_input" placeholder="Add an email">
-                    <button @click="addEmail()">Email tick</button>
-                    -->
                   </div>
 
                   <button :disabled="!valid_form" class="btn btn-primary btn-block mb-2" @click="createContact()">save</button>

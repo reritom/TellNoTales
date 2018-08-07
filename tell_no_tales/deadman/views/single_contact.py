@@ -21,7 +21,7 @@ def single_contact(request, contact_id):
 
     if request.method == 'POST':
         # Update and append new data to the contact
-        contact = Contact.objects.get(contact_id=contact_id, profile=profile, revisions=False)
+        contact = Contact.objects.get(contact_id=contact_id, profile=profile, revision=False)
 
         print(request.POST)
 

@@ -7,41 +7,98 @@ export default {
       delete_toggle: false,
       edit_toggle: false,
       finalise_delete_toggle: false,
+      existing_addresses: [],
       new_addresses: [],
       new_numbers: [],
+      existing_numbers: [],
       deleted_addresses: [],
       deleted_numbers: [],
       loading: false
     }
   },
-  template: `<div class="inner-tile">
-              <p @click="expanded_toggle = !expanded_toggle">name: {{contactdata.name}}</p>
+  template: `<div class="inner-tile container">
+              <h2 @click="expanded_toggle = !expanded_toggle">{{contactdata.name}}</h2>
 
               <div v-if="expanded_toggle">
 
-                <div v-if="contactdata.email_addresses.length">
-                  <div v-for="address, index in contactdata.email_addresses">
-                    <p>Address is {{address}}</p><p v-if="edit_toggle" @click="removeEmailFromExisting(index)">remove</p>
+                <div v-if="existing_addresses.length">
+                  <div v-for="address, index in existing_addresses">
+                    <div v-if="edit_toggle">
+
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="basic-addon1">@</span>
+                        </div>
+                        <input type="text" readonly class="form-control" :placeholder="address" aria-label="Email" aria-describedby="basic-addon1">
+                        <div class="input-group-append">
+                          <span class="input-group-text" id="basic-addon1" @click="removeEmailFromExisting(index)">x</span>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div v-else>
+                      <p>Address is {{address}}</p>
+                    </div>
                   </div>
                 </div>
-
                 <div v-else>
                   <p>This contact has no existing addresses</p>
                 </div>
 
-                <div v-if="edit_toggle">
-                  <div v-for="address, index in new_addresses">
-                    <p>New Address is {{address}}</p><p v-if="edit_toggle" @click="removeEmailFromNew(index)">remove</p>
+                <div v-for="address, index in new_addresses">
+                  <div v-if="edit_toggle">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">@</span>
+                      </div>
+                      <input type="text" readonly class="form-control" :placeholder="address" aria-label="Email" aria-describedby="basic-addon1">
+                      <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon1" @click="removeEmailFromNew(index)">x</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-else>
+                    <p>New Address is {{address}}</p>
                   </div>
                 </div>
 
-                <input ref="email_input" v-if="edit_toggle" placeholder="Add an email">
-                <button v-if="edit_toggle" @click="addAddress">Tick</button>
+
+                <!-- Create a new email address-->
+                <div v-if="edit_toggle">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1">@</span>
+                    </div>
+                    <input ref="email_input" type="text" class="form-control" placeholder="Add Email Address" aria-label="Email" aria-describedby="basic-addon3">
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="basic-addon3" @click="addAddress">t</span>
+                    </div>
+                  </div>
+                </div>
+
 
                 <p>These are the phone numbers</p>
-                <div v-if="contactdata.phone_numbers.length">
-                  <div v-for="number, index in contactdata.phone_numbers">
-                  <p>Existing number {{number}}</p><p v-if="edit_toggle" @click="removeNumberFromExisting(index)">delete this number</p>
+
+                <div v-if="existing_numbers.length">
+                  <div v-for="number, index in existing_numbers">
+
+                    <!-- Remove an existing number -->
+                    <div v-if="edit_toggle">
+
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="basic-addon4">phone</span>
+                        </div>
+                        <input type="text" readonly class="form-control" :placeholder="number" aria-label="Number" aria-describedby="basic-addon4">
+                        <div class="input-group-append">
+                          <span class="input-group-text" id="basic-addon4" @click="removeNumberFromExisting(index)">x</span>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div v-else>
+                      <p>Existing number {{number}}</p>
+                    </div>
                   </div>
                 </div>
 
@@ -49,16 +106,47 @@ export default {
                   <p>This contact has no current numbers</p>
                 </div>
 
-                <div v-if="edit_toggle">
-                  <div v-for="number, index in new_numbers">
-                    <p>New number {{number}}</p><p v-if="edit_toggle" @click="removeNumberFromNew(index)">remove</p>
+                <!-- Remove one of the new numbers -->
+                <div v-for="number, index in new_numbers">
+                  <div v-if="edit_toggle">
+
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon4">phone</span>
+                      </div>
+                      <input type="text" readonly class="form-control" :placeholder="number" aria-label="Number" aria-describedby="basic-addon4">
+                      <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon4" @click="removeNumberFromNew(index)">x</span>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div v-else>
+                    <p>New number {{number}}</p>
                   </div>
                 </div>
 
-                <input ref="number_input" v-if="edit_toggle" placeholder="Add a phone number">
-                <button v-if="edit_toggle" @click="addNumber">Tick</button>
+                <!-- Add a new number -->
+                <div v-if="edit_toggle">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1">phone</span>
+                    </div>
+                    <input ref="number_input" type="text" class="form-control" placeholder="Add Phone Number" aria-label="Phone" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="basic-addon2" @click="addNumber">t</span>
+                    </div>
+                  </div>
+                </div>
 
-                <button @click="edit_toggle = !edit_toggle">Edit me</button>
+                <div v-if='!edit_toggle'>
+                  <button @click="edit_toggle = !edit_toggle">Edit me</button>
+                </div>
+                <div v-else>
+                  <button @click="edit_toggle = !edit_toggle; resetChanges()">Ignore changes</button>
+                  <button :disabled="!editted" @click="saveChanges()">Save changes</button>
+                </div>
+
 
                 <div>
                   <button :disabled="!contactdata.deletable" @click="finalise_delete_toggle = true">Delete me</button>
@@ -69,11 +157,20 @@ export default {
                   </div>
                 </div>
 
-                <button v-if="editted" @click="saveChanges()">Save changes</button>
+
 
               </div>
             </div>`,
     methods: {
+      resetChanges() {
+        console.log("Resetting");
+        this.new_addresses = [];
+        this.new_numbers = [];
+        this.deleted_numbers = [];
+        this.deleted_addresses = [];
+        this.existing_numbers = JSON.parse(JSON.stringify(this.contactdata.phone_numbers));
+        this.existing_addresses = JSON.parse(JSON.stringify(this.contactdata.email_addresses));
+      },
       saveChanges() {
        var formData = new FormData();
 
@@ -91,10 +188,6 @@ export default {
               this.emitRefreshPulse();
               this.edit_toggle = false;
 
-              this.new_numbers = [];
-              this.new_addresses = [];
-              this.deleted_numbers = [];
-              this.deleted_addresses = [];
             })
             .catch((err) => {
              this.loading = false;
@@ -124,17 +217,17 @@ export default {
       },
       removeEmailFromExisting(index){
         // Add it to the deleted list
-        this.deleted_addresses.push(this.contactdata.email_addresses[index]);
+        this.deleted_addresses.push(this.existing_addresses[index]);
 
         // Remove from the existing
-        Vue.delete(this.contactdata.email_addresses, index);
+        Vue.delete(this.existing_addresses, index);
       },
       removeNumberFromExisting(index){
         // Add it to the deleted list
-        this.deleted_numbers.push(this.contactdata.phone_numbers[index]);
+        this.deleted_numbers.push(this.existing_numbers[index]);
 
         // Remove from the existing
-        Vue.delete(this.contactdata.phone_numbers, index);
+        Vue.delete(this.existing_numbers, index);
       },
       removeEmailFromNew(index){
         // Remove from the new
@@ -169,12 +262,21 @@ export default {
     },
     computed: {
       editted: function() {
-        if ((this.new_addresses.length) || (this.new_numbers.length) || (this.deleted_addresses.length)){
+        if ((this.new_addresses.length) || (this.new_numbers.length) || (this.deleted_addresses.length) || (this.deleted_numbers.length)){
           return true
         }
         else {
           return false
         }
+      }
+    },
+    created: function () {
+      this.existing_numbers = JSON.parse(JSON.stringify(this.contactdata.phone_numbers));
+      this.existing_addresses = JSON.parse(JSON.stringify(this.contactdata.email_addresses));
+    },
+    watch:{
+      contactdata: function() {
+        this.resetChanges();
       }
     }
 };

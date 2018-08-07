@@ -23,7 +23,6 @@ export default {
                   <div>{{notifyWithin[1]}}</div>
                 </div>
                 <div class="single-message-unexpanded-area-child-middle">
-                  <div v-else>E</div>
                   <div>{{messagedata.subject}}</div>
                 </div>
                 <div class="single-message-unexpanded-area-child-right">
