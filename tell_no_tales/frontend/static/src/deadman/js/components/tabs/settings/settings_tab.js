@@ -19,8 +19,8 @@ export default {
   template: `<div>
                 <login-tab v-if="!logged_in" v-on:login="checkLoginStatus()"></login-tab>
                 <signup-tab v-if="!logged_in" v-on:signup="checkLoginStatus()"></signup-tab>
-                <logout-tab v-if="logged_in" v-on:logout="checkLoginStatus()"></logout-tab>
                 <profile-tab v-if="logged_in"></profile-tab>
+                <logout-tab v-if="logged_in" v-on:logout="checkLoginStatus()"></logout-tab>
              </div>`,
   methods: {
     checkLoginStatus() {

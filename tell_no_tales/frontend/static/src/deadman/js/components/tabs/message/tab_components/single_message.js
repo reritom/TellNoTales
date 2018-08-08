@@ -56,21 +56,16 @@ export default {
                   <!-- Editting Options -->
                   <div v-if="edit_toggle">
                     <div v-if="messagedata.anonymous">
-                      <p>anon</p>
                       <button @click="updateMessage('make_anonymous', false)">Unanonymise me</button>
                     </div>
                     <div v-else>
-                      <p>nonanon</p>
                       <button @click="updateMessage('make_anonymous', true)">Anonymise me</button>
                     </div>
-                    <p>Editting</p>
 
                     <div v-if="messagedata.viewable">
-                      <p>Viewable</p>
                       <button @click="updateMessage('make_hidden', true)">Hide me</button>
                     </div>
                     <div v-else>
-                      <p>Not viewable</p>
                       <button @click="updateMessage('make_hidden', false)">Unhide me</button>
                     </div>
 

@@ -28,6 +28,9 @@ def get_profile(request):
     elif request.method == 'POST':
         #Post new name, new email, new password (+ old)
         if 'new_address' in request.POST:
+            if not len(request.POST['new_address']) > 5:
+                return response_ko("Invalid address")
+
             if EmailValidator.objects.filter(profile=profile).exists():
                 EmailValidator.objects.filter(profile=profile).delete()
 

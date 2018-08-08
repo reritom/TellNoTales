@@ -27,7 +27,7 @@ export default {
       message_id: ""
       }
   },
-  template: `<div>
+  template: `<div class="container">
               <button class="btn btn-outline-success my-2 my-sm-0" v-on:click="expanded_toggle = !expanded_toggle">New message</button>
 
               <div v-if="create_success" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -48,28 +48,32 @@ export default {
                   </button>
                 </div>
 
-                <!-- Contact selection -->
-                <div v-for="contact, index in selected_contacts">
-                  <p>List of selected contacts {{ contact.name }}</p>
-                  <p @click="removeFromSelectedContacts(index)">Click me to remove from the selected</p>
-                </div>
-                <div >
-                  <input ref="contact_search_box" @focus="contact_focus = true" v-model="contact_search" v-on:keyup.enter="onContactEnter" v-on:keyup.tab="contact_focus = false" :placeholder="contact_placeholder">
-                  <div v-if="contact_focus">
-                    <div v-for="available, index in available_contacts">
-                      <p @click="selectionClicked(index)"> {{available.name}} </p>
+
+                <div class="form-group">
+
+                  <!-- Contact selection -->
+                  <div v-for="contact, index in selected_contacts">
+                    <p>List of selected contacts {{ contact.name }}</p>
+                    <p @click="removeFromSelectedContacts(index)">Click me to remove from the selected</p>
+                  </div>
+                  <div >
+                    <input class="form-control" ref="contact_search_box" @focus="contact_focus = true" v-model="contact_search" v-on:keyup.enter="onContactEnter" v-on:keyup.tab="contact_focus = false" :placeholder="contact_placeholder">
+                    <div v-if="contact_focus">
+                      <div v-for="available, index in available_contacts">
+                        <p @click="selectionClicked(index)"> {{available.name}} </p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <!-- Subject header -->
-                <div>
-                  <input ref="subject_input" @focus="contact_focus = false" v-model="the_subject" placeholder="Your subject">
-                </div>
+                  <!-- Subject header -->
+                  <div>
+                    <input class="form-control" ref="subject_input" @focus="contact_focus = false" v-model="the_subject" placeholder="Your subject">
+                  </div>
 
-                <!-- The message -->
-                <div>
-                  <textarea v-model="the_message" placeholder="Your message"></textarea>
+                  <!-- The message -->
+                  <div>
+                    <textarea class="form-control" v-model="the_message" placeholder="Your message"></textarea>
+                  </div>
                 </div>
 
                 <!-- Viewable -->
@@ -96,7 +100,7 @@ export default {
                 <!-- File handler -->
                 <file-handler v-on:filesadded="files = $event"></file-handler>
 
-                <button @click="createMessage">Create</button>
+                <button @click="createMessage" class="btn btn-primary btn-block mb-2">Create</button>
 
               </div>
 
