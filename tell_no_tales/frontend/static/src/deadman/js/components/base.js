@@ -13,11 +13,12 @@ export default {
     return {
       loading: false,
       view: "settings",
-      logged_in: false
+      logged_in: false,
+      new_contact_flag: false
     }
   },
   methods: {
-    checkLogin(){
+    checkLogin: function() {
       console.log("Sending checkLogin")
       //this.loading = true;
       this.$http.get('/api/login')
@@ -61,7 +62,7 @@ export default {
                 <div class="tab-container">
 
                     <div id="ContactsView" v-show="view==='contacts'">
-                        <contact-tab></contact-tab>
+                        <contact-tab v-on:new="new_contact_flag=true"></contact-tab>
                     </div>
 
                     <div id="SettingsView" v-show="view==='settings'">
@@ -69,7 +70,7 @@ export default {
                     </div>
 
                     <div id="MessageView" v-show="view==='messages'">
-                      <message-tab></message-tab>
+                      <message-tab :new_contact_flag="new_contact_flag"></message-tab>
                     </div>
                   </div>
 

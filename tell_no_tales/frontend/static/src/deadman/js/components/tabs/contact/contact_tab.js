@@ -18,13 +18,16 @@ export default {
   },
   template: `<div>
               <search-contacts v-on:search="search_key = $event"></search-contacts>
-              <new-contact v-on:pulse="getContacts()"></new-contact>
+              <new-contact v-on:pulse="getContacts(); emitNewPulse()"></new-contact>
               <contact-group :contactlist="filtered_contacts" :filtered="filtered" v-on:pulse="getContacts()"></contact-group>
             </div>`,
   created: function() {
     this.getContacts();
   },
   methods: {
+    emitNewPulse: function() {
+      this.$emit('new');
+    },
     getContacts: function() {
       console.log("Retrieving contacts");
       this.loading = true;

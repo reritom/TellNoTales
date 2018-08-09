@@ -8,7 +8,7 @@ export default {
   // message list is the potentially filtered message list.
   // filtered is a boolean saying whether the list is filtered or not
   props: ['messagelist', 'filtered'],
-  template: `<div>
+  template: `<div class="container">
               <div v-if="not_empty">
                     <button @click="NotifyAll()" class="btn btn-outline-success my-2 my-sm-0">Notify All</button>
                     <single-message v-for="amessage in messagelist" v-on:pulse="$emit('pulse')" :messagedata="amessage" :key="amessage.message_id"></single-message>

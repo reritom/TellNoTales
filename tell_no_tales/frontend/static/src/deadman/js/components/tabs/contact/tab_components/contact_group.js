@@ -6,7 +6,7 @@ export default {
     SingleContact
   },
   props: ['contactlist', 'filtered'],
-  template: `<div>
+  template: `<div class="container">
               <div v-if="empty_filtered">
                 <p>Nothing for your search criteria</p>
               </div>

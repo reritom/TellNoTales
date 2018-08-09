@@ -1,6 +1,5 @@
 export default {
   name: "NewContact",
-  props: ['noneyet'],
   data: function() {
     return {
       name: "",
@@ -15,14 +14,6 @@ export default {
     }
   },
   methods: {
-    getNewButtonIcon() {
-      if (!this.expanded_toggle) {
-        return '<i class="fa fa-plus fa-2x"></i>'
-      }
-      else {
-        return '<i class="fa fa-minus fa-2x"></i>'
-      }
-    },
     addEmail() {
       var email = this.$refs.email_input.value;
       if (email != ""){

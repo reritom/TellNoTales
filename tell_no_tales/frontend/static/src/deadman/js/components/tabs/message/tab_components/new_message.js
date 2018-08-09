@@ -5,6 +5,12 @@ export default {
   components: {
     FileHandler,
   },
+  props: ['new_contact_flag'],
+  watch: {
+    new_contact_flag: function() {
+      this.getContacts();
+    }
+  },
   data: function () {
     return {
       expanded_toggle: false,
@@ -31,14 +37,13 @@ export default {
               <button class="btn btn-outline-success my-2 my-sm-0" v-on:click="expanded_toggle = !expanded_toggle">New message</button>
 
               <div v-if="create_success" class="alert alert-success alert-dismissible fade show" role="alert">
-                <p>Your message has been create</p>
+                <p>Your message has been created</p>
                 <button @click="create_success = true" type="button" class="close" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
 
               <div v-if="expanded_toggle">
-                <p>New message component here</p>
 
                 <!-- Warnings -->
                 <div v-for="warning in warnings" class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -51,16 +56,44 @@ export default {
 
                 <div class="form-group">
 
-                  <!-- Contact selection -->
+                  <!-- Contact selection removal -->
                   <div v-for="contact, index in selected_contacts">
-                    <p>List of selected contacts {{ contact.name }}</p>
-                    <p @click="removeFromSelectedContacts(index)">Click me to remove from the selected</p>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Contact</span>
+                      </div>
+                      <input type="text" readonly class="form-control" readonly :placeholder="contact.name" aria-label="Email" aria-describedby="basic-addon1">
+                      <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon1" @click="removeFromSelectedContacts(index)">Deselect</span>
+                      </div>
+                    </div>
                   </div>
-                  <div >
-                    <input class="form-control" ref="contact_search_box" @focus="contact_focus = true" v-model="contact_search" v-on:keyup.enter="onContactEnter" v-on:keyup.tab="contact_focus = false" :placeholder="contact_placeholder">
+
+                  <!-- Contact selection -->
+                  <div>
+
+                    <!-- Main selection search bar -->
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">{{selected_contacts.length}} selected</span>
+                      </div>
+                      <input class="form-control" ref="contact_search_box" @focus="contact_focus = true" v-model="contact_search" v-on:keyup.enter="onContactEnter" v-on:keyup.tab="contact_focus = false" :placeholder="contact_placeholder">
+                      <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon3" >Deselect All</span>
+                      </div>
+                    </div>
+
                     <div v-if="contact_focus">
                       <div v-for="available, index in available_contacts">
-                        <p @click="selectionClicked(index)"> {{available.name}} </p>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Contact</span>
+                          </div>
+                          <input readonly type="text" class="form-control" :placeholder="available.name" aria-label="Email" aria-describedby="basic-addon3">
+                          <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon3" @click="selectionClicked(index)">Select</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -81,6 +114,15 @@ export default {
                 <label for="viewable_true">Viewable</label>
                 <input type="radio" id="viewable_false" value="false" v-model="viewable">
                 <label for="viewable_false">Hidden</label>
+
+                <div class="row">
+                  <div class="col">
+                    <button class="btn btn-primary mb-2 btn-block">Viewable</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-primary mb-2 btn-block">Hidden</button>
+                  </div>
+                </div>
                 <br>
 
                 <!-- Deletable -->
@@ -88,6 +130,15 @@ export default {
                 <label for="deletable_true">Deletable</label>
                 <input type="radio" id="deletable_false" value="false" v-model="deletable">
                 <label for="deletable_false">Undeletable</label>
+
+                <div class="row">
+                  <div class="col">
+                    <button class="btn btn-primary mb-2 btn-block">Deletable</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-primary mb-2 btn-block">Undeletable</button>
+                  </div>
+                </div>
                 <br>
 
                 <!-- Locked -->
@@ -95,10 +146,20 @@ export default {
                 <label for="locked_false">Unlocked</label>
                 <input type="radio" id="locked_true" value="true" v-model="locked">
                 <label for="locked_true">Locked</label>
+
+                <div class="row">
+                  <div class="col">
+                    <button class="btn btn-primary mb-2 btn-block">Locked</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-primary mb-2 btn-block">Unlocked</button>
+                  </div>
+                </div>
                 <br>
 
-                <!-- File handler -->
+                <!-- File handler
                 <file-handler v-on:filesadded="files = $event"></file-handler>
+                -->
 
                 <button @click="createMessage" class="btn btn-primary btn-block mb-2">Create</button>
 
@@ -113,6 +174,12 @@ export default {
     this.getContacts();
   },
   methods: {
+    resetChanges: function() {
+      this.selected_contacts = [];
+      this.message = "";
+      this.subject = "";
+
+    },
     sendPulse: function() {
       console.log("Sending pulse");
       this.$emit("pulse");
@@ -133,6 +200,7 @@ export default {
                 this.create_success = true;
 
                 this.sendPulse();
+                this.resetChanges();
 
                 //Close the new message tab
                 this.expanded_toggle = false;
@@ -254,13 +322,20 @@ export default {
       Vue.delete(this.selected_contacts, index);
     }
   },
-  computed: {filtered_contacts: function() {},
-            contact_placeholder: function() {
-              if (this.selected_contacts.length > 0) {
-                return "Add another contact"
-              }
-              else {
-                return "Add some contacts"
-              }
-            }}
+  computed: {
+    filtered_contacts: function() {
+
+    },
+    contact_placeholder: function() {
+      if (this.selected_contacts.length > 0) {
+        return "Add another contact"
+      }
+      else {
+        return "Add some contacts"
+      }
+      },
+      filtered_available_contacts: function() {
+
+      }
+    }
 };

@@ -14,6 +14,7 @@ export default {
   // TODO - If a new message is made, the new message component handles the api request and then emits a
   // .. signal to here saying to re-request the message list.
   //props: ['messages'],
+  props: ['new_contact_flag'],
   data: function () {
     return {
       search_key: "",
@@ -23,7 +24,7 @@ export default {
   },
   template: `<div>
               <search-messages v-on:search="search_key = $event"></search-messages>
-              <new-message v-on:pulse="getMessages"></new-message>
+              <new-message v-on:pulse="getMessages" :new_contact_flag="new_contact_flag"></new-message>
               <message-group v-on:pulse="getMessages" :messagelist="filtered_messages" :filtered="filtered"></message-group>
             </div>`,
   computed: {filtered_messages: function() {
