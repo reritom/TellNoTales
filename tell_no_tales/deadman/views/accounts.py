@@ -38,7 +38,7 @@ def signup(request):
 @csrf_exempt
 def login_user(request):
     if request.method == 'GET':
-        return response_ok({'logged_in': request.user.is_authenticated})
+        return response_ok({'logged_in': request.user.is_authenticated()})
 
     elif request.method == 'POST':
         if request.user.is_authenticated:

@@ -7,7 +7,9 @@ class ProfileSerialiser():
             This method constructs a profile bom
         '''
 
-        profile_bom = profile.get_profile_as_json()
+        profile_bom = {'username': profile.user.username,
+                       'email': profile.user.email,
+                       'validated': profile.email_validated}
 
         messages_delivered = Message.objects.filter(profile=profile, delivered=True).count()
         profile_bom['messages_delivered'] = messages_delivered
