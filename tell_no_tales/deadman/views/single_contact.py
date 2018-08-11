@@ -7,7 +7,8 @@ from deadman.models.email_address import EmailAddress
 from deadman.models.phone_number import PhoneNumber
 from deadman.models.recipient import Recipient
 
-from deadman.tools.model_tools import get_contact
+from deadman.tools.serialisers.contact_serialiser import ContactSerialiser
+
 from deadman.tools.response_tools import response_ok, response_ko
 from deadman.tools.validation.decorators import validate_contact_id
 import json

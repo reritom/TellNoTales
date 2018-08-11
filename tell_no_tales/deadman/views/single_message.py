@@ -6,7 +6,9 @@ from deadman.models.message import Message
 from deadman.models.recipient import Recipient
 from deadman.models.profile import Profile
 
-from deadman.tools.model_tools import get_message, create_contact_revisions
+from deadman.tools.serialisers.message_serialiser import MessageSerialiser
+
+from deadman.tools.model_tools import create_contact_revisions
 from deadman.tools.response_tools import response_ok, response_ko
 from deadman.tools.core_tools import to_bool
 from deadman.tools.validation.decorators import validate_message_id
@@ -21,17 +23,6 @@ def single_message(request, message_id):
     print("In single message flow")
 
     if request.method == 'POST':
-        '''
-            This post interface can contain:
-
-            set_lock = True/False/na
-            make_undeletable = True/False/na
-            make_hidden = True/False/na
-            new_recipients = []
-            deleted_recipients = []
-            change_subject = str
-            change_message = str
-        '''
         print("Updating a message")
         user = request.user
         profile = Profile.objects.get_or_create(user=user)[0]
@@ -92,13 +83,13 @@ def single_message(request, message_id):
                 if to_bool(request.POST['make_locked']):
                     create_contact_revisions(message_object=message)
 
-        return response_ok({'message':get_message(message)})
+        return response_ok({'message': MessageSerialiser.serialise(message)})
 
     elif request.method == "GET":
         print("Returning a specific message")
         # Return the message
         message = Message.objects.get(message_id=message_id)
-        return response_ok({'message':get_message(message)})
+        return response_ok({'message': MessageSerialiser.serialise(message)})
 
     elif request.method == 'DELETE':
         print("Deleting a message")

@@ -6,7 +6,8 @@ from deadman.models.profile import Profile
 from deadman.models.email_address import EmailAddress
 from deadman.models.phone_number import PhoneNumber
 
-from deadman.tools.model_tools import get_contact
+from deadman.tools.serialisers.contact_serialiser import ContactSerialiser
+
 from deadman.tools.response_tools import response_ok, response_ko
 
 import json
@@ -42,14 +43,14 @@ def contact(request):
             for new_number in new_numbers:
                 PhoneNumber.objects.get_or_create(number=new_number, contact=contact)
 
-        return response_ok({'contact':get_contact(contact)})
+        return response_ok({'contact':ContactSerialiser.serialise(contact)})
 
 
     elif request.method == 'GET':
         # Return all contacts for this profile
         contacts = Contact.objects.filter(profile=profile, revision=False)
 
-        list_of_contacts = [get_contact(contact) for contact in contacts]
+        list_of_contacts = [ContactSerialiser.serialise(contact) for contact in contacts]
 
         return response_ok({'contacts':list_of_contacts})
 

@@ -57,7 +57,7 @@ export default {
                 <div class="form-group">
 
                   <!-- Contact selection removal -->
-                  <div v-for="contact, index in selected_contacts">
+                  <div v-for="contact, index in selected_contacts" :key="contact.contact_id">
                     <div class="input-group">
                       <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon1">Contact</span>
@@ -84,7 +84,7 @@ export default {
                     </div>
 
                     <div v-if="contact_focus">
-                      <div v-for="available, index in available_contacts">
+                      <div v-for="available, index in filtered_available_contacts" :key="available.contact_id">
                         <div class="input-group">
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Contact</span>
@@ -178,7 +178,6 @@ export default {
       this.selected_contacts = [];
       this.message = "";
       this.subject = "";
-
     },
     sendPulse: function() {
       console.log("Sending pulse");
@@ -285,9 +284,9 @@ export default {
     onContactEnter: function() {
       // If there are available_contacts
       // Get the top of the available list, pop it, and add it to the selected list
-      if (this.available_contacts.length > 0) {
-        this.selected_contacts.push(this.available_contacts[0]);
-        this.available_contacts.shift();
+      if (this.filtered_available_contacts.length > 0) {
+        this.selected_contacts.push(this.filtered_available_contacts[0]);
+        //this.available_contacts.shift();
       }
       else {
         // Else, focus on the next input
@@ -295,8 +294,8 @@ export default {
       }
     },
     selectionClicked: function(index) {
-      this.selected_contacts.push(this.available_contacts[index]);
-      this.available_contacts.shift();
+      this.selected_contacts.push(this.filtered_available_contacts[index]);
+      //this.available_contacts.shift();
       this.selection_clicked = true;
        // Refocus on the input box
        this.$refs.contact_search_box.focus();
@@ -318,13 +317,20 @@ export default {
     },
     removeFromSelectedContacts: function(index) {
       // Remove from selected, and add to available
-      this.available_contacts.push(this.selected_contacts[index]);
+      //this.available_contacts.push(this.selected_contacts[index]);
       Vue.delete(this.selected_contacts, index);
     }
   },
   computed: {
-    filtered_contacts: function() {
+    filtered_available_contacts: function() {
+      var filtered_list = [];
 
+      for (var i = 0; i < this.available_contacts.length; i++) {
+        if (this.selected_contacts.indexOf(this.available_contacts[i]) == -1){
+          filtered_list.push(this.available_contacts[i]);
+        }
+      }
+      return filtered_list
     },
     contact_placeholder: function() {
       if (this.selected_contacts.length > 0) {
@@ -333,9 +339,6 @@ export default {
       else {
         return "Add some contacts"
       }
-      },
-      filtered_available_contacts: function() {
-
       }
     }
 };

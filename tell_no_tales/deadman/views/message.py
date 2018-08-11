@@ -11,7 +11,9 @@ from deadman.models.tracker import Tracker
 from deadman.models.recipient import Recipient
 from deadman.models.file_item import FileItem
 
-from deadman.tools.model_tools import get_message, create_contact_revisions
+from deadman.tools.serialisers.message_serialiser import MessageSerialiser
+
+from deadman.tools.model_tools import create_contact_revisions
 from deadman.tools.response_tools import response_ok, response_ko
 from deadman.tools import media_tools
 from deadman.tools.core_tools import to_bool
@@ -84,7 +86,7 @@ def message(request):
                 # # TODO
                 pass
 
-        return response_ok({'message':get_message(message)})
+        return response_ok({'message': MessageSerialiser.serialise(message)})
 
 
     elif request.method == 'GET':
@@ -92,7 +94,7 @@ def message(request):
         # Return all messages for this profile
         messages = Message.objects.filter(profile=profile)
 
-        list_of_messages = [get_message(message) for message in messages]
+        list_of_messages = [MessageSerialiser.serialise(message) for message in messages]
 
         return response_ok({'messages':list_of_messages})
 

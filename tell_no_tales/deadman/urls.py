@@ -8,7 +8,9 @@ from deadman.views.notify import notify
 from deadman.views.single_notify import single_notify
 from deadman.views.verify import verify
 from deadman.views.daemon import daemon
+from deadman.views.profile import profile
 from deadman.views import ajax
+from deadman.views import email
 
 app_name = 'deadman'
 
@@ -24,9 +26,9 @@ urlpatterns = [
     url(r'login', accounts.login_user, name='login_user'),
     url(r'signup', accounts.signup, name='signup'),
     url(r'logout', accounts.logout_user, name='logout_user'),
-    url(r'profile', accounts.get_profile, name='get_profile'),
+    url(r'profile', profile, name='profile'),
     url(r'ajax/username', ajax.validate_username, name='validate_username'),
     url(r'ajax/email', ajax.validate_email, name='validate_username'),
-    url(r'confirm/email/(?P<validator_id>[-\w]+)', accounts.email_confirmed, name='email_confirmed'),
-    url(r'confirm/resend', accounts.resend_confirmation_email, name='resend_confirmation')
+    url(r'confirm/email/(?P<validator_id>[-\w]+)', email.email_confirmed, name='email_confirmed'),
+    url(r'confirm/resend', email.resend_confirmation_email, name='resend_confirmation')
 ]
