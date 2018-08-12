@@ -97,11 +97,13 @@ export default {
                       </div>
                     </div>
                   </div>
+                  <br>
 
                   <!-- Subject header -->
                   <div>
                     <input class="form-control" ref="subject_input" @focus="contact_focus = false" v-model="the_subject" placeholder="Your subject">
                   </div>
+                  <br>
 
                   <!-- The message -->
                   <div>
@@ -110,49 +112,34 @@ export default {
                 </div>
 
                 <!-- Viewable -->
-                <input type="radio" id="viewable_true" value="true" v-model="viewable">
-                <label for="viewable_true">Viewable</label>
-                <input type="radio" id="viewable_false" value="false" v-model="viewable">
-                <label for="viewable_false">Hidden</label>
-
                 <div class="row">
                   <div class="col">
-                    <button class="btn btn-primary mb-2 btn-block">Viewable</button>
+                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':viewable}" v-on:click="viewable=true">Viewable</button>
                   </div>
                   <div class="col">
-                    <button class="btn btn-primary mb-2 btn-block">Hidden</button>
+                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!viewable}" v-on:click="viewable=false">Hidden</button>
                   </div>
                 </div>
                 <br>
 
                 <!-- Deletable -->
-                <input type="radio" id="deletable_true" value="true" v-model="deletable">
-                <label for="deletable_true">Deletable</label>
-                <input type="radio" id="deletable_false" value="false" v-model="deletable">
-                <label for="deletable_false">Undeletable</label>
-
                 <div class="row">
                   <div class="col">
-                    <button class="btn btn-primary mb-2 btn-block">Deletable</button>
+                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':deletable}" v-on:click="deletable=true">Deletable</button>
                   </div>
                   <div class="col">
-                    <button class="btn btn-primary mb-2 btn-block">Undeletable</button>
+                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!deletable}" v-on:click="deletable=false">Undeletable</button>
                   </div>
                 </div>
                 <br>
 
                 <!-- Locked -->
-                <input type="radio" id="locked_false" value="false" v-model="locked">
-                <label for="locked_false">Unlocked</label>
-                <input type="radio" id="locked_true" value="true" v-model="locked">
-                <label for="locked_true">Locked</label>
-
                 <div class="row">
                   <div class="col">
-                    <button class="btn btn-primary mb-2 btn-block">Locked</button>
+                      <button :class="{'btn mb-2 btn-block':true, 'btn-primary':locked}" v-on:click="locked=true">Locked</button>
                   </div>
                   <div class="col">
-                    <button class="btn btn-primary mb-2 btn-block">Unlocked</button>
+                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!locked}" v-on:click="locked=false">Unlocked</button>
                   </div>
                 </div>
                 <br>
@@ -319,6 +306,8 @@ export default {
       // Remove from selected, and add to available
       //this.available_contacts.push(this.selected_contacts[index]);
       Vue.delete(this.selected_contacts, index);
+      // Refocus on the input box
+      this.$refs.contact_search_box.focus();
     }
   },
   computed: {
