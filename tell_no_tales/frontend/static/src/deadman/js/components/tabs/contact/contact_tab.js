@@ -13,13 +13,25 @@ export default {
     return {
       contacts: [],
       search_key: "",
-      filtered: false
+      filtered: false,
+      make_new: false
     }
   },
   template: `<div>
-              <search-contacts v-on:search="search_key = $event"></search-contacts>
-              <new-contact v-on:pulse="getContacts(); emitNewPulse()"></new-contact>
-              <contact-group :contactlist="filtered_contacts" :filtered="filtered" v-on:pulse="getContacts()"></contact-group>
+              <search-contacts v-if="!make_new" v-on:search="search_key = $event"></search-contacts>
+              <new-contact v-if="make_new" v-on:pulse="getContacts(); emitNewPulse()"></new-contact>
+              <contact-group v-if="!make_new" :contactlist="filtered_contacts" :filtered="filtered" v-on:pulse="getContacts()"></contact-group>
+
+              <div class="fixed-action-btn">
+                <a class="btn-floating btn-large red">
+                  <div v-if="!make_new">
+                    <i @click="make_new=true" class="large material-icons">add</i>
+                  </div>
+                  <div v-else>
+                    <i @click="make_new=false" class="large material-icons">remove</i>
+                  </div>
+                </a>
+              </div>
             </div>`,
   created: function() {
     this.getContacts();

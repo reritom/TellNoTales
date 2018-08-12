@@ -14,7 +14,27 @@ export default {
       finalise_delete_toggle: false
     }
   },
-  template: `<div :class="{'mobile-single-message-main': isMobile, 'desktop-single-message-main': !isMobile}">
+  template: `<div>
+
+              <div class="row">
+                <div class="col s12 m12">
+                  <div class="card blue-grey">
+                    <div class="card-content white-text">
+                      <span class="card-title">{{messagedata.subject}}</span>
+                      <p>{{messagedata.message}}</p>
+                      <p>{{existingRecipients}}</p>
+                      <div v-for="recipient in existingRecipients">
+                        <p{{recipient.name}}</p>
+                      </div>
+                      <p>Cutoff in {{cutoffIn[0]}} {{cutoffIn[1]}}</p>
+                    </div>
+                    <div class="card-action">
+                    <a>Notify within {{notifyWithin[0]}} {{notifyWithin[1]}}</a>
+                    <a @click="expanded_toggle=true">Edit</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <!-- Unexpanded area -->
               <div @click="expanded_toggle = !expanded_toggle" class="single-message-unexpanded-area-container">
@@ -96,14 +116,14 @@ export default {
       if (this.messagedata.notify.within.days == 0) {
         if (this.messagedata.notify.within.hours == 0) {
           if (this.messagedata.notify.within.minutes == 0) {
-            return ['e', 'a few seconds']
+            return ['', 'a few seconds']
           }
           else {
-            return [this.messagedata.notify.within.minutes.toString(), ' minutes']
+            return [this.messagedata.notify.within.minutes.toString(), 'minutes']
           }
         }
         else {
-          return [this.messagedata.notify.within.hours.toString(), ' hours']
+          return [this.messagedata.notify.within.hours.toString(), 'hours']
         }
       }
       else {
@@ -114,18 +134,18 @@ export default {
       if (this.messagedata.cutoff.in.days == 0) {
         if (this.messagedata.cutoff.in.hours == 0) {
           if (this.messagedata.cutoff.in.minutes == 0) {
-            return 'a few seconds'
+            return ['', 'a few seconds']
           }
           else {
-            return this.messagedata.cutoff.in.minutes.toString() + ' minutes'
+            return [this.messagedata.cutoff.in.minutes.toString(), 'minutes']
           }
         }
         else {
-          return this.messagedata.cutoff.in.hours.toString() + ' hours'
+          return [this.messagedata.cutoff.in.hours.toString(), 'hours']
         }
       }
       else {
-        return this.messagedata.cutoff.in.days.toString() + ' days'
+        return [this.messagedata.cutoff.in.days.toString(), 'days']
       }
     },
   },

@@ -29,8 +29,7 @@ export default {
       locked: false,
       viewable: true,
       warnings: [],
-      create_success: false,
-      message_id: ""
+      create_success: false
       }
   },
   template: `<div class="container">
@@ -136,10 +135,10 @@ export default {
                 <!-- Locked -->
                 <div class="row">
                   <div class="col">
-                      <button :class="{'btn mb-2 btn-block':true, 'btn-primary':locked}" v-on:click="locked=true">Locked</button>
+                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!locked}" v-on:click="locked=false">Unlocked</button>
                   </div>
                   <div class="col">
-                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!locked}" v-on:click="locked=false">Unlocked</button>
+                      <button :class="{'btn mb-2 btn-block':true, 'btn-primary':locked}" v-on:click="locked=true">Locked</button>
                   </div>
                 </div>
                 <br>

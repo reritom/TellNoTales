@@ -48,16 +48,27 @@ export default {
   },
   template: `<div>
               <!-- As a heading -->
+                <!--
                 <nav class="navbar navbar-dark bg-dark">
                 <span class="navbar-brand mb-0 h1">TellNoTales</span>
+                </nav>-->
+
+
+
+                <nav>
+                  <div class="nav-wrapper blue-grey">
+                    <a href="#!" class="brand-logo left">No Tales</a>
+                    <ul class="right">
+                      <li><a><i class="material-icons" v-on:click="view = 'messages'">email</i></a></li>
+                      <li><a><i class="material-icons" v-on:click="view = 'contacts'">group</i></a></li>
+                      <li><a><i class="material-icons" v-on:click="view = 'settings'">settings</i></a></li>
+                    </ul>
+                  </div>
                 </nav>
 
-                <div class="inner-nav">
-                  <button class="inner-nav-item selected" :disabled="!logged_in" v-on:click="view = 'messages'"><i class="fa fa-envelope fa-2x"></i></button>
-                  <button class="inner-nav-item not-selected" v-on:click="view = 'settings'"><i class="fa fa-bars fa-2x"></i></button>
-                  <button class="inner-nav-item selected" :disabled="!logged_in" v-on:click="view = 'contacts'"><i class="fa fa-users fa-2x"></i></button>
+                <div v-if="loading" class="progress">
+                    <div class="indeterminate"></div>
                 </div>
-
 
                 <div class="tab-container">
 

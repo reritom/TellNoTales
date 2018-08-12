@@ -16,8 +16,18 @@ export default {
       loading: false
     }
   },
-  template: `<div class="inner-tile container">
-              <h2 @click="expanded_toggle = !expanded_toggle">{{contactdata.name}}</h2>
+  template: `<li class="collection-item avatar">
+
+
+                <i class="material-icons circle red">{{contactdata.name[0]}}</i>
+                <span class="title">{{contactdata.name}}</span>
+                <p>First Line <br>
+                Second Line
+                </p>
+                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+
+
+              <p @click="expanded_toggle = !expanded_toggle">{{contactdata.name}}</p>
 
               <div v-if="expanded_toggle">
 
@@ -160,7 +170,7 @@ export default {
 
 
               </div>
-            </div>`,
+            </li>`,
     methods: {
       resetChanges() {
         console.log("Resetting");

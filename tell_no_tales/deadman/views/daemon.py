@@ -28,6 +28,10 @@ def daemon(request):
 
     return JsonResponse({'status':"OK"})
 
+def send_validation_emails():
+    # # TODO: Emails for address validation will be sent from here instead of from the signup process
+    pass
+
 
 def expire_by_cutoff():
     # Filter non-expired messages

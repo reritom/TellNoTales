@@ -19,13 +19,25 @@ export default {
     return {
       search_key: "",
       filtered: false,
-      messages: []
+      messages: [],
+      make_new: false
     }
   },
   template: `<div>
-              <search-messages v-on:search="search_key = $event"></search-messages>
-              <new-message v-on:pulse="getMessages" :new_contact_flag="new_contact_flag"></new-message>
-              <message-group v-on:pulse="getMessages" :messagelist="filtered_messages" :filtered="filtered"></message-group>
+              <search-messages v-if="!make_new" v-on:search="search_key = $event"></search-messages>
+              <new-message v-if="make_new" v-on:pulse="getMessages" :new_contact_flag="new_contact_flag"></new-message>
+              <message-group v-if="!make_new" v-on:pulse="getMessages" :messagelist="filtered_messages" :filtered="filtered"></message-group>
+
+              <div class="fixed-action-btn">
+                <a class="btn-floating btn-large blue">
+                  <div v-if="!make_new">
+                    <i @click="make_new=true" class="large material-icons">add</i>
+                  </div>
+                  <div v-else>
+                    <i @click="make_new=false" class="large material-icons">remove</i>
+                  </div>
+                </a>
+              </div>
             </div>`,
   computed: {filtered_messages: function() {
     // Check to see if search string isn't empty
@@ -70,6 +82,5 @@ export default {
     },
   created: function() {
     this.getMessages();
-  }
-  // created: call method to get messages
+    }
 };
