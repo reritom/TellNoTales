@@ -14,7 +14,8 @@ export default {
       loading: false,
       view: "settings",
       logged_in: false,
-      new_contact_flag: false
+      new_contact_flag: false,
+      search: ""
     }
   },
   methods: {
@@ -40,6 +41,17 @@ export default {
           })
     }
   },
+  computed: {
+    isContacts: function() {
+      return (this.view == 'contacts')
+    },
+    isMessages: function() {
+      return (this.view == 'messages')
+    },
+    isSettings: function() {
+      return (this.view == 'settings')
+    }
+  },
   watch: {
     view: function() {
       console.log("Watching view");
@@ -48,32 +60,50 @@ export default {
   },
   template: `<div>
               <!-- As a heading -->
-                <!--
-                <nav class="navbar navbar-dark bg-dark">
-                <span class="navbar-brand mb-0 h1">TellNoTales</span>
-                </nav>-->
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                  <a class="navbar-brand" href="#">No tales</a>
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
 
-
-
-                <nav>
-                  <div class="nav-wrapper blue-grey">
-                    <a href="#!" class="brand-logo left">No Tales</a>
-                    <ul class="right">
-                      <li><a><i class="material-icons" v-on:click="view = 'messages'">email</i></a></li>
-                      <li><a><i class="material-icons" v-on:click="view = 'contacts'">group</i></a></li>
-                      <li><a><i class="material-icons" v-on:click="view = 'settings'">settings</i></a></li>
+                  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                      <li :class="{'nav-item':true, 'active':isMessages}">
+                        <a class="nav-link" v-on:click="view = 'messages'">Message</a>
+                      </li>
+                      <li :class="{'nav-item':true, 'active':isContacts}">
+                        <a class="nav-link" v-on:click="view = 'contacts'">Contacts</a>
+                      </li>
+                      <li :class="{'nav-item':true, 'active':isSettings}">
+                        <a class="nav-link" v-on:click="view = 'settings'">Account</a>
+                      </li>
                     </ul>
+
+                    <br>
+
+                    <div class="col-sm-3 col-md-3 pull-right">
+                      <form class="navbar-form" role="search">
+                        <div class="input-group">
+                            <input type="text" v-model="search" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+                            <span class="input-group-append">
+                                  <div class="input-group-text bg-transparent">
+                                  <i v-if="search == ''" class="fa fa-search"></i>
+                                  <i v-else @click="search=''" class="fa fa-times"></i>
+                                  </div>
+                            </span>
+                        </div>
+                      </form>
+                    </div>
                   </div>
                 </nav>
 
-                <div v-if="loading" class="progress">
-                    <div class="indeterminate"></div>
-                </div>
+
+
 
                 <div class="tab-container">
 
                     <div id="ContactsView" v-show="view==='contacts'">
-                        <contact-tab v-on:new="new_contact_flag=true"></contact-tab>
+                        <contact-tab v-on:new="new_contact_flag=true" :search_key="search"></contact-tab>
                     </div>
 
                     <div id="SettingsView" v-show="view==='settings'">
@@ -81,7 +111,7 @@ export default {
                     </div>
 
                     <div id="MessageView" v-show="view==='messages'">
-                      <message-tab :new_contact_flag="new_contact_flag"></message-tab>
+                      <message-tab :new_contact_flag="new_contact_flag" :search_key="search"></message-tab>
                     </div>
                   </div>
 

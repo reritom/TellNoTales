@@ -16,15 +16,7 @@ export default {
       loading: false
     }
   },
-  template: `<li class="collection-item avatar">
-
-
-                <i class="material-icons circle red">{{contactdata.name[0]}}</i>
-                <span class="title">{{contactdata.name}}</span>
-                <p>First Line <br>
-                Second Line
-                </p>
-                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+  template: `<li>
 
 
               <p @click="expanded_toggle = !expanded_toggle">{{contactdata.name}}</p>
