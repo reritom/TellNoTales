@@ -16,54 +16,55 @@ export default {
   },
   template: `<div>
 
-              <div class="card">
-                <div class="card-header">
-                  {{messagedata.subject}}
+              <div class="card card-drop">
+                <div class="card-header d-flex" style="dispay:inline; justify-content:space-between">
+                  <span>{{messagedata.subject}}</span>
+                  <i v-if="!messagedata.expired" class="fas fa-pen"></i>
                 </div>
                 <div class="card-body">
-                  <h5 class="card-title">{{messagedata.message}}</h5>
-                  <p class="card-text">{{messagedata.recipients}}</p>
-                  <a href="#" class="btn btn-primary">Notify within {{notifyWithin[0]}} {{notifyWithin[1]}}</a>
-                </div>
-              </div>
+                  <p class="card-title">{{messagedata.message}}</p>
 
-              <div class="row">
-                <div class="col s12 m12">
-                  <div class="card blue-grey">
-                    <div class="card-content white-text">
-                      <span class="card-title">{{messagedata.subject}}</span>
-                      <p>{{messagedata.message}}</p>
-                      <p>{{existingRecipients}}</p>
-                      <div v-for="recipient in existingRecipients">
-                        <p{{recipient.name}}</p>
+                  <!-- Expanded area -->
+                  <div v-show="expanded_toggle">
+                    <hr>
+                    <p v-if="!messagedata.expired" class="card-title">Cutoff in {{cutoffIn[0]}} {{cutoffIn[1]}}</p>
+
+                    <div class="card"> <!-- Recipient cards -->
+                      <div class="card-header">
+                        This message is for..
                       </div>
-                      <p>Cutoff in {{cutoffIn[0]}} {{cutoffIn[1]}}</p>
+                      <ul v-for="recipient in existingRecipients" class="list-group list-group-flush">
+                        <li class="list-group-item">{{recipient}}</li>
+                      </ul>
+                    </div> <!-- End of recipient cards -->
+
+                    <div v-if="messagedata.attachments.length > 0" class="card"> <!-- Attachment cards -->
+                      <div class="card-header">
+                        This message is for..
+                      </div>
+                      <ul v-for="attachment in messagedata.attachments" class="list-group list-group-flush">
+                        <li class="list-group-item">{{attachment}}</li>
+                      </ul>
+                    </div> <!-- End of attachment cards -->
+
+                    <!-- Modification options -->
+                    <div v-if="!messagedata.expired">
                     </div>
-                    <div class="card-action">
-                    <a>Notify within {{notifyWithin[0]}} {{notifyWithin[1]}}</a>
-                    <a @click="expanded_toggle=true">Edit</a>
-                    </div>
-                  </div>
+
+
+                  </div> <!-- End of expanded -->
+
+                  <form class="form-inline" style="justify-content:space-between">
+                    <a v-if="!messagedata.expired" class="btn btn-primary">Notify within {{notifyWithin[0]}} {{notifyWithin[1]}}</a>
+                    <a v-else>Expired</a>
+                    <a v-show="!expanded_toggle" @click="expanded_toggle=true" class="btn btn-outline-primary">Expand</a>
+                    <a v-show="expanded_toggle" @click="expanded_toggle=false" class="btn btn-outline-primary">Collapse</a>
+                  </form>
                 </div>
               </div>
+              <!--
 
-              <!-- Unexpanded area -->
-              <div @click="expanded_toggle = !expanded_toggle" class="single-message-unexpanded-area-container">
-                <div class="single-message-unexpanded-area-child-left" v-if="!messagedata.expired">
-                  <div class="single-message-notify-within">{{ notifyWithin[0] }}</div>
-                  <div>{{notifyWithin[1]}}</div>
-                </div>
-                <div class="single-message-unexpanded-area-child-middle">
-                  <div>{{messagedata.subject}}</div>
-                </div>
-                <div class="single-message-unexpanded-area-child-right">
-                  <div v-show="expanded_toggle">Unexp</div>
-                  <div v-show="!expanded_toggle">Exp</div>
-                </div>
-              </div>
-
-
-              <!-- Expanded area -->
+              <!-- Expanded area
               <div v-if="expanded_toggle">
                 <p>message: {{messagedata.message}}</p>
                 <p>sending in: {{ notifyWithin }}</p>
@@ -73,7 +74,7 @@ export default {
                   <p>attachments: {{ messagedata.attachments }}</p>
                 </div>
 
-                <!-- Modification options -->
+                <!-- Modification options
                 <div v-if="!messagedata.expired">
                   <button @click="notifyMessage()">Notify me</button>
                   <button :disabled="messagedata.locked" @click="edit_toggle = !edit_toggle">Edit me</button>
@@ -84,7 +85,7 @@ export default {
                     <button @click="deleteMessage()">Yes</button>
                   </div>
 
-                  <!-- Editting Options -->
+                  <!-- Editting Options
                   <div v-if="edit_toggle">
                     <div v-if="messagedata.anonymous">
                       <button @click="updateMessage('make_anonymous', false)">Unanonymise me</button>
@@ -108,7 +109,7 @@ export default {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
             </div>`,
   computed: {
     existingRecipients: function() {
