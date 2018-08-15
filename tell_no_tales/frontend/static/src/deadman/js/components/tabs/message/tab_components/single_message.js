@@ -106,8 +106,8 @@ export default {
                       <button type="button" v-if="messagedata.delivered" class="btn btn-outline-primary">Delivered</button>
                       <button type="button" v-else-if="!messagedata.expired" class="btn btn-outline-warning">Notify within {{notifyWithin[0]}} {{notifyWithin[1]}}</button>
                       <button type="button" v-else class="btn btn-outline-primary">Expired</button>
-                      <button type="button" v-show="!expanded_toggle" @click="expanded_toggle=true" class="btn btn-link">Expand</button>
-                      <button type="button" v-show="expanded_toggle" @click="expanded_toggle=false" class="btn btn-link">Collapse</button>
+                      <button type="button" v-show="!expanded_toggle" @click="expanded_toggle=true" class="btn btn-link"><i class="material-icons">expand_more</i></button>
+                      <button type="button" v-show="expanded_toggle" @click="expanded_toggle=false" class="btn btn-link"><i class="material-icons">expand_less</i></button>
                     </form>
                   </div>
                   <div v-else> <!-- Options to save changes or cancel -->
