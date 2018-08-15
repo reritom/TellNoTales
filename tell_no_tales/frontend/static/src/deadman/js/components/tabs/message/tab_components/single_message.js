@@ -11,21 +11,31 @@ export default {
       expanded_toggle: false,
       edit_toggle: false,
       finalise_lock_toggle: false,
-      finalise_delete_toggle: false
+      finalise_delete_toggle: false,
+      modified_subject: "",
+      modified_content: ""
     }
   },
   template: `<div>
-
               <div class="card card-drop">
                 <div class="card-header d-flex" style="dispay:inline; justify-content:space-between">
-                  <span>{{messagedata.subject}}</span>
-                  <i v-if="!messagedata.expired" class="fas fa-pen"></i>
+                  <span v-if="!edit_toggle">{{messagedata.subject}}</span>
+                  <input v-else :value="messagedata.subject" @input="modified_subject = $event.target.value" class="form-control">
+
+                  <i v-if="showEditToggle" @click="edit_toggle=true" class="fa fa-edit"></i>
                 </div>
                 <div class="card-body">
-                  <p class="card-title">{{messagedata.message}}</p>
+
+                  <div v-if="!edit_toggle"> <!-- Message Body -->
+                    <p class="card-title">{{messagedata.message}}</p>
+                  </div>
+                  <div v-else>
+                    <input :value="messagedata.message" @input="modified_content = $event.target.value" class="form-control">
+                    <br>
+                  </div>
 
                   <!-- Expanded area -->
-                  <div v-show="expanded_toggle">
+                  <div v-show="expanded_toggle && !edit_toggle">
                     <hr>
                     <p v-if="!messagedata.expired" class="card-title">Cutoff in {{cutoffIn[0]}} {{cutoffIn[1]}}</p>
 
@@ -46,47 +56,13 @@ export default {
                         <li class="list-group-item">{{attachment}}</li>
                       </ul>
                     </div> <!-- End of attachment cards -->
-
-                    <!-- Modification options -->
-                    <div v-if="!messagedata.expired">
-                    </div>
-
+                    <br>
 
                   </div> <!-- End of expanded -->
 
-                  <form class="form-inline" style="justify-content:space-between">
-                    <a v-if="!messagedata.expired" class="btn btn-primary">Notify within {{notifyWithin[0]}} {{notifyWithin[1]}}</a>
-                    <a v-else>Expired</a>
-                    <a v-show="!expanded_toggle" @click="expanded_toggle=true" class="btn btn-outline-primary">Expand</a>
-                    <a v-show="expanded_toggle" @click="expanded_toggle=false" class="btn btn-outline-primary">Collapse</a>
-                  </form>
-                </div>
-              </div>
-              <!--
+                  <!-- Modification options -->
+                  <div v-if="!messagedata.expired && edit_toggle">
 
-              <!-- Expanded area
-              <div v-if="expanded_toggle">
-                <p>message: {{messagedata.message}}</p>
-                <p>sending in: {{ notifyWithin }}</p>
-                <p>cutoff in: {{ cutoffIn }}</p>
-                <p>recipients: {{ existingRecipients }}</p>
-                <div v-if="messagedata.attachments.length > 0">
-                  <p>attachments: {{ messagedata.attachments }}</p>
-                </div>
-
-                <!-- Modification options
-                <div v-if="!messagedata.expired">
-                  <button @click="notifyMessage()">Notify me</button>
-                  <button :disabled="messagedata.locked" @click="edit_toggle = !edit_toggle">Edit me</button>
-                  <button :disabled="!messagedata.deletable" @click="finalise_delete_toggle = true">Delete me</button>
-                  <div v-if="finalise_delete_toggle">
-                    <p>Are you sure?</p>
-                    <button @click="finalise_delete_toggle = false">No</button>
-                    <button @click="deleteMessage()">Yes</button>
-                  </div>
-
-                  <!-- Editting Options
-                  <div v-if="edit_toggle">
                     <div v-if="messagedata.anonymous">
                       <button @click="updateMessage('make_anonymous', false)">Unanonymise me</button>
                     </div>
@@ -101,15 +77,47 @@ export default {
                       <button @click="updateMessage('make_hidden', false)">Unhide me</button>
                     </div>
 
-                    <button @click="finalise_lock_toggle = true">Lock me</button>
-                    <div v-if="finalise_lock_toggle">
-                      <p>Are you sure?</p>
-                      <button @click="updateMessage('make_locked', true); edit_toggle = false">Yes</button>
-                      <button @click="finalise_lock_toggle = false">No</button>
-                    </div>
+                    <form class="form-inline" style="justify-content:space-between">
+                      <button type="button" class="btn btn-outline-danger" v-if="!finalise_lock_toggle" @click="finalise_lock_toggle = true">Lock me</button>
+                      <button type="button" class="btn btn-outline-danger" readonly v-else>Are you sure?</button>
+                      <div v-if="finalise_lock_toggle">
+                        <button type="button" class="btn btn-danger" @click="updateMessage('make_locked', true); edit_toggle = false">Yes</button>
+                        <button type="button" class="btn btn-light" @click="finalise_lock_toggle = false">No</button>
+                      </div>
+                    </form>
+
+                    <br>
+
+                    <form class="form-inline" style="justify-content:space-between">
+                      <button type="button" class="btn btn-outline-danger" v-if="!finalise_delete_toggle" :disabled="!messagedata.deletable" @click="finalise_delete_toggle = true">Delete me</button>
+                      <button type="button" class="btn btn-outline-danger" readonly v-else>Are you sure?</button>
+                      <div v-if="finalise_delete_toggle">
+                        <button type="button" class="btn btn-danger" @click="deleteMessage()">Yes</button>
+                        <button type="button" class="btn btn-light" @click="finalise_delete_toggle = false">No</button>
+                      </div>
+                    </form>
+
+                    <br>
+
+                  </div> <!-- End of modification options -->
+
+                  <div v-if="!edit_toggle"> <!-- Options to expand and notify -->
+                    <form class="form-inline" style="justify-content:space-between">
+                      <button type="button" v-if="messagedata.delivered" class="btn btn-outline-primary">Delivered</button>
+                      <button type="button" v-else-if="!messagedata.expired" class="btn btn-outline-warning">Notify within {{notifyWithin[0]}} {{notifyWithin[1]}}</button>
+                      <button type="button" v-else class="btn btn-outline-primary">Expired</button>
+                      <button type="button" v-show="!expanded_toggle" @click="expanded_toggle=true" class="btn btn-link">Expand</button>
+                      <button type="button" v-show="expanded_toggle" @click="expanded_toggle=false" class="btn btn-link">Collapse</button>
+                    </form>
+                  </div>
+                  <div v-else> <!-- Options to save changes or cancel -->
+                    <form class="form-inline" style="justify-content:space-between">
+                      <button type="button" :disabled="!modificationsValid" class="btn btn-outline-success">Save changes</button>
+                      <button type="button" @click="edit_toggle=false" class="btn btn-link">Cancel</button>
+                    </form>
                   </div>
                 </div>
-              </div> -->
+              </div>
             </div>`,
   computed: {
     existingRecipients: function() {
@@ -121,8 +129,19 @@ export default {
 
       return existing
     },
-    isMobile: function() {
-      return true
+    showEditToggle: function() {
+      if (this.edit_toggle) {
+        return false
+      }
+      else if (this.messagedata.expired || this.messagedata.delivered || this.messagedata.locked) {
+        return false
+      }
+      else {
+        return true
+      }
+    },
+    modificationsValid: function() {
+      return (this.modified_content.length > 5 && this.modified_subject > 3)
     },
     notifyWithin: function() {
       if (this.messagedata.notify.within.days == 0) {

@@ -81,7 +81,7 @@ export default {
 
                     <br>
 
-                    <div class="col-sm-3 col-md-3 pull-right">
+                    <div v-if="view != 'settings'" class="col-sm-3 col-md-3 pull-right">
                       <form class="navbar-form" role="search">
                         <div class="input-group">
                             <input type="text" v-model="search" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
