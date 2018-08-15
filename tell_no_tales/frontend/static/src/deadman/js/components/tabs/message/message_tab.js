@@ -25,7 +25,8 @@ export default {
   template: `<div class="container">
               <new-message v-if="make_new" v-on:pulse="getMessages" :new_contact_flag="new_contact_flag"></new-message>
               <message-group v-if="!make_new" v-on:pulse="getMessages" :messagelist="filtered_messages" :filtered="filtered"></message-group>
-              <button @click="make_new=!make_new" class="static-right-button">new</i></button>
+              <button v-if="!make_new" @click="make_new=!make_new" class="btn btn-outline-success static-right-button"><i class="material-icons">add</i></button>
+              <button v-else @click="make_new=!make_new" class="btn btn-outline-danger static-right-button"><i class="material-icons">clear</i></button>
             </div>`,
   computed: {filtered_messages: function() {
     // Check to see if search string isn't empty

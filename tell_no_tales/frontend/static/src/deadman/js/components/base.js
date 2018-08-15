@@ -87,8 +87,8 @@ export default {
                             <input type="text" v-model="search" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
                             <span class="input-group-append">
                                   <div class="input-group-text bg-transparent">
-                                  <i v-if="search == ''" class="fa fa-search"></i>
-                                  <i v-else @click="search=''" class="fa fa-times"></i>
+                                  <i v-if="search == ''" class="material-icons">search</i>
+                                  <i v-else @click="search=''" class="material-icons">clear</i>
                                   </div>
                             </span>
                         </div>

@@ -20,6 +20,8 @@ export default {
   template: `<div class="container">
               <new-contact v-if="make_new" v-on:pulse="getContacts(); emitNewPulse()"></new-contact>
               <contact-group v-if="!make_new" :contactlist="filtered_contacts" :filtered="filtered" v-on:pulse="getContacts()"></contact-group>
+              <button v-if="!make_new" @click="make_new=!make_new" class="btn btn-outline-success static-right-button"><i class="material-icons">add</i></button>
+              <button v-else @click="make_new=!make_new" class="btn btn-outline-danger static-right-button"><i class="material-icons">clear</i></button>
             </div>`,
   created: function() {
     this.getContacts();
