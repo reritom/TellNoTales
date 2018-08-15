@@ -19,7 +19,7 @@ export default {
   template: `<li>
 
 
-              <p @click="expanded_toggle = !expanded_toggle">{{contactdata.name}}</p>
+              <h3 class="card-header" @click="expanded_toggle = !expanded_toggle">{{contactdata.name}}</h3>
 
               <div v-if="expanded_toggle">
 
@@ -144,22 +144,23 @@ export default {
                 <div v-if='!edit_toggle'>
                   <button @click="edit_toggle = !edit_toggle">Edit me</button>
                 </div>
-                <div v-else>
-                  <button @click="edit_toggle = !edit_toggle; resetChanges()">Ignore changes</button>
-                  <button :disabled="!editted" @click="saveChanges()">Save changes</button>
+                <div v-else> <!-- Options to save changes or cancel -->
+                  <form class="form-inline" style="justify-content:space-between">
+                    <button type="button" @click="saveChanges()" :disabled="!editted" class="btn btn-outline-success">Save changes</button>
+                    <button type="button" @click="edit_toggle=false; resetChanges()" class="btn btn-link">Cancel</button>
+                  </form>
                 </div>
 
 
-                <div>
-                  <button :disabled="!contactdata.deletable" @click="finalise_delete_toggle = true">Delete me</button>
+                <form class="form-inline" style="justify-content:space-between">
+                  <button type="button" class="btn btn-outline-danger" v-if="!finalise_delete_toggle" :disabled="!contactdata.deletable" @click="finalise_delete_toggle = true">Delete me</button>
+                  <button type="button" class="btn btn-outline-danger" readonly v-else>Are you sure?</button>
+                  <p v-if="!contactdata.deletable">This message can't be deleted as it is used by an unlocked message</p>
                   <div v-if="finalise_delete_toggle">
-                    <p>Are you sure?</p>
-                    <button @click="finalise_delete_toggle = false">No</button>
-                    <button @click="deleteContact()">Yes</button>
+                    <button type="button" class="btn btn-danger" @click="deleteContact()">Yes</button>
+                    <button type="button" class="btn btn-light" @click="finalise_delete_toggle = false">No</button>
                   </div>
-                </div>
-
-
+                </form>
 
               </div>
             </li>`,

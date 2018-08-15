@@ -8,14 +8,24 @@ export default {
       password2: ""
     }
   },
-  template: `<div class="container">
-                <div class="form-group>"
-                  <p>This is a signup tab</p>
-                  <input v-model="username" class="form-control" placeholder="Username">
-                  <input v-model="email" class="form-control" placeholder="Email">
-                  <input type="password" v-model="password" class="form-control" placeholder="Password">
-                  <input type="password" v-model="password2" class="form-control" placeholder="Password (again)">
-                  <button :disabled="!validForm" @click="CreateAccount()" class="btn btn-primary btn-block mb-2">Create Account</button>
+  template: `<div>
+                <div class="card card-drop">
+                  <div class="card-header">
+                    Create Account
+                  </div>
+                  <div class="card-body">
+                    <div class="form-group>"
+                      <input v-model="username" class="form-control" placeholder="Username">
+                      <br>
+                      <input v-model="email" class="form-control" placeholder="Email">
+                      <br>
+                      <input type="password" v-model="password" class="form-control" placeholder="Password">
+                      <br>
+                      <input type="password" v-model="password2" class="form-control" placeholder="Password (again)">
+                      <br>
+                      <button :disabled="!validForm" @click="CreateAccount()" class="btn btn-primary btn-block mb-2">Create Account</button>
+                    </div>
+                  </div>
                 </div>
              </div>`,
   computed: {
