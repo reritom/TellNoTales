@@ -22,7 +22,7 @@ export default {
                   <span v-if="!edit_toggle">{{messagedata.subject}}</span>
                   <input v-else :value="messagedata.subject" @input="modified_subject = $event.target.value" class="form-control">
 
-                  <i v-if="showEditToggle" @click="edit_toggle=true" class="fa fa-edit"></i>
+                  <i v-if="showEditToggle" @click="edit_toggle=true" class="material-icons">create</i>
                 </div>
                 <div class="card-body">
 
@@ -62,23 +62,32 @@ export default {
 
                   <!-- Modification options -->
                   <div v-if="!messagedata.expired && edit_toggle">
+                    <small id="instantHelp" class="form-text text-muted">Anonymity and visibility changes are instant</small>
+
+                    <br>
 
                     <div v-if="messagedata.anonymous">
-                      <button @click="updateMessage('make_anonymous', false)">Unanonymise me</button>
+                      <button class="btn btn-outline-secondary" @click="updateMessage('make_anonymous', false)">Unanonymise me</button>
                     </div>
                     <div v-else>
-                      <button @click="updateMessage('make_anonymous', true)">Anonymise me</button>
+                      <button class="btn btn-outline-secondary" @click="updateMessage('make_anonymous', true)">Anonymise me</button>
                     </div>
+
+                    <br>
 
                     <div v-if="messagedata.viewable">
-                      <button @click="updateMessage('make_hidden', true)">Hide me</button>
+                      <button class="btn btn-outline-secondary" @click="updateMessage('make_hidden', true)">Hide me</button>
                     </div>
                     <div v-else>
-                      <button @click="updateMessage('make_hidden', false)">Unhide me</button>
+                      <button class="btn btn-outline-secondary" @click="updateMessage('make_hidden', false)">Unhide me</button>
                     </div>
 
+                    <br>
+                    <small id="warningHelp" class="form-text text-muted">Locking and deletion have a confirmation step</small>
+                    <br>
+
                     <form class="form-inline" style="justify-content:space-between">
-                      <button type="button" class="btn btn-outline-danger" v-if="!finalise_lock_toggle" @click="finalise_lock_toggle = true">Lock me</button>
+                      <button type="button" class="btn btn-outline-danger" v-if="!finalise_lock_toggle" @click="finalise_lock_toggle = true; finalise_delete_toggle = false">Lock me</button>
                       <button type="button" class="btn btn-outline-danger" readonly v-else>Are you sure?</button>
                       <div v-if="finalise_lock_toggle">
                         <button type="button" class="btn btn-danger" @click="updateMessage('make_locked', true); edit_toggle = false">Yes</button>
@@ -89,7 +98,7 @@ export default {
                     <br>
 
                     <form class="form-inline" style="justify-content:space-between">
-                      <button type="button" class="btn btn-outline-danger" v-if="!finalise_delete_toggle" :disabled="!messagedata.deletable" @click="finalise_delete_toggle = true">Delete me</button>
+                      <button type="button" class="btn btn-outline-danger" v-if="!finalise_delete_toggle" :disabled="!messagedata.deletable" @click="finalise_delete_toggle = true; finalise_lock_toggle = false">Delete me</button>
                       <button type="button" class="btn btn-outline-danger" readonly v-else>Are you sure?</button>
                       <div v-if="finalise_delete_toggle">
                         <button type="button" class="btn btn-danger" @click="deleteMessage()">Yes</button>
@@ -111,6 +120,8 @@ export default {
                     </form>
                   </div>
                   <div v-else> <!-- Options to save changes or cancel -->
+                    <small id="anonymousHelp" class="form-text text-muted">Save changes to the subject and message</small>
+                    <br>
                     <form class="form-inline" style="justify-content:space-between">
                       <button type="button" :disabled="!modificationsValid" class="btn btn-outline-success">Save changes</button>
                       <button type="button" @click="edit_toggle=false" class="btn btn-link">Cancel</button>

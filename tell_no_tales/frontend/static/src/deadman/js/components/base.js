@@ -19,6 +19,20 @@ export default {
     }
   },
   methods: {
+    changeTab: function(tab) {
+      console.log("Changing tab");
+      if (tab != 'settings') {
+        console.log("Not settings tab");
+        if (!this.logged_in){
+          console.log("Not logged in");
+          return false
+        }
+      }
+
+      console.log("Changing tab");
+      this.view = tab;
+      
+    },
     checkLogin: function() {
       console.log("Sending checkLogin")
       //this.loading = true;
@@ -69,13 +83,13 @@ export default {
                   <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
                     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                       <li :class="{'nav-item':true, 'active':isMessages}">
-                        <a class="nav-link" v-on:click="view = 'messages'">Message</a>
+                        <a class="nav-link" v-on:click="changeTab('messages')">Message</a>
                       </li>
                       <li :class="{'nav-item':true, 'active':isContacts}">
-                        <a class="nav-link" v-on:click="view = 'contacts'">Contacts</a>
+                        <a class="nav-link" v-on:click="changeTab('contacts')">Contacts</a>
                       </li>
                       <li :class="{'nav-item':true, 'active':isSettings}">
-                        <a class="nav-link" v-on:click="view = 'settings'">Account</a>
+                        <a class="nav-link" v-on:click="changeTab('settings')">Account</a>
                       </li>
                     </ul>
 
