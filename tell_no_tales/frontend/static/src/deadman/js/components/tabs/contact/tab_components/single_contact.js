@@ -17,9 +17,7 @@ export default {
     }
   },
   template: `<li>
-
-
-              <h3 class="card-header" @click="expanded_toggle = !expanded_toggle">{{contactdata.name}}</h3>
+              <h3 @click="expanded_toggle = !expanded_toggle">{{contactdata.name}}</h3>
 
               <div v-if="expanded_toggle">
 
