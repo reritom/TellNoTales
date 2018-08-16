@@ -92,7 +92,7 @@ def message(request):
     elif request.method == 'GET':
         print("Retrieving all messages")
         # Return all messages for this profile
-        messages = Message.objects.filter(profile=profile)
+        messages = Message.objects.filter(profile=profile).order_by('-created')
 
         list_of_messages = [MessageSerialiser.serialise(message) for message in messages]
 

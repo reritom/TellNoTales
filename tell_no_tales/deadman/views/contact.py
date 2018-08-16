@@ -48,7 +48,7 @@ def contact(request):
 
     elif request.method == 'GET':
         # Return all contacts for this profile
-        contacts = Contact.objects.filter(profile=profile, revision=False)
+        contacts = Contact.objects.filter(profile=profile, revision=False).order_by('name')
 
         list_of_contacts = [ContactSerialiser.serialise(contact) for contact in contacts]
 
