@@ -13,7 +13,6 @@ export default {
   },
   data: function () {
     return {
-      expanded_toggle: false,
       loading: false,
       contact_search: "",
       contact_focus: false,
@@ -33,7 +32,6 @@ export default {
       }
   },
   template: `<div class="container">
-              <button class="btn btn-outline-success my-2 my-sm-0" v-on:click="expanded_toggle = !expanded_toggle">New message</button>
 
               <div v-if="create_success" class="alert alert-success alert-dismissible fade show" role="alert">
                 <p>Your message has been created</p>
@@ -42,114 +40,110 @@ export default {
                 </button>
               </div>
 
-              <div v-if="expanded_toggle">
+              <!-- Warnings -->
+              <div v-for="warning in warnings" class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Uhoh</strong> {{ warning }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
 
-                <!-- Warnings -->
-                <div v-for="warning in warnings" class="alert alert-warning alert-dismissible fade show" role="alert">
-                  <strong>Uhoh</strong> {{ warning }}
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
+
+              <div class="form-group">
+
+                <!-- Contact selection removal -->
+                <div v-for="contact, index in selected_contacts" :key="contact.contact_id">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1">Contact</span>
+                    </div>
+                    <input type="text" readonly class="form-control" readonly :placeholder="contact.name" aria-label="Email" aria-describedby="basic-addon1">
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="basic-addon1" @click="removeFromSelectedContacts(index)">Deselect</span>
+                    </div>
+                  </div>
                 </div>
 
+                <!-- Contact selection -->
+                <div>
 
-                <div class="form-group">
-
-                  <!-- Contact selection removal -->
-                  <div v-for="contact, index in selected_contacts" :key="contact.contact_id">
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">Contact</span>
-                      </div>
-                      <input type="text" readonly class="form-control" readonly :placeholder="contact.name" aria-label="Email" aria-describedby="basic-addon1">
-                      <div class="input-group-append">
-                        <span class="input-group-text" id="basic-addon1" @click="removeFromSelectedContacts(index)">Deselect</span>
-                      </div>
+                  <!-- Main selection search bar -->
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1">{{selected_contacts.length}} selected</span>
+                    </div>
+                    <input class="form-control" ref="contact_search_box" @focus="contact_focus = true" v-model="contact_search" v-on:keyup.enter="onContactEnter" v-on:keyup.tab="contact_focus = false" :placeholder="contact_placeholder">
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="basic-addon3" >Deselect All</span>
                     </div>
                   </div>
 
-                  <!-- Contact selection -->
-                  <div>
-
-                    <!-- Main selection search bar -->
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">{{selected_contacts.length}} selected</span>
-                      </div>
-                      <input class="form-control" ref="contact_search_box" @focus="contact_focus = true" v-model="contact_search" v-on:keyup.enter="onContactEnter" v-on:keyup.tab="contact_focus = false" :placeholder="contact_placeholder">
-                      <div class="input-group-append">
-                        <span class="input-group-text" id="basic-addon3" >Deselect All</span>
-                      </div>
-                    </div>
-
-                    <div v-if="contact_focus">
-                      <div v-for="available, index in filtered_available_contacts" :key="available.contact_id">
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Contact</span>
-                          </div>
-                          <input readonly type="text" class="form-control" :placeholder="available.name" aria-label="Email" aria-describedby="basic-addon3">
-                          <div class="input-group-append">
-                            <span class="input-group-text" id="basic-addon3" @click="selectionClicked(index)">Select</span>
-                          </div>
+                  <div v-if="contact_focus">
+                    <div v-for="available, index in filtered_available_contacts" :key="available.contact_id">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="basic-addon1">Contact</span>
+                        </div>
+                        <input readonly type="text" class="form-control" :placeholder="available.name" aria-label="Email" aria-describedby="basic-addon3">
+                        <div class="input-group-append">
+                          <span class="input-group-text" id="basic-addon3" @click="selectionClicked(index)">Select</span>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <br>
-
-                  <!-- Subject header -->
-                  <div>
-                    <input class="form-control" ref="subject_input" @focus="contact_focus = false" v-model="the_subject" placeholder="Your subject">
-                  </div>
-                  <br>
-
-                  <!-- The message -->
-                  <div>
-                    <textarea class="form-control" v-model="the_message" placeholder="Your message"></textarea>
-                  </div>
-                </div>
-
-                <!-- Viewable -->
-                <div class="row">
-                  <div class="col">
-                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':viewable}" v-on:click="viewable=true">Viewable</button>
-                  </div>
-                  <div class="col">
-                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!viewable}" v-on:click="viewable=false">Hidden</button>
-                  </div>
                 </div>
                 <br>
 
-                <!-- Deletable -->
-                <div class="row">
-                  <div class="col">
-                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':deletable}" v-on:click="deletable=true">Deletable</button>
-                  </div>
-                  <div class="col">
-                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!deletable}" v-on:click="deletable=false">Undeletable</button>
-                  </div>
+                <!-- Subject header -->
+                <div>
+                  <input class="form-control" ref="subject_input" @focus="contact_focus = false" v-model="the_subject" placeholder="Your subject">
                 </div>
                 <br>
 
-                <!-- Locked -->
-                <div class="row">
-                  <div class="col">
-                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!locked}" v-on:click="locked=false">Unlocked</button>
-                  </div>
-                  <div class="col">
-                      <button :class="{'btn mb-2 btn-block':true, 'btn-primary':locked}" v-on:click="locked=true">Locked</button>
-                  </div>
+                <!-- The message -->
+                <div>
+                  <textarea class="form-control" v-model="the_message" placeholder="Your message"></textarea>
                 </div>
-                <br>
-
-                <!-- File handler
-                <file-handler v-on:filesadded="files = $event"></file-handler>
-                -->
-
-                <button @click="createMessage" class="btn btn-primary btn-block mb-2">Create</button>
-
               </div>
+
+              <!-- Viewable -->
+              <div class="row">
+                <div class="col">
+                  <button :class="{'btn mb-2 btn-block':true, 'btn-primary':viewable}" v-on:click="viewable=true">Viewable</button>
+                </div>
+                <div class="col">
+                  <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!viewable}" v-on:click="viewable=false">Hidden</button>
+                </div>
+              </div>
+              <br>
+
+              <!-- Deletable -->
+              <div class="row">
+                <div class="col">
+                  <button :class="{'btn mb-2 btn-block':true, 'btn-primary':deletable}" v-on:click="deletable=true">Deletable</button>
+                </div>
+                <div class="col">
+                  <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!deletable}" v-on:click="deletable=false">Undeletable</button>
+                </div>
+              </div>
+              <br>
+
+              <!-- Locked -->
+              <div class="row">
+                <div class="col">
+                  <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!locked}" v-on:click="locked=false">Unlocked</button>
+                </div>
+                <div class="col">
+                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':locked}" v-on:click="locked=true">Locked</button>
+                </div>
+              </div>
+              <br>
+
+              <!-- File handler
+              <file-handler v-on:filesadded="files = $event"></file-handler>
+              -->
+
+              <button @click="createMessage" class="btn btn-primary btn-block mb-2">Create</button>
 
               <div v-if="loading">
                 <p>Am loading</p>
