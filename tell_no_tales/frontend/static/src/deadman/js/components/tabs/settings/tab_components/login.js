@@ -6,7 +6,7 @@ export default {
       password: ""
     }
   },
-  template: `<div>
+  template: `<div class="container">
                 <div class="card card-drop">
                   <div class="card-header">
                     Log in

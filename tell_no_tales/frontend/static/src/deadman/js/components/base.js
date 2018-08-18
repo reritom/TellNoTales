@@ -31,7 +31,7 @@ export default {
 
       console.log("Changing tab");
       this.view = tab;
-      
+
     },
     checkLogin: function() {
       console.log("Sending checkLogin")
@@ -116,15 +116,15 @@ export default {
 
                 <div class="tab-container">
 
-                    <div id="ContactsView" v-show="view==='contacts'">
+                    <div id="ContactsView" v-show="isContacts">
                         <contact-tab v-on:new="new_contact_flag=true" :search_key="search"></contact-tab>
                     </div>
 
-                    <div id="SettingsView" v-show="view==='settings'">
+                    <div id="SettingsView" v-show="isSettings">
                       <settings-tab v-on:logged_in="logged_in = $event"></settings-tab>
                     </div>
 
-                    <div id="MessageView" v-show="view==='messages'">
+                    <div id="MessageView" v-show="isMessages">
                       <message-tab :new_contact_flag="new_contact_flag" :search_key="search"></message-tab>
                     </div>
                   </div>

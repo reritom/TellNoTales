@@ -8,7 +8,7 @@ export default {
       password2: ""
     }
   },
-  template: `<div>
+  template: `<div class="container">
                 <div class="card card-drop">
                   <div class="card-header">
                     Create Account

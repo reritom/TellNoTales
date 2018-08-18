@@ -27,8 +27,6 @@ export default {
                 </div>
 
                 <div v-else>
-                  <!--<input v-model="new_address" :placeholder="email">-->
-
                   <div class="form-group">
                     <div class="input-group">
                       <div class="input-group-prepend">
@@ -54,6 +52,20 @@ export default {
                   </div>
                   <div v-else>
                     <button @click="triggerResend()" class="btn btn-warning btn-block mb-2">Resend confirmation email</button>
+                  </div>
+                </div>
+
+
+                <div class="card card-drop">
+                  <div class="card-header">Your account</div>
+                  <div class="card-body">
+                    <div class="form-group>"
+                      <input class="form-control"  placeholder="Username">
+                      <br>
+                      <input class="form-control" type="password" placeholder="Password">
+                      <br>
+                      <button :disabled="false"  class="btn btn-primary btn-block mb-2">Log in</button>
+                    </div>
                   </div>
                 </div>
              </div>`,
