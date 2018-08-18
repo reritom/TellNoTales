@@ -5,6 +5,7 @@ export default {
       email_validated: false,
       username: "",
       email: "",
+      expand_email_change: false,
       resendClicked: false,
       new_address: "",
       edit_toggle: false,
@@ -17,54 +18,49 @@ export default {
     }
   },
   template: `<div class="container">
-                <p>This is a profile tab</p>
-
-                <div v-if="!edit_toggle">
-                  <p>Username: {{profile.username}}</p>
-                  <p>Email: {{profile.email}}</p>
-                  <p>Messages delivered: {{profile.messages_delivered}}</p>
-                  <p>Pending messages: {{profile.messages_undelivered}}</p>
-                </div>
-
-                <div v-else>
-                  <div class="form-group">
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">@</span>
-                      </div>
-                      <input v-model="new_address" type="text" class="form-control" :placeholder="profile.email" aria-label="Email" aria-describedby="basic-addon3">
-                    </div>
-                  </div>
-
-                  <div class="form-inline">
-                    <button @click="updateProfile()" :disabled="!form_valid" class="btn btn-success mb-2">Save changes</button>
-                    <button @click="edit_toggle=false" class="btn btn-error mb-2">Cancel</button>
-                  </div>
-
-                </div> <!-- End of edit toggle else -->
-                <p v-if="!edit_toggle" @click="edit_toggle=true"class="btn btn-primary mb-2">Edit profile</p>
-
-                <div v-if="!email_validated">
-                  <p>Your email address hasn't been validated yet, so you can't create contacts or messages</p>
-
-                  <div v-if="resendClicked">
-                    <p>We have resent the email, please check your inbox</p>
-                  </div>
-                  <div v-else>
-                    <button @click="triggerResend()" class="btn btn-warning btn-block mb-2">Resend confirmation email</button>
-                  </div>
-                </div>
-
-
                 <div class="card card-drop">
-                  <div class="card-header">Your account</div>
+                  <div class="card-header">Hey {{profile.username}}</div>
                   <div class="card-body">
-                    <div class="form-group>"
-                      <input class="form-control"  placeholder="Username">
+
+                    <div style="display:flex; justify-content:space-between">
+                      <div class="text-primary">Pending messages </div>
+                      <div>{{profile.messages_undelivered}}</div>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between">
+                      <div class="text-primary">Delivered messages </div>
+                      <div>{{profile.messages_delivered}}</div>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between">
+                      <div class="text-primary">{{profile.email}}</div>
+                      <i v-if="!expand_email_change" class="material-icons text-muted" @click="expand_email_change=true">create</i>
+                    </div>
+
+                    <div v-if="expand_email_change">
+                      <input class="form-control" v-model="new_address" placeholder="Your new email address">
+
+                      <form class="form-inline" style="justify-content:space-between">
+                        <button type="button" @click="updateProfile()" :disabled="!form_valid" class="btn btn-outline-success">Save changes</button>
+                        <button type="button" @click="expand_email_change=false" class="btn btn-link">Cancel</button>
+                      </form>
+                    </div>
+
+
+                    <div v-if="!email_validated">
+                      <p class="text-muted">Your email address hasn't been validated yet, so you can't create contacts or messages</p>
+
+                      <div v-if="resendClicked">
+                        <p>We have resent the email, please check your inbox</p>
+                      </div>
+                      <div v-else>
+                        <button @click="triggerResend()" class="btn btn-warning btn-block mb-2">Resend confirmation email</button>
+                      </div>
+                    </div>
+
+                    <div v-if="!expand_email_change" style="display: flex; justify-content: flex-end">
                       <br>
-                      <input class="form-control" type="password" placeholder="Password">
-                      <br>
-                      <button :disabled="false"  class="btn btn-primary btn-block mb-2">Log in</button>
+                      <button type="button" @click="logout()" class="btn btn-link">Logout</button>
                     </div>
                   </div>
                 </div>
@@ -86,6 +82,16 @@ export default {
            console.log(err);
           })
 
+    },
+    logout() {
+      this.$http.get('/api/logout/')
+          .then((response) => {
+            console.log(response.data);
+            this.$emit('logout');
+          })
+          .catch((err) => {
+           console.log(err);
+          })
     },
     triggerResend() {
       this.$http.get('/api/confirm/resend')

@@ -5,6 +5,7 @@ from deadman.models.profile import Profile
 from deadman.models.email_validator import EmailValidator
 
 from deadman.tools.response_tools import response_ok, response_ko
+from deadman.tools.email_tools import send_confirmation_email
 
 @csrf_exempt
 def signup(request):
