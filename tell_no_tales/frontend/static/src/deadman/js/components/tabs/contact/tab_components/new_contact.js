@@ -4,8 +4,7 @@ export default {
     return {
       name: "",
       addresses: [],
-      numbers: [],
-      expanded_toggle: false
+      numbers: []
     }
   },
   computed: {
@@ -37,6 +36,9 @@ export default {
     emitRefreshPulse() {
       this.$emit('pulse');
     },
+    emitFinished(){
+      this.$emit('finished');
+    },
     createContact() {
       if (this.valid_form) {
         var formData = new FormData();
@@ -65,11 +67,11 @@ export default {
             //TODO IF status ok, then show success message, else show error
             if (response.data.status === true) {
               this.emitRefreshPulse();
-              this.edit_toggle = false;
 
               this.numbers = [];
               this.addresses = [];
               this.name = ""
+              this.emitFinished();
             }
           })
           .catch((err) => {
@@ -79,57 +81,68 @@ export default {
           })
     }
   },
-  template: `<div class="inner-tile container">
-                <button class="btn btn-outline-success my-2 my-sm-0" v-on:click="expanded_toggle = !expanded_toggle">New contact</button>
-                <input type="text" v-model="name" class="form-control" placeholder="Add their name">
+  template: `<div class="container">
+              <div class="card card-drop">
+                <div class="card-header">
+                  <input class="form-control" placeholder="Their name" v-model="name">
+                </div>
+                <div class="card-body">
+                  <div style="display:flex; justify-content:space-between">
+                    <p class="text-muted">Their numbers</p>
+                    <i class="material-icons text-muted">contact_phone</i>
+                  </div>
 
-                <div v-for="number, index in numbers">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon4">phone</span>
-                    </div>
-                    <input type="text" readonly class="form-control" :placeholder="number" aria-label="Number" aria-describedby="basic-addon4">
-                    <div class="input-group-append">
-                      <span class="input-group-text" id="basic-addon4" @click="removeNumber(index)">x</span>
+                  <div v-for="number, index in numbers">
+                    <div style="display:flex; justify-content:space-between">
+                      <p class="text-muted">{{number}}</p>
+                      <i class="material-icons text-muted" @click="removeNumber(index)" style="color:red">remove</i>
                     </div>
                   </div>
-                </div>
-                <div>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1">phone</span>
-                    </div>
-                    <input ref="number_input" type="text" class="form-control" placeholder="Add Phone Number" aria-label="Phone" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                      <span class="input-group-text" id="basic-addon2" @click="addNumber()">t</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div v-for="address, index in addresses">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1">@</span>
-                    </div>
-                    <input type="text" readonly class="form-control" :placeholder="address" aria-label="Email" aria-describedby="basic-addon1">
-                    <div class="input-group-append">
-                      <span class="input-group-text" id="basic-addon1" @click="removeEmail(index)">x</span>
+                  <div>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <i class="input-group-text material-icons" id="basic-addon1">phone</i>
+                      </div>
+                      <input ref="number_input" type="text" class="form-control" placeholder="Add" aria-label="Phone" aria-describedby="basic-addon2">
+                      <div class="input-group-append">
+                        <i class="input-group-text material-icons" id="basic-addon2" @click="addNumber()">check</i>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1">@</span>
-                    </div>
-                    <input ref="email_input" type="text" class="form-control" placeholder="Add Email Address" aria-label="Email" aria-describedby="basic-addon3">
-                    <div class="input-group-append">
-                      <span class="input-group-text" id="basic-addon3" @click="addEmail()">t</span>
+
+                  <br>
+
+                  <div style="display:flex; justify-content:space-between">
+                    <p class="text-muted">Their emails</p>
+                    <i class="material-icons text-muted">contact_mail</i>
+                  </div>
+
+
+                  <div v-for="address, index in addresses">
+                    <div style="display:flex; justify-content:space-between">
+                      <p class="text-muted">{{address}}</p>
+                      <i class="material-icons text-muted" @click="removeEmail(index)">remove</i>
                     </div>
                   </div>
+                  <div>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <i class="input-group-text material-icons" id="basic-addon1">alternate_email</i>
+                      </div>
+                      <input ref="email_input" type="text" class="form-control" placeholder="Add" aria-label="Email" aria-describedby="basic-addon3">
+                      <div class="input-group-append">
+                        <i class="input-group-text material-icons" id="basic-addon3" @click="addEmail()">check</i>
+                      </div>
+                    </div>
+                  </div>
+
+                  <br>
+
+                  <form class="form-inline" style="justify-content:space-between">
+                    <button type="button" :disabled="!valid_form" class="btn btn-outline-success" @click="createContact()">Create</button>
+                    <button type="button" class="btn btn-link" @click="emitFinished()">Cancel</button>
+                  </form>
                 </div>
-
-                <button :disabled="!valid_form" class="btn btn-primary btn-block mb-2" @click="createContact()">save</button>
-
+              </div>
              </div>`
 };
