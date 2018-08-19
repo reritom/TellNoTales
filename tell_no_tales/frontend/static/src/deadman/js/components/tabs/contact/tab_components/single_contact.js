@@ -153,7 +153,7 @@ export default {
                 <form class="form-inline" style="justify-content:space-between">
                   <button type="button" class="btn btn-outline-danger" v-if="!finalise_delete_toggle" :disabled="!contactdata.deletable" @click="finalise_delete_toggle = true">Delete me</button>
                   <button type="button" class="btn btn-outline-danger" readonly v-else>Are you sure?</button>
-                  <p v-if="!contactdata.deletable">This message can't be deleted as it is used by an unlocked message</p>
+                  <p v-if="!contactdata.deletable" class="text-muted">This message can't be deleted as it is used by an unlocked message</p>
                   <div v-if="finalise_delete_toggle">
                     <button type="button" class="btn btn-danger" @click="deleteContact()">Yes</button>
                     <button type="button" class="btn btn-light" @click="finalise_delete_toggle = false">No</button>

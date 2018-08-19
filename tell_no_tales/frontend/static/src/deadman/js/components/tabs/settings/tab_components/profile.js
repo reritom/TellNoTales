@@ -22,33 +22,9 @@ export default {
                   <div class="card-header">Hey {{profile.username}}</div>
                   <div class="card-body">
 
-                    <div style="display:flex; justify-content:space-between">
-                      <div class="text-primary">Pending messages </div>
-                      <div>{{profile.messages_undelivered}}</div>
-                    </div>
-
-                    <div style="display:flex; justify-content:space-between">
-                      <div class="text-primary">Delivered messages </div>
-                      <div>{{profile.messages_delivered}}</div>
-                    </div>
-
-                    <div style="display:flex; justify-content:space-between">
-                      <div class="text-primary">{{profile.email}}</div>
-                      <i v-if="!expand_email_change" class="material-icons text-muted" @click="expand_email_change=true">create</i>
-                    </div>
-
-                    <div v-if="expand_email_change">
-                      <input class="form-control" v-model="new_address" placeholder="Your new email address">
-
-                      <form class="form-inline" style="justify-content:space-between">
-                        <button type="button" @click="updateProfile()" :disabled="!form_valid" class="btn btn-outline-success">Save changes</button>
-                        <button type="button" @click="expand_email_change=false" class="btn btn-link">Cancel</button>
-                      </form>
-                    </div>
-
-
                     <div v-if="!email_validated">
                       <p class="text-muted">Your email address hasn't been validated yet, so you can't create contacts or messages</p>
+                      <p class="text-muted">Validation email will be sent to {{profile.email}}</p>
 
                       <div v-if="resendClicked">
                         <p>We have resent the email, please check your inbox</p>
@@ -57,9 +33,38 @@ export default {
                         <button @click="triggerResend()" class="btn btn-warning btn-block mb-2">Resend confirmation email</button>
                       </div>
                     </div>
+                    <div v-else>
 
-                    <div v-if="!expand_email_change" style="display: flex; justify-content: flex-end">
+                      <div style="display:flex; justify-content:space-between">
+                        <div class="text-primary">Pending messages </div>
+                        <div>{{profile.messages_undelivered}}</div>
+                      </div>
+
+                      <div style="display:flex; justify-content:space-between">
+                        <div class="text-primary">Delivered messages </div>
+                        <div>{{profile.messages_delivered}}</div>
+                      </div>
+
                       <br>
+
+                      <div style="display:flex; justify-content:space-between">
+                        <div class="text-primary">{{profile.email}}</div>
+                        <i v-if="!expand_email_change" class="material-icons text-muted" @click="expand_email_change=true">create</i>
+                      </div>
+
+                      <div v-if="expand_email_change">
+                        <br>
+                        <input class="form-control" v-model="new_address" placeholder="Your new email address">
+                        <br>
+                        <form class="form-inline" style="justify-content:space-between">
+                          <button type="button" @click="updateProfile()" :disabled="!form_valid" class="btn btn-outline-success">Save changes</button>
+                          <button type="button" @click="expand_email_change=false" class="btn btn-link">Cancel</button>
+                        </form>
+                      </div>
+                    </div> <!-- End of div else for validated -->
+
+                    <br>
+                    <div v-if="!expand_email_change" style="display: flex; justify-content: flex-end">
                       <button type="button" @click="logout()" class="btn btn-link">Logout</button>
                     </div>
                   </div>
