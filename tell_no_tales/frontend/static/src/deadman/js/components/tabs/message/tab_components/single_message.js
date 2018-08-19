@@ -113,7 +113,7 @@ export default {
                     <form class="form-inline" style="justify-content:space-between">
                       <button type="button" v-if="messagedata.delivered" class="btn btn-outline-primary">Delivered</button>
                       <button type="button" v-else-if="!messagedata.expired" class="btn btn-outline-warning">Notify within {{notifyWithin[0]}} {{notifyWithin[1]}}</button>
-                      <button type="button" v-else class="btn btn-outline-primary">Expired</button>
+                      <button type="button" disabled v-else class="btn btn-outline-primary">Expired</button>
                       <button type="button" v-show="!expanded_toggle" @click="expanded_toggle=true"  data-toggle="collapse" :data-target="'#expanded_area' + messagedata.message_id" class="btn btn-link"><i class="material-icons">expand_more</i></button>
                       <button type="button" v-show="expanded_toggle" @click="expanded_toggle=false"  data-toggle="collapse" :data-target="'#expanded_area' + messagedata.message_id" class="btn btn-link"><i class="material-icons">expand_less</i></button>
                     </form>

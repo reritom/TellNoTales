@@ -48,6 +48,63 @@ export default {
                 </button>
               </div>
 
+              <div class="card card-drop">
+                <div class="card-header">
+                  <input class="form-control" placeholder="Subject">
+                </div>
+                <div class="card-body">
+                  <textarea class="form-control" v-model="the_message" placeholder="Your message"></textarea>
+
+                  <br>
+                  <div style="display: flex; justify-content: space-between;">
+                    <p class="text-muted">Your recipients</p>
+                    <i class="material-icons text-muted">contacts</i>
+                  </div>
+
+                  <!-- Viewable -->
+                  <div class="row">
+                    <div class="col">
+                      <button :class="{'btn mb-2 btn-block':true, 'btn-primary':viewable, 'btn-outline-primary':!viewable}" v-on:click="viewable=true">Viewable</button>
+                    </div>
+                    <div class="col">
+                      <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!viewable, 'btn-outline-primary':viewable}" v-on:click="viewable=false">Hidden</button>
+                    </div>
+                  </div>
+                  <br>
+
+                  <!-- Deletable
+                  <div class="row">
+                    <div class="col">
+                      <button :class="{'btn mb-2 btn-block':true, 'btn-primary':deletable, 'btn-outline-primary':!deletable}" v-on:click="deletable=true">a</button>
+                    </div>
+                    <div class="col">
+                      <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!deletable, 'btn-outline-primary':deletable}" v-on:click="deletable=false">b</button>
+                    </div>
+                  </div>
+                  <br>-->
+
+                  <!-- Locked -->
+                  <div class="row">
+                    <div class="col">
+                      <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!locked, 'btn-outline-primary':locked}" v-on:click="locked=false">Unlocked</button>
+                    </div>
+                    <div class="col">
+                        <button :class="{'btn mb-2 btn-block':true, 'btn-primary':locked, 'btn-outline-primary':!locked}" v-on:click="locked=true">Locked</button>
+                    </div>
+                  </div>
+                  <br>
+
+                  <!-- File handler
+                  <file-handler v-on:filesadded="files = $event"></file-handler>
+                  -->
+
+                  <form class="form-inline" style="justify-content:space-between">
+                    <button type="button" class="btn btn-outline-success">Create</button>
+                    <button type="button" @click="createMessage" class="btn btn-link">Cancel</button>
+                  </form>
+                </div>
+              </div>
+
 
               <div class="form-group">
 
@@ -92,58 +149,6 @@ export default {
                     </div>
                   </div>
                 </div>
-                <br>
-
-                <!-- Subject header -->
-                <div>
-                  <input class="form-control" ref="subject_input" @focus="contact_focus = false" v-model="the_subject" placeholder="Your subject">
-                </div>
-                <br>
-
-                <!-- The message -->
-                <div>
-                  <textarea class="form-control" v-model="the_message" placeholder="Your message"></textarea>
-                </div>
-              </div>
-
-              <!-- Viewable -->
-              <div class="row">
-                <div class="col">
-                  <button :class="{'btn mb-2 btn-block':true, 'btn-primary':viewable}" v-on:click="viewable=true">Viewable</button>
-                </div>
-                <div class="col">
-                  <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!viewable}" v-on:click="viewable=false">Hidden</button>
-                </div>
-              </div>
-              <br>
-
-              <!-- Deletable -->
-              <div class="row">
-                <div class="col">
-                  <button :class="{'btn mb-2 btn-block':true, 'btn-primary':deletable}" v-on:click="deletable=true">Deletable</button>
-                </div>
-                <div class="col">
-                  <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!deletable}" v-on:click="deletable=false">Undeletable</button>
-                </div>
-              </div>
-              <br>
-
-              <!-- Locked -->
-              <div class="row">
-                <div class="col">
-                  <button :class="{'btn mb-2 btn-block':true, 'btn-primary':!locked}" v-on:click="locked=false">Unlocked</button>
-                </div>
-                <div class="col">
-                    <button :class="{'btn mb-2 btn-block':true, 'btn-primary':locked}" v-on:click="locked=true">Locked</button>
-                </div>
-              </div>
-              <br>
-
-              <!-- File handler
-              <file-handler v-on:filesadded="files = $event"></file-handler>
-              -->
-
-              <button @click="createMessage" class="btn btn-primary btn-block mb-2">Create</button>
 
               <div v-if="loading">
                 <p>Am loading</p>
