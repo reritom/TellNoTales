@@ -1,6 +1,7 @@
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.views import View
 
 from deadman.models.contact import Contact
 from deadman.models.profile import Profile
@@ -15,25 +16,20 @@ from deadman.tools.serialisers.message_serialiser import MessageSerialiser
 
 from deadman.tools.model_tools import create_contact_revisions
 from deadman.tools.response_tools import response_ok, response_ko
+from deadman.tools.validation.decorators import attach_profile, profile_validated
 from deadman.tools import media_tools
 from deadman.tools.core_tools import to_bool
 import json, uuid, os
 
-@csrf_exempt
-@login_required
-def message(request):
-    print("In message flow")
-    user = request.user
-    profile = Profile.objects.get_or_create(user=user)[0]
+@method_decorator(csrf_exempt, name='dispatch')
+@method_decorator(login_required, name='dispatch')
+class MessageView(View):
 
-    if request.method == 'POST':
+    @method_decorator(profile_validated)
+    @method_decorator(attach_profile)
+    def post(request, profile):
         print("Creating new message")
-        # Check email has been validated
-        if not profile.is_validated():
-            return response_ko("Profile email address not validated")
 
-
-        print(request.POST.keys())
         # Create a new message
         if not ('subject' in request.POST and 'message' in request.POST and 'lifespan' in request.POST and 'cutoff' in request.POST and 'recipients' in request.POST):
             # Missing parameters
@@ -45,8 +41,6 @@ def message(request):
                                          lifespan=request.POST['lifespan'],
                                          cutoff=request.POST['cutoff'],
                                          message_id=Message.create_uuid())
-
-        print(request.POST['recipients'])
 
         for recipient_obj in json.loads(request.POST['recipients']):
             recipient = recipient_obj['contact_id']
@@ -88,15 +82,12 @@ def message(request):
 
         return response_ok({'message': MessageSerialiser.serialise(message)})
 
-
-    elif request.method == 'GET':
+    @method_decorator(attach_profile)
+    def get(request, profile):
         print("Retrieving all messages")
         # Return all messages for this profile
         messages = Message.objects.filter(profile=profile).order_by('-created')
-
         list_of_messages = [MessageSerialiser.serialise(message) for message in messages]
 
         return response_ok({'messages':list_of_messages})
 
-    else:
-        return response_ko("Unsupported request method")
