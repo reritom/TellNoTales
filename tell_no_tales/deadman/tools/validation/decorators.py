@@ -43,3 +43,32 @@ def validate_contact_id(view):
 
         return view(request, contact_id)
     return inner
+
+def attach_profile(view):
+    @wraps(view)
+    def inner(request):
+        print("In validate_message_id")
+
+        # Retrieve or create a profile
+        user = request.user
+        profile = Profile.objects.get_or_create(user=user)[0]
+
+        return view(request, profile)
+    return inner
+
+def profile_validated(view):
+    @wraps(view)
+    def inner(request):
+        print("In validate_message_id")
+
+        # Retrieve or create a profile
+        user = request.user
+        profile = Profile.objects.get_or_create(user=user)[0]
+
+        # Check if profile has been validated
+        if not profile.is_validated():
+            return response_ko("Profile email address not validated")
+
+        return view(request, profile)
+    return inner
+
