@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.views import View
 
 from deadman.models.contact import Contact
 from deadman.models.message import Message
@@ -16,13 +18,11 @@ from deadman.tools import media_tools
 
 import json, uuid
 
-@csrf_exempt
-@login_required
-@validate_message_id
-def single_message(request, message_id):
-    print("In single message flow")
-
-    if request.method == 'POST':
+@method_decorator(csrf_exempt, name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(validate_message_id, name='dispatch')
+class SingleMessageView(View):
+    def post(self, request, message_id):
         print("Updating a message")
         user = request.user
         profile = Profile.objects.get_or_create(user=user)[0]
@@ -85,13 +85,13 @@ def single_message(request, message_id):
 
         return response_ok({'message': MessageSerialiser.serialise(message)})
 
-    elif request.method == "GET":
+    def get(self, request, message_id):
         print("Returning a specific message")
         # Return the message
         message = Message.objects.get(message_id=message_id)
         return response_ok({'message': MessageSerialiser.serialise(message)})
 
-    elif request.method == 'DELETE':
+    def delete(self, request, message_id):
         print("Deleting a message")
         if Message.objects.filter(message_id=message_id).exists():
             message = Message.objects.get(message_id=message_id)
@@ -106,5 +106,3 @@ def single_message(request, message_id):
         else:
             return response_ko("Message doesn't exist")
 
-    else:
-        return response_ko("Unsupported request method")
