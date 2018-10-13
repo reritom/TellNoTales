@@ -2,10 +2,12 @@ from django.contrib.auth.decorators import login_required
 from deadman.tools.response_tools import response_ok, response_ko
 from deadman.models.profile import Profile
 from deadman.models.message import Message
+from django.utils.decorators import method_decorator
+from django.views import View
 
-@login_required
-def notify(request):
-    if request.method == 'GET':
+@method_decorator(login_required, name='dispatch')
+class NotifyView(View):
+    def get(self, request):
         user = request.user
         profile = Profile.objects.get_or_create(user=user)[0]
 
@@ -16,7 +18,3 @@ def notify(request):
             message.notify()
 
         return response_ok({'message':'All messages have been notified'})
-
-    else:
-        # Unsupported method
-        return response_ko("Unsupported request method")
