@@ -27,7 +27,7 @@ class MessageView(View):
 
     @method_decorator(profile_validated)
     @method_decorator(attach_profile)
-    def post(request, profile):
+    def post(self, request, profile):
         print("Creating new message")
 
         # Create a new message
@@ -83,7 +83,7 @@ class MessageView(View):
         return response_ok({'message': MessageSerialiser.serialise(message)})
 
     @method_decorator(attach_profile)
-    def get(request, profile):
+    def get(self, request, profile):
         print("Retrieving all messages")
         # Return all messages for this profile
         messages = Message.objects.filter(profile=profile).order_by('-created')
