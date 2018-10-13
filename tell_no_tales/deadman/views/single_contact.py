@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.views import View
 
 from deadman.models.contact import Contact
 from deadman.models.profile import Profile
@@ -13,15 +15,15 @@ from deadman.tools.response_tools import response_ok, response_ko
 from deadman.tools.validation.decorators import validate_contact_id
 import json
 
-@csrf_exempt
-@login_required
-@validate_contact_id
-def single_contact(request, contact_id):
-    user = request.user
-    profile = Profile.objects.get_or_create(user=user)[0]
+@method_decorator(csrf_exempt, name='dispatch')
+@method_decorator(login_required, name='dispatch')
+@method_decorator(validate_contact_id, name='dispatch')
+class SingleContactView(View):
 
-    if request.method == 'POST':
+    def post(self, request, contact_id):
         # Update and append new data to the contact
+        user = request.user
+        profile = Profile.objects.get_or_create(user=user)[0]
         contact = Contact.objects.get(contact_id=contact_id, profile=profile, revision=False)
 
         print(request.POST)
@@ -53,12 +55,12 @@ def single_contact(request, contact_id):
 
         return response_ok({'contact':get_contact(contact)})
 
-    elif request.method == 'GET':
+    def get(self, request, contact_id):
         # Return the contact
         contact = Contact.objects.get(contact_id=contact_id)
         return response_ok({'contact':get_contact(contact)})
 
-    elif request.method == 'DELETE':
+    def delete(self, request, contact_id):
         contact = Contact.objects.get(contact_id=contact_id, revision=False)
         print("Contact is {0}".format(contact))
         # Delete contact (But remain accessable to preexisting messages)
@@ -70,6 +72,3 @@ def single_contact(request, contact_id):
         Contact.objects.filter(contact_id=contact_id, revision=False).delete()
         return response_ok({'message':'Contact has been deleted'})
 
-    else:
-        # Unsupported method
-        return response_ko("Unsupported request method")

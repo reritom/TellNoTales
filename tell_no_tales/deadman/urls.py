@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from deadman.views import accounts
 from deadman.views.contact import ContactView
-from deadman.views.single_contact import single_contact
+from deadman.views.single_contact import SingleContactView
 from deadman.views.message import MessageView
 from deadman.views.single_message import single_message
 from deadman.views.notify import notify
@@ -15,7 +15,7 @@ from deadman.views import email
 app_name = 'deadman'
 
 urlpatterns = [
-    url(r'contact/(?P<contact_id>[-\w]+)', single_contact, name='single_contact'),
+    url(r'contact/(?P<contact_id>[-\w]+)', SingleContactView.as_view(), name='single_contact'),
     url(r'contact', ContactView.as_view(), name='contact'),
     url(r'message/(?P<message_id>[-\w]+)', single_message, name='single_message'),
     url(r'message', MessageView.as_view(), name='message'),
