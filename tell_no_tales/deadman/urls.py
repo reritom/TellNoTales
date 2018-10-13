@@ -5,7 +5,7 @@ from deadman.views.single_contact import SingleContactView
 from deadman.views.message import MessageView
 from deadman.views.single_message import SingleMessageView
 from deadman.views.notify import notify
-from deadman.views.single_notify import single_notify
+from deadman.views.single_notify import SingleNotifyView
 from deadman.views.verify import verify
 from deadman.views.daemon import daemon
 from deadman.views.profile import profile
@@ -19,7 +19,7 @@ urlpatterns = [
     url(r'contact', ContactView.as_view(), name='contact'),
     url(r'message/(?P<message_id>[-\w]+)', SingleMessageView.as_view(), name='single_message'),
     url(r'message', MessageView.as_view(), name='message'),
-    url(r'notify/(?P<message_id>[-\w]+)', single_notify, name='single_notify'),
+    url(r'notify/(?P<message_id>[-\w]+)', SingleNotifyView.as_view(), name='single_notify'),
     url(r'notify', notify, name='notify'),
     url(r'verify/(?P<tracker_id>[-\w]+)', verify, name='verify'),
     url(r'daemon', daemon, name='daemon'),
